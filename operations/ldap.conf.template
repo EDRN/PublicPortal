@@ -1,0 +1,9 @@
+# LDAP Defaults
+# -------------
+# 
+# Copyright 2009 California Institute of Technology. ALL RIGHTS
+# RESERVED. U.S. Government Sponsorship acknowledged.
+
+BASE dc=edrn,dc=jpl,dc=nasa,dc=gov
+URI ldaps://cancer.jpl.nasa.gov
+TLS_CACERT ${buildout:directory}/etc/cancer-ldap.pem
