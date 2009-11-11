@@ -9,7 +9,7 @@ import subprocess, os, os.path, sys
 _executable = os.path.join('bin', 'instance-debug')
 _logDir = os.path.join('var', 'testlogs')
 
-# What packages to test. It'd be nice if we could automate this list.
+# What packages to test. TODO: automate this list.
 _packages = [
     'edrn.theme',
     'edrnsite.calendar',
@@ -21,7 +21,6 @@ _packages = [
     'eke.biomarker',
     'eke.ecas',
     'eke.knowledge',
-    'eke.people',
     'eke.publications',
     'eke.site',
     'eke.study',
