@@ -19,8 +19,9 @@ Are you hard core?  Forget documentation!  Try the following::
 
     svn co http://tumor.jpl.nasa.gov/repo/ic/app-server/edrn.nci.nih.gov/trunk edrn.nci.nih.gov
     cd edrn.nci.nih.gov
-    python2.4 bootstrap.py -dc dev.cfg         # bootstrap it
-    bin/buildout -c dev.cfg                    # build it
+    python2.4 bootstrap.py -dc test.cfg        # bootstrap it
+    bin/buildout -c test.cfg                   # build it
+    bin/buildout -c dev.cfg                    # activate developer mode
     bin/buildout -c dev.cfg install edrnsite   # deploy it
     bin/supervisord                            # start the database
     bin/instance-debug fg                      # start the app server
@@ -66,12 +67,15 @@ the EDRN public portal, using a Buildout_ procedure like the following::
 
     svn co http://tumor.jpl.nasa.gov/repo/ic/app-server/edrn.nci.nih.gov/trunk edrn.nci.nih.gov
     cd edrn.nci.nih.gov
-    python2.4 bootstrap.py -c dev.cfg
-    bin/buildout -c dev.cfg
+    python2.4 bootstrap.py -dc test.cfg
+    bin/buildout -c test.cfg
     python2.4 runtests.py
+    bin/buildout -c dev.cfg
 
 This gives you an EDRN portal with the release versions of each component and
-runs their tests, which had better damn well all be successful.
+runs their tests, which had better damn well all be successful.  Then, it puts
+your buildout into "developer's mode", which is a mode for developers.  They
+like it that way.
 
 
 Viewing Your Local Portal
