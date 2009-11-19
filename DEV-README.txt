@@ -83,11 +83,7 @@ portal.  To do that, run::
 
     bin/buildout -c dev.cfg install edrnsite
 
-This can take quite a bit of time.  It also requires that the services the
-portal depends on (ECAS, BMDB, DMCC RDF server) are all up and running and
-ready to export their RDF data.
-
-Once it's complete, start the database::
+This can take quite a bit of time.  Once it's complete, start the database::
 
     bin/supervisord
     
