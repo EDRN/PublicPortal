@@ -12,7 +12,7 @@ def main(argv=None):
         argv = sys.argv
     if len(argv) != 3:
         print >>sys.stderr, 'Usage: %s project-base-dir python-exec' % sys.argv[0]
-    basedir, executable = sys.argv[1:2]
+    basedir, executable = sys.argv[1:3]
     
     # Shut down supervisor, ignoring errors
     subprocess.call((os.path.join(basedir, 'bin', 'supervisorctl'), 'shutdown'))
