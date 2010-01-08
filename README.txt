@@ -51,8 +51,8 @@ the following procedure to your environment::
     % cd edrn.nci.nih.gov
     % vi operations.cfg
     % cp ~/keys/server.crt ~/keys/server.key etc
-    % python2.4 bootstrap.py -c test.cfg
-    Downloading http://pypi.python.org/packages/2.4/s/setuptools/setuptools-0.6c9-py2.4.egg
+    % python2.4 bootstrap.py -dc test.cfg
+    Downloading http://pypi.python.org/packages/source/d/distribute/distribute-0.6.10.tar.gz
     ...
     Generated script '/usr/home/kelly/edrn.nci.nih.gov/bin/buildout'.
     % bin/buildout -c test.cfg
@@ -334,6 +334,8 @@ following adjustments as needed:
     *Important*: ensure a group of the same name as the user you select also
     exists!
 
+5.  Adjust the ``cpu`` and ``target`` settings in the [build] section.
+
 Also, copy the SSL certificate files to the extracted ``etc`` directory.  The
 public key should be in PEM format and named ``server.crt``.  The private key
 should also be in PEM format and named ``server.key``.  For convenience,
@@ -349,7 +351,7 @@ included that takes care of that.
 
 To bootstrap, run::
 
-    python2.4 bootstrap.py -c test.cfg
+    python2.4 bootstrap.py -dc test.cfg
     
 
 Testing the Portal
@@ -411,7 +413,10 @@ You can then visit the Supervisor's web interface with a browser.  Unless you
 changed the port setting in ``operations.cfg``, the Supervisor listens on port
 9001, ie, http://localhost:9001/.  From the web interface you can check on the
 status of the processes that run the portal, view their log files, stop and
-restart them, etc.  All of the following processes should be listed as running:
+restart them, etc.  If you don't like web browsers, you can also access the
+Supervisor by running ``bin/supervistorctl``.
+
+All of the following processes should be listed as running:
 
 * ``balancer``.  HAProxy load balancer to the two Zope application servers.
 * ``cache``.  Varnish reverse proxy caching engine.
