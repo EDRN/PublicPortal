@@ -1,0 +1,12 @@
+--- auto/cc/gcc.orig	2010-01-26 08:52:00.000000000 -0600
++++ auto/cc/gcc	2010-01-26 08:52:11.000000000 -0600
+@@ -171,9 +171,6 @@
+ esac
+ 
+ 
+-# stop on warning
+-CFLAGS="$CFLAGS -Werror"
+-
+ # debug
+ CFLAGS="$CFLAGS -g"
+ 
