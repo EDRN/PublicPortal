@@ -9,7 +9,7 @@ knowledge environment.  This software package sets up various software
 components that provide a functioning website for EDRN, normally hosted at
 http://edrn.nci.nih.gov/.
 
-This software was developed by and is copyrighted 2009 by the California
+This software was developed by and is copyrighted 2010 by the California
 Institute of Technology.  ALL RIGHTS RESERVED.  U.S.  Government sponsorship
 acknowledged.
 
@@ -51,23 +51,17 @@ the following procedure to your environment::
     % cd edrn.nci.nih.gov
     % vi operations.cfg
     % cp ~/keys/server.crt ~/keys/server.key etc
-    % python2.4 bootstrap.py -dc test.cfg
+    % python2.4 bootstrap.py -dc operations.cfg
     Downloading http://pypi.python.org/packages/source/d/distribute/distribute-0.6.10.tar.gz
     ...
     Generated script '/usr/home/kelly/edrn.nci.nih.gov/bin/buildout'.
-    % bin/buildout -c test.cfg
-    Getting distribution for 'buildout.dumppickedversions'.
+    % bin/buildout -c operations.cfg
+    Installing pcre-build.
     ...
-    Overwriting versions/known-good-versions.cfg
-    ...
-    % python2.4 runtests.py
+    % python2.4 support/runtests.py
     Running tests in "edrn.theme" ... pass
     ...
-    % bin/buildout -c operations.cfg
-    Couldn't develop '/usr/home/kelly/edrn.nci.nih.gov/src/*' (not found)
-    Updating pcre-build.
-    Updating cyrus-sasl-build.
-    ...
+    % bin/buildout -c operations.cfg install edrnsite
     % sudo chown -R www parts var
     % sudo bin/supervisord
     % sudo ln -s bin/logrotate.conf /etc/logrotate.d/edrn-portal
@@ -107,9 +101,9 @@ Unix
 The EDRN portal is designed to run on systems that behave like Unix systems.
 We've developed and tested the portal on a variety of Unix systems, including:
 
-* `Mac OS X`_ 10.5.7 "Leopard", with the Xcode_ software development kit
-* Debian_ GNU/Linux 5.0.2 "Lenny"
-* FreeBSD_ 7.8
+* `Mac OS X`_ 10.6 "Snow Leopard", with the Xcode_ software development kit
+* Debian_ GNU/Linux 5.0.3 "Lenny"
+* FreeBSD_ 8.0
 * SUSE_ Linux Enterprise Server 11
 
 Other Unix systems will likely work just fine.  Windows-based systems are
@@ -230,8 +224,8 @@ SUSE
     from source.  Make sure to use to ``/usr/local/bin/python2.4`` to build
     and install PIL.
 
-If you build PIL yourself, ignore warnings about TKINTER and FREETYPE2 support
-not being available.  They're not necessary.
+If you build PIL yourself, ignore warnings about TKINTER, FREETYPE2, and
+LITTLECMS support not being available.  They're not necessary.
 
 
 OpenSSL
@@ -268,9 +262,10 @@ Internet Connection
 -------------------
 
 The EDRN public portal is deployed using Buildout_.  Buildout automates the
-retrieval and compilation of the components that comprise the portal, as well
-as population of the portal's content.  Therefore, you'll need an active
-internet connection to deploy the portal.
+retrieval and compilation of the components that comprise the portal,
+configuration of those components, as well as population of the portal's
+content.  Therefore, you'll need an active internet connection to deploy the
+portal.
 
 
 Installation
@@ -286,8 +281,8 @@ In summary, the installation steps are:
 1.  Extract the archive.
 2.  Configure it.
 3.  Bootstrap it.
-4.  Test it.
-5.  Deploy it.
+4.  Deploy it.
+5.  Populate it.
 6.  Link its logrotate files.
 7.  Make it run at boot-up.
 
@@ -351,21 +346,17 @@ included that takes care of that.
 
 To bootstrap, run::
 
-    python2.4 bootstrap.py -dc test.cfg
+    python2.4 bootstrap.py -dc operations.cfg
     
 
-Testing the Portal
-------------------
+Deploying the Portal
+--------------------
 
-Testing the portal is an absolutely vital step because not only does it make
-sure the portal works, it also triggers downloading, configuration,
-compilation, and deployment of the portal's components.
+To deploy the portal, do the following:
 
-To test, follow these steps (each of which take quite some time):
+1.  Buildout the operational environment by running::
 
-1.  Buildout the test environment by running::
-
-        bin/buildout -c test.cfg
+        bin/buildout -c operations.cfg
     
     During the buildout, you may see messages similar to any of the following:
 
@@ -373,39 +364,33 @@ To test, follow these steps (each of which take quite some time):
     * Download error: unknown url type: https -- Some packages may not be found!
     * Download error: (110, 'Connection timed out') -- Some packages may not be found!
     * SyntaxError: 'return' outside function
+    * Error: only root can use -u USER to change users
 
-    These may all be ignored.  Building out the test environment can take a
-    long time.  If you're fond of coffee, you may wish to use this opportunity
-    to procure a cup.
+    These may all be ignored.  This step takes quite a bit of time; if you're
+    fond of coffee, you may wish to use this opportunity to procure a cup.
 
 2.  Execute the tests by running::
 
-        python2.4 runtests.py
-    
+        python2.4 support/runtests.py
+        
     All of the tests should pass.  The tests will write log files into the
     ``var/testlogs`` directory, if you're curious or wish to investigate any
     failures.  Executing the tests also takes a long time.  You may wish to
     find out what games are installed on your computer and explore a few.
 
+3.  Populate the EDRN Public Portal with its initial content by running::
 
-Deploying the Portal
---------------------
+        bin/buildout -c operations.cfg install edrnsite
 
-Once the portal's tested, put it into operations by following these steps:
+    This step also takes quite a bit of time; if it's close to lunch time, you
+    may wish to go out to eat at this juncture.
 
-1.  Buildout the operational environment by running::
-
-        bin/buildout -c operations.cfg
-    
-    This step takes quite a bit of time; if you enjoy food and it's around
-    lunch time, you may want to go out to eat.
-
-2.  Change ownership of the ``parts`` and ``var`` directory to the effective
+4.  Change ownership of the ``parts`` and ``var`` directory to the effective
     user ID you set in the ``operations.cfg`` file.  For example::
 
         sudo chown -R wwwrun parts var
 
-3.  Start the Supervisor as root::
+5.  Start the Supervisor as root::
 
         sudo bin/supervisord
         
@@ -418,12 +403,16 @@ Supervisor by running ``bin/supervistorctl``.
 
 All of the following processes should be listed as running:
 
-* ``balancer``.  HAProxy load balancer to the two Zope application servers.
-* ``cache``.  Varnish reverse proxy caching engine.
-* ``instance1``.  First Zope application server.
-* ``instance2``.  Second Zope application server.
-* ``main``.  Nginx front-end web server.
-* ``zeo``.  Zope Enterprise Objects database server.
+============== =========================================================
+Process ID     Description
+============== =========================================================
+``balancer``   HAProxy load balancer to the two Zope application servers
+``cache``      Varnish reverse proxy caching engine
+``instance1``  First Zope application server
+``instance2``  Second Zope application server
+``main``       Nginx front-end web server
+``zeo``        Zope Enterprise Objects database server
+============== =========================================================
 
 The portal itself should be available on both ports 80 and 443 on its main
 hostname (unless overridden in ``operations.cfg``), ie,
@@ -490,7 +479,9 @@ close its log file and start a new one:
 Starting the Portal after Reboot
 --------------------------------
 
-To ensure the EDRN public portal is always available, you should arrange to have it started at boot-up time.  How you do so depends on your operating system.  You may need to:
+To ensure the EDRN public portal is always available, you should arrange to
+have it started at boot-up time.  How you do so depends on your operating
+system.  You may need to:
 
 * Create a SysV-style init script in /etc/init.d that calls
   ``bin/supervisord`` to start and ``bin/supervisorctl shutdown`` to stop
@@ -546,5 +537,5 @@ DEV-README.txt.
     California Institute of Technology
 
 .. Copyright:
-    Copyright 2009 California Institute of Technology. ALL RIGHTS RESERVED.
+    Copyright 2010 California Institute of Technology. ALL RIGHTS RESERVED.
     U.S. Government sponsorship acknowledged.
