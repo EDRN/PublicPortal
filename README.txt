@@ -383,7 +383,12 @@ To deploy the portal, do the following:
         bin/buildout -c operations.cfg install edrnsite
 
     This step also takes quite a bit of time; if it's close to lunch time, you
-    may wish to go out to eat at this juncture.
+    may wish to go out to eat at this juncture.  At the end, you may see a
+    message like::
+
+        Error: username 'wwwrun' not found
+
+    This is normal and can be safely ignored.
 
 4.  Change ownership of the ``parts`` and ``var`` directory to the effective
     user ID you set in the ``operations.cfg`` file.  For example::
