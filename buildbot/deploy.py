@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # encoding: utf-8
-# Copyright 2009 California Institute of Technology. ALL RIGHTS
+# Copyright 2009-2010 California Institute of Technology. ALL RIGHTS
 # RESERVED. U.S. Government Sponsorship acknowledged.
 #
-# deploy the test portal to the test project site
+# Deploy the test portal to the test project site
 
 import sys, subprocess, os, os.path, shutil
 
@@ -15,7 +15,9 @@ def main(argv=None):
     basedir, executable = sys.argv[1:3]
     
     # Shut down supervisor, ignoring errors
-    subprocess.call((os.path.join(basedir, 'bin', 'supervisorctl'), 'shutdown'))
+    supervisorctl = os.path.join(basedir, 'bin', 'supervisorctl')
+    if os.path.isfile(supervisorctl):
+        subprocess.call((os.path.join(basedir, 'bin', 'supervisorctl'), 'shutdown'))
 
     # Clean out all generated files
     for f in ((os.path.join(basedir, '.installed.cfg'), os.path.join(basedir, 'var', 'known-good-versions.cfg'))):
