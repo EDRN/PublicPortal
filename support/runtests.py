@@ -12,7 +12,6 @@ _logDir = os.path.join('var', 'testlogs')
 # What packages to test. TODO: automate this list.
 _packages = [
     'edrn.theme',
-    'edrnsite.calendar',
     'edrnsite.funding',
     'edrnsite.misccontent',
     'edrnsite.policy',
