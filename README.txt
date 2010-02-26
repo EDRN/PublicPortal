@@ -107,10 +107,8 @@ We've developed and tested the portal on a variety of Unix systems, including:
 * SUSE_ Linux Enterprise Server 11
 
 Other Unix systems will likely work just fine.  Windows-based systems are
-*not* supported.  Make sure your Unix-like system can resolve hostnames,
-including its own.  The target volume will need about 700 megabytes of free
-disk space.  We recommend a full gigabyte of free space (for log file
-growth).
+*not* supported.  The target volume will need about 700 megabytes of free disk
+space.  We recommend a full gigabyte of free space (for log file growth).
 
 
 Mail Server
@@ -266,6 +264,13 @@ retrieval and compilation of the components that comprise the portal,
 configuration of those components, as well as population of the portal's
 content.  Therefore, you'll need an active internet connection to deploy the
 portal.
+
+Also, make sure your system can resolve hostnames, including its own.  That
+is, the following command should *not* produce an error::
+
+    python2.4 -c 'import socket;print socket.gethostbyname(socket.gethostname())'
+
+Instead, it should show an IP address.
 
 
 Installation
