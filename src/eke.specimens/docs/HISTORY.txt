@@ -1,9 +1,0 @@
-Changelog
-=========
-
-What follows is a history of changes from release to release.
-
-0.0.0 - Unreleased
-------------------
-
-Initial release into beta.
