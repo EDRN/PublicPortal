@@ -1,0 +1,30 @@
+EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
+
+Release Notes - Early Detection of Cancer - Version Portal 3.2.0 beta - 06/14/2010
+
+
+** Bug
+    * [CA-526] - Duplicate science-data deployed as part of portal setup
+    * [CA-536] - Portal 3 should install PIL
+    * [CA-540] - PI not showing for a site
+    * [CA-549] - Biological Specimens Link under Resources - Page doesn't exist
+    * [CA-553] - TLS certificate for EDRN LDAP expired
+    * [CA-569] - Quicklinks portlet link to Standards goes to a dir, not a wiki
+
+** Improvement
+    * [CA-522] - Remove "admin" toolbar from SuperUser LDAP group rights
+    * [CA-523] - Create search indexes
+    * [CA-541] - Add to software repository
+    * [CA-551] - Add lock icon to biomarkers and science data that are "secure" to protocol pages
+    * [CA-555] - Add large cohort links to resources page
+    * [CA-559] - The current EDRN-Wide Collaborations link downloads a protocol search html
+
+** New Feature
+    * [CA-379] - Generate email notification to DMCC when portal changes are approved at NCI
+    * [CA-566] - Refresh eCAS and BMDB RDF for GI Expert Biomarker Review
+    * [CA-570] - Create /portal3.2 alias on cancer and tumor
+    * [CA-571] - Make RDF ingest defensive against inconsistent data
+
+** Task
+    * [CA-573] - Refresh warming RDF for Portal for June 2010
+
