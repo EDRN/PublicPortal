@@ -1,5 +1,23 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
+
+Release Notes - Early Detection of Cancer - Version Portal 3.2.1 beta - 2010-06-18
+
+
+** Bug
+    * [CA-574] - PI for science dataset "Prostate pre-validation for hk2, hk4 and hk11." incorrect on portal Science Data tab
+    * [CA-575] - PI for SELDI Validation Study Phase II datasets incorrect on portal Science Data tab
+    * [CA-576] - Datasets without Protocols should not be displayed on the Science Data tab
+    * [CA-577] - Update the Sample Reference Sets page
+    * [CA-579] - Access to secure web site link goes to wrong URL
+    * [CA-582] - Publications missing authors
+
+
+
+
+
+
+
 Release Notes - Early Detection of Cancer - Version Portal 3.2.0 beta - 2010-06-14
 
 
