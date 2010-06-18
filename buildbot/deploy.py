@@ -20,10 +20,14 @@ def main(argv=None):
         subprocess.call((os.path.join(basedir, 'bin', 'supervisorctl'), 'shutdown'))
 
     # Clean out all generated files
-    for f in ((os.path.join(basedir, '.installed.cfg'), os.path.join(basedir, 'var', 'known-good-versions.cfg'))):
+    for f in (
+        os.path.join(basedir, '.installed.cfg'),
+        os.path.join(basedir, '.mr.developer.cfg'),
+        os.path.join(basedir, 'versions', 'known-good-versions.cfg'),
+    ):
         if os.path.exists(f):
             os.remove(f)
-    for dirname in ('bin', 'develop-eggs', 'fake-eggs', 'parts', 'var'):
+    for dirname in ('bin', 'develop-eggs', 'fake-eggs', 'parts', 'var', 'src'):
         shutil.rmtree(os.path.join(basedir, dirname), ignore_errors=True)
     
     # Update app server config from svn
