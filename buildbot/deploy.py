@@ -31,7 +31,7 @@ def main(argv=None):
         shutil.rmtree(os.path.join(basedir, dirname), ignore_errors=True)
     
     # Update app server config from svn
-    subprocess.call(('svn', 'up'))
+    subprocess.call(('svn', 'up', basedir))
     
     # Bootstrap
     subprocess.call((executable, os.path.join(basedir, 'bootstrap.py'), '-dc', os.path.join(basedir, 'buildbot.cfg')))
@@ -40,7 +40,7 @@ def main(argv=None):
     subprocess.call((os.path.join(basedir, 'bin', 'buildout'), '-c', os.path.join(basedir, 'buildbot.cfg')))
     
     # Check out source code from HEAD
-    subprocess.call((os.path.join(basedir, 'bin', 'develop'), 'up'))
+    subprocess.call((os.path.join(basedir, 'bin', 'develop'), 'up'), cwd=basedir)
     
     # Re-buildout with latest source
     subprocess.call((os.path.join(basedir, 'bin', 'buildout'), '-c', os.path.join(basedir, 'buildbot.cfg')))
