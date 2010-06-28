@@ -1,6 +1,23 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
 
+Release Notes - Early Detection of Cancer - Version Portal 3.2.2 beta - 2010-06-27
+
+
+
+** Improvement
+    * [CA-586] - Show alternative text (if abstract text is empty) on protocol list page
+    * [CA-589] - Indicate preferred browsers on home page
+    * [CA-599] - Change look+feel of Portal 3
+
+** New Feature
+    * [CA-580] - Block accounts with excessive authentication failures
+
+
+
+
+
+
 Release Notes - Early Detection of Cancer - Version Portal 3.2.1 beta - 2010-06-18
 
 
