@@ -39,7 +39,7 @@ the following procedure to your environment::
 
     % python2.4 -V
     2.4.x
-    % python2.4 -c 'import _imaging, profile'
+    % python2.4 -c 'import profile'
     % locate Python.h tls1.h libssl.so
     /usr/local/include/python2.4/Python.h
     /usr/include/openssl/dtls1.h
@@ -61,10 +61,11 @@ the following procedure to your environment::
     % python2.4 support/runtests.py
     Running tests in "edrn.theme" ... pass
     ...
-    % bin/buildout -c operations.cfg install edrnsite
-    % sudo chown -R www parts var
+    % sudo chown -R wwwrun parts var eggs
+    % sudo bin/buildout -c operations.cfg install edrnsite
     % sudo bin/supervisord
     % sudo ln -s bin/logrotate.conf /etc/logrotate.d/edrn-portal
+    % bin/supervisorctl status
     % curl -u supervisor-admin:password http://localhost:9001/
     ...
     % curl http://edrn.nci.nih.gov/
@@ -89,7 +90,6 @@ In summary, these requirements are:
 * Mail server (for password reminder email, newsletter email)
 * C/C++ compiler and "make" (to build additional software)
 * Python 2.4 plus development environment (Python.h headers, etc.)
-* Python Imaging Library installed in Python 2.4 environment
 * TLS/SSL certificate for HTTPS
 
 Details on each of these requirements are detailed in the subsections below.
@@ -192,38 +192,6 @@ To install the Python Profiler on Debian GNU/Linux:
 You can confirm installation by running ``python 2.4 -c 'import profile'``.
 The command should produce no output and exit successfully.  If you see an
 error message, the Python Profiler is *not* installed.
-
-    
-Python Imaging Library
-----------------------
-
-Your Python 2.4 installation must be augmented with the Python Imaging Library
-(PIL_).  PIL provides necessary features for the EDRN portal.  You can check
-for PIL by running ``python2.4 -c 'import _imaging'``.  You should see no
-output and successful exit status.  If you see an error message, you'll need
-to install PIL.
-
-You can install PIL from source. Or, see platform-specific notes below:
-
-Debian
-    Install the APT package ``python-imaging``.
-FreeBSD
-    Install ``jpeg`` and ``png`` from the ports ``graphics`` section, then
-    install PIL from source.  Make sure to use ``python2.4`` to build and
-    install PIL.
-Mac OS X
-    Install the libpng and libjpeg combo installer from
-    http://ethan.tira-thompson.org/Mac_OS_X_Ports.html.  Then, install PIL
-    from source.  Make sure to use
-    ``/Library/Frameworks/Python.framework/Version/2.4/bin/python2.4`` to
-    build and install PIL.
-SUSE
-    Use YaST2 to install ``libjpeg`` and ``libjpeg-devel``.  Then install PIL
-    from source.  Make sure to use to ``/usr/local/bin/python2.4`` to build
-    and install PIL.
-
-If you build PIL yourself, ignore warnings about TKINTER, FREETYPE2, and
-LITTLECMS support not being available.  They're not necessary.
 
 
 OpenSSL
@@ -383,22 +351,24 @@ To deploy the portal, do the following:
     failures.  Executing the tests also takes a long time.  You may wish to
     find out what games are installed on your computer and explore a few.
 
-3.  Populate the EDRN Public Portal with its initial content by running::
-
-        bin/buildout -c operations.cfg install edrnsite
-
-    This step also takes quite a bit of time; if it's close to lunch time, you
-    may wish to go out to eat at this juncture.  At the end, you may see a
-    message like::
-
-        Error: username 'wwwrun' not found
-
-    This is normal and can be safely ignored.
-
-4.  Change ownership of the ``parts`` and ``var`` directory to the effective
+3.  Change ownership of the ``parts`` and ``var`` directory to the effective
     user ID you set in the ``operations.cfg`` file.  For example::
 
-        sudo chown -R wwwrun parts var
+        sudo chown -R wwwrun parts var eggs
+
+4.  Populate the EDRN Public Portal with its initial content by running as root::
+
+        sudo bin/buildout -c operations.cfg install edrnsite
+
+    This step also takes quite a bit of time; if it's close to lunch time, you
+    may wish to go out to eat at this juncture.  During this, you may see various
+    messages like::
+
+        WARNING ZODB.blob (29736) Blob dir ... has insecure mode setting
+        WARNING SecurityInfo Conflicting security declarations for ...
+        WARNING SecurityInfo Class "..." had conflicting security declarations
+
+    Amongst others.  These are normal and can be safely ignored.
 
 5.  Start the Supervisor as root::
 
