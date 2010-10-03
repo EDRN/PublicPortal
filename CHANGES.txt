@@ -1,6 +1,44 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
 
+Release Notes - Early Detection of Cancer - Version Portal 3.3.0 beta - 2010-10-03
+
+
+** Bug
+    * [CA-543] - Link to old DMCC-generated page still exists
+    * [CA-567] - Datasets in eCAS not matching datasets showing on the Science Data tab in the portal
+    * [CA-587] - Broken link on EDRN Bookshelf
+    * [CA-590] - Broken link on "Review of Barrett's Esophagus Methylation Profiles"
+    * [CA-595] - 404 Not Founds on BRL, CEVC, and BDL pages
+    * [CA-615] - eCAS banner seems to wrap text after clicking on the login link
+    * [CA-616] - Fix JPL Informatics Center Link
+    * [CA-617] - When clicking on CARET related resource in the Biomarker/Organ for 14-3-3 theta asked to login
+    * [CA-618] - Abbr. Overlaps for Sites in Safari Browser (not in Firefox)
+    * [CA-619] - Search on "SELDI" does not return SELDI eCAS datasets
+    * [CA-640] - Automatic ingest isn't setting publication states
+
+** Improvement
+    * [CA-515] - Bioinformatics Standards Page
+    * [CA-530] - Prostate Reference Set description missing from Portal 3.0
+    * [CA-531] - Remove Alternate Names from Biomarker Basic Tab
+    * [CA-603] - Latest demo portal URL changes
+    * [CA-604] - Add PI to Protocol List
+    * [CA-605] - Find a sponsor link goes to "old" EDRN pages
+    * [CA-608] - Collapse Type Cs - Non Funded Former PI and Type C1 - Non Funded Applicant into one header called Type C and place it after Type B2
+    * [CA-609] - Do not show "Unknown Type" from Sites List and notify DMCC
+    * [CA-610] - Sort Other Misc. Sites within the grouped Site Type - alpha by Site Name 
+    * [CA-611] - Remove a few EDRN Sites that should not be showing (in DMCC RDF)
+    * [CA-612] - As breadcrumbs start to get longer they overlap the search box
+    * [CA-613] - Mailing Address missing for Sites
+    * [CA-644] - Email notification should go out solely when NCI staffer makes changes
+    * [CA-650] - Modify "Lock" Icon on Biomarker Tab
+
+** New Feature
+    * [CA-439] - Biomarker Review check List - Phase I
+    * [CA-528] - Automatic periodic ingest of RDF
+    * [CA-623] - Password reset via Portal
+
+
 Release Notes - Early Detection of Cancer - Version Portal 3.2.2 beta - 2010-06-27
 
 
