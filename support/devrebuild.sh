@@ -19,8 +19,22 @@ This will shutdown the supervisord; wipe out the database, log files, etc.;
 rebuild the instance; and repopulate the site content.  It'll then start the
 supervisord.  You have 5 seconds to abort.
 EOF
+
 sleep 5
-[ -x bin/supervisorctl ] && echo 'Shutting down supervisor...' && bin/supervisorctl shutdown
+numZeos=0
+[ -x bin/supervisorctl ] && echo 'Shutting down supervisor...' && bin/supervisorctl shutdown && sleep 3
+
+numZeos=`ps auxww | egrep -c '[z]eoserver'`
+if [ $numZeos -ge 1 ]; then
+    cat <<EOF
+Warning: There are still zeoserver processes still running on this host even
+after shutting down the supervisor.  They may conflict with populating the
+site's content, or they may be unrelated to this buildout.  Regardless, I'll
+continue in 10 seconds.
+EOF
+    echo 'Number of zeoservers found: ' $numZeos
+    sleep 10
+fi
 set -e
 [ -d var ] && echo 'Nuking var directory...\c' && rm -r var && echo done
 echo 'Nuking select parts...' && rm -rf parts/zeoserver parts/instance-debug
