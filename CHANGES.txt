@@ -1,6 +1,31 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
 
+
+Release Notes - Early Detection of Cancer - Version Portal 3.4.0 beta - 2010-10-21
+
+
+** Bug
+    * [CA-649] - Automatic ingest is not updating publication state
+    * [CA-662] - Remove "Potential Link Breakage" message from automatic ingest
+    * [CA-672] - Login link and portal user info are not aligned with the rest of the site
+
+** Improvement
+    * [CA-642] - Create a new members page
+    * [CA-657] - Add "Clinical Validation Center" as one of the anointed, special sites
+    * [CA-659] - Add "IDs" to Portal
+    * [CA-666] - Sites Page clean up
+    * [CA-670] - Collapse all Type C's and Type B's EDRN Sites into a single Type C and Type B section respectively
+    * [CA-674] - Add PerformanceComment to the biomarker organ tab
+    * [CA-675] - Portal: Change name of sensitivity/specificity and add specific assay type attribute
+    * [CA-676] - Portal: Add decision rule attribute to biomarker-organ-study information
+
+
+
+
+
+
+
 Release Notes - Early Detection of Cancer - Version Portal 3.3.0 beta - 2010-10-03
 
 
