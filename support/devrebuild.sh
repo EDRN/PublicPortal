@@ -2,6 +2,9 @@
 #
 # Rebuild from scratch, for developers.
 
+snapshot=snapshot-20101006
+snapshotURL=http://cancer.jpl.nasa.gov/static/edrn-portal-snapshots/${snapshot}.tar.bz2
+
 if [ $# -ne 0 ]; then
     echo Usage: `basename $0` 1>&2
     echo "(This program takes no arguments.)" 1>&2
@@ -15,9 +18,8 @@ if [ ! -f base.cfg -o ! -f build.cfg -o ! -f dev.cfg ]; then
     exit 1
 fi
 cat <<EOF
-This will shutdown the supervisord; wipe out the database, log files, etc.;
-rebuild the instance; and repopulate the site content.  It'll then start the
-supervisord.  You have 5 seconds to abort.
+This will shutdown the supervisord; wipe out the database, log files, etc.; copy an existing database from a snapshot backup from the operational site  It'll then start
+the supervisord.  You have 5 seconds to abort.
 EOF
 
 sleep 5
@@ -35,10 +37,30 @@ EOF
     echo 'Number of zeoservers found: ' $numZeos
     sleep 10
 fi
-set -e
-[ -d var ] && echo 'Nuking var directory...\c' && rm -r var && echo done
-echo 'Nuking select parts...' && rm -rf parts/zeoserver parts/instance-debug
+[ -d var ] && echo 'Nuking database and logs...\c' && rm -rf var/blobstorage var/filestorage var/log && echo done
+echo 'Nuking select parts...\c' && rm -rf parts/zeoserver parts/instance-debug && echo done
 echo 'Remaking select parts...' && bin/buildout -c dev.cfg install zeoserver instance-debug
-echo 'Populating content...' && bin/buildout -c dev.cfg install edrnsite
-echo 'Starting supervisor...\c' && bin/supervisord
+if [ \! -d "var/$snapshot" ]; then
+    echo "Downloading $snapshot..."
+    curl -L "$snapshotURL" | tar -C var -xjf -
+fi
+echo 'Extracting operations database...' && bin/repozo -v -R -r var/$snapshot -o var/filestorage/Data.fs
+echo 'Starting supervisor...' && bin/supervisord && sleep 3
+zeoRunning=`bin/supervisorctl status zeo | egrep -c RUNNING`
+if [ $zeoRunning -ne 1 ]; then
+    echo "The supervisor failed to start the zeo database server. I'm stuck." 1>&2
+    echo "Try running bin/supervisorctl and see if you can figure out why it's broken." 1>&2
+    exit 1
+fi
+echo 'Adding an admin user (with password "admin")...'
+bin/instance-debug adduser admin admin 2>/dev/null
+if [ $# -ne 0 ]; then
+    cat 1>&2 <<EOF
+Failed to add a new admin user. I'm stuck. Try running 
+    bin/instance-debug adduser admin admin
+yourself and figure out what went wrong.
+EOF
+    exit 1
+fi
+echo 'Upgrading portal to current version...' && bin/buildout -c dev.cfg install edrnsite
 exit 0
