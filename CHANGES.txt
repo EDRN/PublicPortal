@@ -2,6 +2,21 @@ EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
 
 
+Release Notes - Early Detection of Cancer - Version Portal 3.5.0 beta - 2010-11-10
+
+
+** Bug
+    * [CA-683] - Counts are off on specimen search
+    * [CA-684] - Breadcrumb links are not correct on specimen search tab
+    * [CA-685] - Specimen Tab search results returns records for the same search summary more than one time (should be grouped together)
+
+** Improvement
+    * [CA-667] - Reorganize BDLs and CVCs
+
+
+
+
+
 Release Notes - Early Detection of Cancer - Version Portal 3.4.0 beta - 2010-10-21
 
 
