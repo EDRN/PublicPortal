@@ -18,8 +18,9 @@ if [ ! -f base.cfg -o ! -f build.cfg -o ! -f dev.cfg ]; then
     exit 1
 fi
 cat <<EOF
-This will shutdown the supervisord; wipe out the database, log files, etc.; copy an existing database from a snapshot backup from the operational site  It'll then start
-the supervisord.  You have 5 seconds to abort.
+This will shutdown the supervisord; wipe out the database, log files, etc.;
+copy an existing database from a snapshot backup from the operational site
+It'll then start the supervisord.  You have 5 seconds to abort.
 EOF
 
 sleep 5
@@ -62,5 +63,5 @@ yourself and figure out what went wrong.
 EOF
     exit 1
 fi
-echo 'Upgrading portal to current version...' && bin/buildout -c dev.cfg install edrnsite
+echo 'Upgrading portal to current version...' && bin/instance-debug run support/upgrade.py
 exit 0
