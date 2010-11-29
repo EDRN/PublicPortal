@@ -50,7 +50,7 @@ http {
         }
         rewrite ^/login_(.*) https://${hosts:main}:${ports:ssl}/login_$1 permanent;
 
-        # Show status information on /_main-status
+        # Show status information on /_main_status_
         location = /_main_status_ {
             stub_status on;
             allow 127.0.0.1;
@@ -84,6 +84,14 @@ http {
             proxy_pass http://zope;
             proxy_connect_timeout 75;
             proxy_read_timeout 185;
+        }
+        
+        # Serve up snapshots
+        location /snapshots {
+            alias ${buildout:directory}/var/snapshotbackups;
+            autoindex on;
+            auth_basic "Database Snapshots";
+            auth_basic_user_file ${buildout:directory}/operations/snapshots.cfg;
         }
     }
 }
