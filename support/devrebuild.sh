@@ -2,7 +2,7 @@
 #
 # Rebuild from scratch, for developers.
 
-snapshot=snapshot-20101006
+snapshot=snapshot-20101123
 snapshotURL=http://cancer.jpl.nasa.gov/static/edrn-portal-snapshots/${snapshot}.tar.bz2
 
 if [ $# -ne 0 ]; then
