@@ -53,5 +53,6 @@ def main(app, siteID, adminUser, policy):
     return True
 
 if __name__ == '__main__':
-    rc = main(app, _siteID, _adminUser, _policy) # ``app`` comes from ``instance run`` magic.
+    adminUser = len(sys.argv) == 2 and sys.argv[1] or _adminUser
+    rc = main(app, _siteID, adminUser, _policy) # ``app`` comes from ``instance run`` magic.
     sys.exit(rc and 0 or -1)
