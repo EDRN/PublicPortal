@@ -1,6 +1,31 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
 
+Release Notes - Early Detection of Cancer - Version Portal 3.6.0 beta - 2010-12-01
+
+
+** Bug
+    * [CA-529] - Remove "Valid XHTML" and "Valid CSS" links
+    * [CA-584] - Live editing of a protocol causes error
+    * [CA-620] - Locks appear on biomarkers listed under a protocol incorrectly
+    * [CA-694] - Members List - Associate Members A showing 0 members
+    * [CA-698] - "Structural"  objects appear in searches
+
+** Improvement
+    * [CA-583] - Add pdfs to Protocols (from DMCC)
+    * [CA-680] - Change Clinical Validation Center to Clinical Validation Centers (plural)
+    * [CA-681] - Fix the word staffers to say just staff
+    * [CA-691] - Allow BDLs to have multiple Organ Sites
+    * [CA-692] - Modify top Portlet on left side to link to EDRN Secure Site
+    * [CA-693] - Members List - Collapse all Associate Members Bs and Cs into single B and C groups
+    * [CA-695] - Add Informatics Center to list of anointed sites
+    * [CA-697] - Change Member Type Header SPORE to SPOREs on Sites and Member List
+
+
+
+
+
+
 
 Release Notes - Early Detection of Cancer - Version Portal 3.5.0 beta - 2010-11-10
 
