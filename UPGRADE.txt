@@ -1,0 +1,10 @@
+
+cd $install
+Make db backup dir: mkdir var/snapshots
+Back up database: bin/repozo -B -v -r var/snapshots -f var/filestorage/Data.fs -F -z 
+Back up version config: cp versions/edrn-public-portal.cfg versions/edrn-public-portal-3.2.2.cfg
+Shut down: bin/supervisorctl shutdown
+Update version config: vi versions/edrn-public-portal.cfg
+Buildout: bin/buildout -c operations.cfg
+Run tests: python2.4 support/runtests.py
+Start: sudo bin/supervisord
