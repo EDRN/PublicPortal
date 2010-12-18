@@ -554,7 +554,7 @@ If your operating system provides /etc/cron.daily, /etc/cron.weekly, and
     (substituting the appropriate value for $PARENT_DIR)::
 
         #!/bin/sh
-        day=`/bin/date '+%w`
+        day=`/bin/date '+%w'`
         case $day in
         0) $PARENT_DIR/edrn.nci.nih.gov/bin/snapshotbackup ;;
         5) $PARENT_DIR/edrn.nci.nih.gov/bin/supervisorctl restart instance2 ;;
