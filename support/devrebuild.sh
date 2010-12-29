@@ -20,6 +20,7 @@ fi
 cat <<EOF
 This will shutdown the supervisord; wipe out the database, log files, etc.;
 copy an existing database from a snapshot backup from the operational site
+and then upgrade that database to the software in this directory tree.
 It'll then start the supervisord.  You have 5 seconds to abort.
 EOF
 
