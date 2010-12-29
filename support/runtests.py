@@ -4,26 +4,10 @@
 #
 # Run EDRN Public Portal tests
 
-import subprocess, os, os.path, sys
+import subprocess, os, os.path, sys, ConfigParser
 
 _executable = os.path.join('bin', 'instance-debug')
 _logDir = os.path.join('var', 'testlogs')
-
-# What packages to test. TODO: automate this list.
-_packages = [
-    'edrn.theme',
-    'edrnsite.funding',
-    'edrnsite.misccontent',
-    'edrnsite.policy',
-    'edrnsite.portlets',
-    'edrnsite.search',
-    'eke.biomarker',
-    'eke.ecas',
-    'eke.knowledge',
-    'eke.publications',
-    'eke.site',
-    'eke.study',
-]
 
 def forciblyClose(f):
     '''Force file-like object ``f`` to close, ignoring any failure of if it's None.'''
@@ -54,7 +38,9 @@ def main():
     if not os.path.isdir(_logDir):
         os.makedirs(_logDir)
     success = True
-    for package in _packages:
+    parser = ConfigParser.SafeConfigParser()
+    parser.read(['sources.cfg'])
+    for package in [i[0] for i in parser.items('sources')]:
         sys.stderr.write('Running tests in "%s" ... ' % package)
         sys.stderr.flush()
         rc = runTests(package)
