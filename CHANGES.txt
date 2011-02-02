@@ -1,6 +1,32 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
 
+Release Notes - Early Detection of Cancer - Version Portal 3.7.0 beta - 2011-02-01
+
+
+** Bug
+    * [CA-591] - Broken links on Committees pages
+    * [CA-632] - Portal 3 leaks memory?
+    * [CA-725] - Vocabularies eke.site.People and eke.site.PeopleWithNoReference are context-dependent
+    * [CA-726] - Google verification now requires specific page content
+    * [CA-733] - Ingest of science data should treat custodian field as plain text, not marked up HTML
+
+** Improvement
+    * [CA-654] - Modify "Lock" Icon on Science Data Tab
+    * [CA-718] - Replace manually maintained committee information with RDF ingest
+    * [CA-728] - Remove "Other Misc. Sites" category from Sites and show each category in list at top of page
+    * [CA-729] - Change the color of the hyperlinks on the Public Portal
+
+** New Feature
+    * [CA-664] - Snapshots, archives, and backups
+
+** Task
+    * [CA-687] - Add and prove portal installation on RHEL 5
+
+
+
+
+
 Release Notes - Early Detection of Cancer - Version Portal 3.6.0 beta - 2010-12-01
 
 
