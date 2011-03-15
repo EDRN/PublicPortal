@@ -38,7 +38,8 @@ Application server user name and password
     password.  Call these the $ZOPE_USER and $ZOPE_PASSWORD.  If you re-use
     the same $ZOPE_USER as on $OLD_HOST, you'll need to use the *exact same*
     $ZOPE_PASSWORD from $OLD_HOST.  Otherwise, pick a fresh username *and*
-    password.
+    password.  *Warning*: keep the combined length of the $ZOPE_USER and
+    $ZOPE_PASSWORD under 50 characters or so!
 Supervisor user name and password
     The EDRN site consists of several interconnected processes, all of which
     are managed by the Supervisor_.  The Supervisor has its own administrative
