@@ -1,6 +1,18 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
 
+
+Release Notes - Early Detection of Cancer - Version Portal 4.0.0 beta - 2011-04-13
+
+** Improvement
+    * [CA-597] - Add clock event to update sign-in secret
+    * [CA-742] - Apply fix for CVE-2011-0720
+    * [CA-743] - Disable Google Analytics
+    * [CA-748] - Add link for new users to request access to login
+
+
+
+
 Release Notes - Early Detection of Cancer - Version Portal 3.7.0 beta - 2011-02-01
 
 
