@@ -40,8 +40,9 @@ def main(app, siteID, adminUser, policy):
     # purge thread isn't a daemon thread (it probably should be).  Since it's not a daemon,
     # we won't ever terminate.
     cacheTool = getToolByName(portal, 'portal_cache_settings')
-    cacheTool.setEnabled(False)
-    cacheTool.setDomains([])
+    if cacheTool:
+        if hasattr(cacheTool, 'setEnabled'): cacheTool.setEnabled(False)
+        if hasattr(cacheTool, 'setDomains'): cacheTool.setDomains([])
 
     # Upgrade the portal.
     qi = getToolByName(portal, 'portal_quickinstaller')
