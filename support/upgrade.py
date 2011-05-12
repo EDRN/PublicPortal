@@ -39,7 +39,7 @@ def main(app, siteID, adminUser, policy):
     # Disable CacheFu.  If we don't, the CMF Squid Tool will start a purge thread, and that
     # purge thread isn't a daemon thread (it probably should be).  Since it's not a daemon,
     # we won't ever terminate.
-    cacheTool = getToolByName(portal, 'portal_cache_settings')
+    cacheTool = getToolByName(portal, 'portal_cache_settings', None)
     if cacheTool:
         if hasattr(cacheTool, 'setEnabled'): cacheTool.setEnabled(False)
         if hasattr(cacheTool, 'setDomains'): cacheTool.setDomains([])
