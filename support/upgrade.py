@@ -44,7 +44,11 @@ def main(app, siteID, adminUser, policy):
         if hasattr(cacheTool, 'setEnabled'): cacheTool.setEnabled(False)
         if hasattr(cacheTool, 'setDomains'): cacheTool.setDomains([])
 
-    # Upgrade the portal.
+    # Upgrade Plone
+    migrationTool = getToolByName(portal, 'portal_migration')
+    migrationTool.upgrade(dry_run=False)
+
+    # Upgrade the EDRN site
     qi = getToolByName(portal, 'portal_quickinstaller')
     qi.upgradeProduct('edrnsite.policy')
 
