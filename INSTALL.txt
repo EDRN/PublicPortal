@@ -39,7 +39,7 @@ Application server user name and password
     the same $ZOPE_USER as on $OLD_HOST, you'll need to use the *exact same*
     $ZOPE_PASSWORD from $OLD_HOST.  Otherwise, pick a fresh username *and*
     password.  *Warning*: keep the combined length of the $ZOPE_USER and
-    $ZOPE_PASSWORD under 50 characters or so!
+    $ZOPE_PASSWORD under 50 characters or so, and use *no* colons in either!
 Supervisor user name and password
     The EDRN site consists of several interconnected processes, all of which
     are managed by the Supervisor_.  The Supervisor has its own administrative
@@ -60,7 +60,7 @@ Finally, the new host must satisfy the following prerequisites:
 * Run (or have access to) an SMTP server (for password reminder email,
   newsletter email, other notices)
 * C/C++ compiler and "make" (to build additional software)
-* Python 2.4 plus development environment (Python.h headers, etc.)
+* Python 2.6 plus development environment (Python.h headers, etc.)
 * JPEG 6B development libraries
 * OpenSSL development libraries
 * wvWare tools
@@ -78,7 +78,7 @@ We've developed and tested the site on a variety of Unix systems, including:
 
 * Red Hat Enterprise Linux (RHEL_) for Servers 5
 * `Mac OS X`_ 10.6 "Snow Leopard", with the Xcode_ software development kit
-* Debian_ GNU/Linux 5.0 "Lenny"
+* Debian_ GNU/Linux 6.0 "Squeeze"
 * FreeBSD_ 8.0
 * SUSE_ Linux Enterprise Server 11
 
@@ -91,11 +91,11 @@ growth).
 Mail Server
 -----------
 
-The EDRN site will need to send email messages (for password reminders and
-other administrivia).  As a result, please ensure the target system runs an
-SMTP server, such as Postfix_, or can access an SMTP server on a nearby host.
-The site is capable of accessing SMTP servers that require user names and
-passwords (see post-deployment configuration below).
+The EDRN site will need to send email messages (for password reset messages,
+newsletters, and other administrivia).  As a result, please ensure the target
+system runs an SMTP server, such as Postfix_, or can access an SMTP server on
+a nearby host.  The site is capable of accessing SMTP servers that require
+user names and passwords (see post-deployment configuration below).
 
 
 C/C++ Compilers and Make
@@ -107,47 +107,45 @@ make sure a C/C++ compiler (such as GCC_) as well as the ``make`` utility are
 available.  You usually do so by installing "Development Libraries" and/or
 "Development Tools" packages specific for your operating system.
 
-*Important note for FreeBSD Users*: one component of the EDRN site requires
-the `GNU Make`_ utility.  It won't work with the system's default BSD make.
-Install GNU Make from the ports ``devel`` collection, link
-``/usr/local/bin/gmake`` to ``/usr/local/bin/make``, and ensure
-``/usr/local/bin`` appears before ``/usr/bin`` in your execution path.
-
 
 Python
 ------
 
 The EDRN site is written in the Python_ programming language and, at this
-time, requires version 2.4 of Python.  Later versions, such as 2.5, 2.6, 2.7,
-3.0, 3.1, etc., will *not* work.  Some operating systems provide a Python
-runtime environment only.  You will need *both* the runtime *and* the
-development installation of Python.
+time, requires version 2.6 of Python.  Later versions, such as 2.7, 3.0, 3.1,
+etc., will *not* work.  Some operating systems provide a Python runtime
+environment only.  You will need *both* the runtime *and* the development
+installation of Python.
 
-To see if you have the runtime, run ``python2.4 -V``.  You should see output
-similar to ``Python 2.4.3``.  To see if you have the development environment,
-check for the file ``python2.4/Python.h``.
+To see if you have the runtime, run ``python2.6 -V``.  You should see output
+similar to ``Python 2.6.6``.  To see if you have the development environment,
+check for the file ``python2.6/Python.h``.
 
-You may build and install Python 2.4 from the `Python source`_, or consult the
+You may build and install Python 2.6 from the `Python source`_, or consult the
 following list for platform-specific versions of Python:
 
 RHEL
     Using the Pirut Package Manager, install the Development Libraries and
     Development Tools packages.
 Debian
-    Install both APT_ packages ``python2.4`` and ``python2.4-dev`` using
+    Install both APT_ packages ``python2.6`` and ``python2.6-dev`` using
     ``apt-get install``, ``aptitude`` or similar utility.  See the special
     subsection on Debian GNU/Linux below.
 FreeBSD
-    Install ``python24`` from the ports ``lang`` section, enabling the
+    Install ``python26`` from the ports ``lang`` section, enabling the
     HUGE_STACK_SIZE option.
 Mac OS X
-    Install Python 2.4 by using ``svn`` to export the repository
+    Install Python 2.6 by using ``svn`` to export the repository
     http://svn.plone.org/svn/collective/buildout/python and follow the
     instructions in the README.txt.
 SUSE
     First install ``zlib-devel``, ``readline-devel``, and ``libbz2-devel``.
     Then compile from `Python source`_.  Recommended configuration options are
     ``--enable-ipv6`` and ``--enable-shared``.
+
+You may want to use a virtualenv_, especially on a host where the system
+Python may be shared with other projects or may be corrupted from earlier
+site-specific package installations.
     
 
 Special Note on Debian GNU/Linux
@@ -171,7 +169,7 @@ To install the Python Profiler on Debian GNU/Linux:
 
 3.  Run ``apt-get install python-profiler`` as root.
 
-You can confirm installation by running ``python2.4 -c 'import profile'``.
+You can confirm installation by running ``python2.6 -c 'import profile'``.
 The command should produce no output and exit successfully.  If you see an
 error message, the Python Profiler is *not* installed.
 
@@ -232,13 +230,33 @@ FreeBSD
 PDF-to-HTML
 -----------
 
-The EDRN site can index Microsoft Word documents (popular amongst cancer
-researchers) so long as the ``pdftohtml`` utility is available.
+The EDRN site can index PDF documents so long as the ``pdftohtml`` utility is
+available.
 
 RHEL, Debian, and SUSE
     Install the ``poppler-utils`` package.
 FreeBSD
     Install the ``pdftohtml`` package from the ``textproc`` ports collection.
+
+
+SASL
+----
+
+EDRN uses LDAP, although it does not use SASL with LDAP at all.  However, the
+Python LDAP library absolutely requires SASL to build.  Therefore, you'll need
+to install the Cyrus SASL development API.
+
+Debian
+    Install the ``libsasl2-dev`` package.
+
+
+Compression APIs
+----------------
+
+EDRN uses zlib and bzip2 compression.  These libraries are usually
+pre-installed on virtually every system these days.  However, if either are
+missing on yours, do go ahead and install them, and ensure the developer API
+(include files) are available as well.
 
 
 Internet Connection
@@ -252,7 +270,7 @@ deploy the site.
 Also, make sure your system can resolve hostnames, including its own.  That
 is, the following command should *not* produce an error::
 
-    python2.4 -c 'import socket;print socket.gethostbyname(socket.gethostname())'
+    python2.6 -c 'import socket;print socket.gethostbyname(socket.gethostname())'
 
 Instead, it should show a non-localhost IP address.
 
@@ -267,9 +285,10 @@ To install EDRN site, perform the following steps:
 2.  Build the EDRN site software.
 3.  Upgrade the database.
 4.  Start the new site.
-5.  Take care of any post-deployment configuration.
-6.  Hook the new site into the operating system's services.
-7.  Update the DNS CNAME of "edrn.nci.nih.gov" from $OLD_HOST to $NEW_HOST.
+5.  Configure the front end web server to proxy to the site.
+6.  Take care of any post-deployment configuration.
+7.  Hook the new site into the operating system's services.
+8.  Update the DNS CNAME of "edrn.nci.nih.gov" from $OLD_HOST to $NEW_HOST.
 
 The rest of this document details the above steps.
 
@@ -301,8 +320,7 @@ Building the EDRN site software is straightforward:
 
 1.  Extract the archive.
 2.  Configure it by editing the operations.cfg file.
-3.  Install the TLS/SSL certificate.
-4.  Bootstrap, build, and test.
+3.  Bootstrap, build, and test.
 
 The subsections below detail each step.  You'll need root privileges.
 
@@ -333,30 +351,8 @@ following adjustments as needed:
 1.  In the [instance-settings] section, set the $ZOPE_USER and $ZOPE_PASSWORD.
 2.  In the [supervisor-settings] section, set the $SUPER_USER and
     $SUPER_PASSWORD.
-3.  If the final web address of the EDRN site is for some reason *not* going
-    to be http://edrn.nci.nih.gov/, set the hostname to $ADDRESS in the
-    [hosts] section.
-4.  In the [users] section, set the effective user ID to $USER.  *Important*:
+3.  In the [users] section, set the effective user ID to $USER.  *Important*:
     ensure a group of the same name as $USER exists!
-5.  Adjust the ``cpu`` and ``target`` settings in the [build] section.
-
-
-Installing the Encryption Certificate
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The EDRN site provides access to information not available to the general
-public when researchers log in using their EDRN usernames and passwords.  To
-protect that access, the site uses HTTPS, and therefore needs an encryption
-certificate.
-
-The certificate should be signed for common name "edrn.nci.nih.gov" (or
-whatever the $ADDRESS hostname is set to in the [hosts] section of the
-operations.cfg file).
-
-Place a copy of the public key in PEM format in the ``etc`` subdirectory and
-name it ``server.crt``.  Place the private key (also in PEM format) in the
-same directory in a file named ``server.key``.  For convenience, remove any
-passphrase from the private key.
 
 
 Bootstrapping, Building, and Testing
@@ -364,9 +360,9 @@ Bootstrapping, Building, and Testing
 
 To bootstrap, build, and test the EDRN site, do the following:
 
-1.  Run: ``python2.4 bootstrap.py -dc operations.cfg``
+1.  Run: ``python2.6 bootstrap.py -dc operations.cfg``
 2.  Run: ``bin/buildout -c operations.cfg``
-3.  Run: ``python2.4 support/runtests.py``
+3.  Run: ``python2.6 support/runtests.py``
 
 Building and running the tests can take quite a bit of time (over 30 minutes).
 Coffee aficionados will likely take this opportunity to procure a cup.  During
@@ -425,18 +421,11 @@ All of the following processes should be listed as running:
 ============== =========================================================
 Process ID     Description
 ============== =========================================================
-``balancer``   HAProxy load balancer to the two Zope application servers
 ``cache``      Varnish reverse proxy caching engine
 ``instance1``  First Zope application server
 ``instance2``  Second Zope application server
-``main``       Nginx front-end web server
 ``zeo``        Zope Enterprise Objects database server
 ============== =========================================================
-
-The site itself should be available on both ports 80 and 443 on its main
-hostname (unless overridden in ``operations.cfg``), i.e.,
-http://edrn.nci.nih.gov/ and https://edrn.nci.nih.gov/.  If you get an error
-503, just wait a few minutes and try again.
 
 If you need to re-do any of the installation steps, you can shutdown the
 Supervisor and all of its processes by running::
@@ -446,6 +435,63 @@ Supervisor and all of its processes by running::
 The ``supervisorctl`` command provides additional commands; run it with
 ``help`` as an argument for more, or give it no arguments to enter an
 interactive command-line mode.
+
+You can check that the site is active by fetching the following URLs:
+
+* http://localhost:8301/edrn (via the Varnish cache)
+* http://localhost:8401/edrn (via the first Zope app server)
+* http://localhost:8402/edrn (via the second Zope app server)
+
+You should get an identical web page from all three URLs.
+
+
+Connecting the Front End Web Server
+-----------------------------------
+
+Previous versions of this software included Nginx pre-configured for EDRN and
+serving ports 80 (HTTP) and 443 (HTTPS).  In practice, we found that NCI
+preferred to maintain their own front-end web server (Apache HTTPD).
+Therefore, you will need to manually configure your front-end web-server to
+reverse-proxy to the Varnish Cache and Zope application servers that support
+the EDRN web site.
+
+How you do so depends on the front-end web server and its local configuration.
+
+In general, you'll need to set it up as follows:
+
+* Provide an appropriate SSL/TLS certificate for server name
+  edrn.nci.nih.gov.
+* Listen on ports 80 and 443.
+* Support virtual hosting on both ports for the host name edrn.nci.nih.gov.
+* If there is an __ac cookie present on port 80, redirect the request to
+  https://edrn.nci.nih.gov.
+* If, on port 80, the query part of the request contains "came_from=http",
+  and the request URI contains "require_login" or "login_form", redirect the
+  request to https://edrn.nci.nih.gov plus request URI, plus the query
+  string, with "http" rewritten as "https".
+* If, on port 80, the request URI contains "login_", redirect the request to
+  https://edrn.nci.nih.gov plus the request URI.
+* Otherwise, on port 80, reverse proxy to
+  http://127.0.0.1:8301/VirtualHostBase/http/edrn.nci.nih.gov:80/edrn/VirtualHostRoot
+  plus the request URI.
+* If, on port 443, the request URI ends with "logged_out", redirect the
+  request to http://edrn.nci.nih.gov plus the request URI.
+* If, on port 443, the request does not contain any __ac cookie, redirect
+  the request to http://edrn.nci.nih.gov.
+* If the request URI does not begin with "/snapshots" or "/filestorage",
+  reverse proxy to
+  http://127.0.0.1:8403/VirtualHostBase/https/edrn.nci.nih.gov:443/edrn/VirtualHostRoot
+  plus the request URI.
+* For the directory $INSTALL_DIR/var/snapshotbackups, set up HTTP Basic
+  Authentication with a user file in $INSTALL_DIR/etc/snapshots.cfg and require
+  a valid user to access it, and allow directory indexes.  Enable /snapshots
+  to alias to that directory.
+* Repeat #11 for the directory $INSTALL_DIR/var/filestorage and enable
+  /filestorage to alias to that directory.
+
+A sample Apache HTTPD fragment that accomplishes the above is generated in
+$INSTALL_DIR/ops/apache-httpd.conf.  It may require some minimal updating to
+work in the target environment.
 
 
 Post-Deployment Configuration
@@ -629,6 +675,7 @@ http://cancer.jpl.nasa.gov/contact-info.
 .. _SUSE: http://www.novell.com/linux/
 .. _Xcode: http://developer.apple.com/technologies/tools/xcode.html
 .. _Zope: http://zope2.zope.org/
+.. _virtualenv: http://www.virtualenv.org/
 .. _`GNU Make`: http://www.gnu.org/software/make/
 .. _`Mac OS X`: http://www.apple.com/macosx/
 .. _`Python Source`: http://python.org/download/releases/2.4.6
