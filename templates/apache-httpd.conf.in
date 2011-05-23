@@ -30,7 +30,7 @@
     RewriteCond %{QUERY_STRING} came_from=http(.*)
     RewriteRule ^/(.*)(require_login|login_form)$ https://PUBLIC-VHOST-HERE/$1$2?came_from=https%1 [NE,L]
     RewriteRule ^/(.*)login_(.*) https://PUBLIC-VHOST-HERE/$1login_$2 [NE,L,R=301]
-    RewriteRule ^(.*) http://127.0.0.1:8101/VirtualHostBase/http/PUBLIC-VHOST-HERE:80/edrn/VirtualHostRoot$1 [L,P]
+    RewriteRule ^(.*) http://${hosts:cache}:${ports:cache}/VirtualHostBase/http/PUBLIC-VHOST-HERE:80/edrn/VirtualHostRoot$1 [L,P]
 </VirtualHost>
 <VirtualHost ${:local-ip}:443>
     ServerName PUBLIC-VHOST-HERE
@@ -51,7 +51,7 @@
     RewriteRule ^/(.*) http://PUBLIC-VHOST-HERE/$1 [NE,L,R=301]
     RewriteCond %{REQUEST_URI} !/snapshots(.*)
     RewriteCond %{REQUEST_URI} !/filestorage(.*)
-    RewriteRule ^(.*) http://127.0.0.1:8401/VirtualHostBase/https/PUBLIC-VHOST-HERE:443/edrn/VirtualHostRoot$1 [L,P]
+    RewriteRule ^(.*) http://${hosts:instance1}:${ports:instance1}/VirtualHostBase/https/PUBLIC-VHOST-HERE:443/edrn/VirtualHostRoot$1 [L,P]
     <Directory ${buildout:directory}/var/snapshotbackups>
         AuthType basic
         AuthName "Database Snapshots"
