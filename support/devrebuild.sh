@@ -2,26 +2,35 @@
 #
 # Rebuild from scratch, for developers.
 
-snapshot=snapshot-20101123
-snapshotURL=http://cancer.jpl.nasa.gov/static/edrn-portal-snapshots/${snapshot}.tar.bz2
-
 if [ $# -ne 0 ]; then
     echo Usage: `basename $0` 1>&2
     echo "(This program takes no arguments.)" 1>&2
     exit 1
 fi
 
-if [ ! -f base.cfg -o ! -f build.cfg -o ! -f dev.cfg ]; then
-    echo Run this from the buildout directory. 1>&2
-    echo There should be base.cfg, build.cfg, dev.cfg files 1>&2 
-    echo "(as well as any/many buildout-generated artifacts)." 1>&2
+if [ ! -f bootstrap.py -o ! -f dev.cfg -o ! -d etc ]; then
+    echo "Run this from the buildout directory." 1>&2
+    echo "There should be bootstrap.py, dev.cfg, etc. files in current directory." 1>&2 
+    echo "Also an 'etc' subdirectory, and other subdirectories too!" 1>&2
+    echo "(As well as any/many buildout-generated artifacts.)" 1>&2
+    exit 1
+fi
+if [ ! -d var/snapshotbackups ]; then
+    echo "You don't have a var/snapshotbackups directory." 1>&2
+    echo "Run support/getsnapshot.py to get a fresh snapshot." 1>&2
+    exit 1
+fi
+files=var/snapshotbackups/*
+if [ "$files" = var/snapshotbackups ]; then
+    echo "Your var/snapshotbackups directory is empty." 1>&2
+    echo "Run support/getsnapshot.py to fill it up with files first." 1>&2
     exit 1
 fi
 cat <<EOF
 This will shutdown the supervisord; wipe out the database, log files, etc.;
-copy an existing database from a snapshot backup from the operational site
-and then upgrade that database to the software in this directory tree.
-It'll then start the supervisord.  You have 5 seconds to abort.
+copy an existing database from a snapshot backup; and then upgrade that
+database to the level of software in this directory tree.  It'll then start
+the supervisord.  You have 5 seconds to abort.
 EOF
 
 sleep 5
@@ -40,15 +49,10 @@ EOF
     sleep 10
 fi
 [ -d var ] && echo 'Nuking database and logs...\c' && rm -rf var/blobstorage var/filestorage var/log && echo done
-echo 'Nuking select parts...\c' && rm -rf parts/zeoserver parts/instance-debug && echo done
-echo 'Remaking select parts...' && bin/buildout -c dev.cfg install zeoserver instance-debug
-if [ \! -d "var/$snapshot" ]; then
-    echo "Downloading $snapshot..."
-    curl -L "$snapshotURL" | tar -C var -xjf -
-fi
-echo 'Extracting operations database...' && bin/repozo -v -R -r var/$snapshot -o var/filestorage/Data.fs
+mkdir var/blobstorage var/filestorage var/log
+echo 'Restoring database from snapshot...' && bin/repozo -v -R -r var/snapshotbackups -o var/filestorage/Data.fs
 echo 'Starting supervisor...' && bin/supervisord && sleep 3
-zeoRunning=`bin/supervisorctl status zeo | egrep -c RUNNING`
+zeoRunning=`bin/supervisorctl status zeoserver | egrep -c RUNNING`
 if [ $zeoRunning -ne 1 ]; then
     echo "The supervisor failed to start the zeo database server. I'm stuck." 1>&2
     echo "Try running bin/supervisorctl and see if you can figure out why it's broken." 1>&2
@@ -65,4 +69,6 @@ EOF
     exit 1
 fi
 echo 'Upgrading portal to current version...' && bin/instance-debug run support/upgrade.py
+echo "That's it. You can start a debug instance now by typing: bin/instance-debug fg"
+echo 'Enjoy!'
 exit 0
