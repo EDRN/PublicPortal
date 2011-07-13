@@ -6,4 +6,5 @@
 
 BASE dc=edrn,dc=jpl,dc=nasa,dc=gov
 URI ldaps://cancer.jpl.nasa.gov
-TLS_CACERT ${buildout:directory}/etc/cancer-ldap.pem
+TLS_CACERTDIR ${buildout:directory}/etc/cacerts
+
