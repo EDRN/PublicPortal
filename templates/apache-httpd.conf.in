@@ -50,7 +50,7 @@
     RewriteCond %{REQUEST_URI} !.*login_form
     RewriteRule ^/(.*) http://PUBLIC-VHOST-HERE/$1 [NE,L,R=301]
     RewriteCond %{REQUEST_URI} !/snapshots(.*)
-    RewriteCond %{REQUEST_URI} !/filestorage(.*)
+    RewriteCond %{REQUEST_URI} !/blobstorage(.*)
     RewriteRule ^(.*) http://${hosts:instance1}:${ports:instance1}/VirtualHostBase/https/PUBLIC-VHOST-HERE:443/edrn/VirtualHostRoot$1 [L,P]
     <Directory ${buildout:directory}/var/snapshotbackups>
         AuthType basic
@@ -62,14 +62,14 @@
         Options Indexes
     </Directory>
     Alias /snapshots ${buildout:directory}/var/snapshotbackups
-    <Directory ${buildout:directory}/var/filestorage>
+    <Directory ${buildout:directory}/var/blobstorage>
         AuthType basic
-        AuthName "Database Filestorage"
+        AuthName "Database Blobstorage"
         AuthUserFile ${buildout:directory}/etc/snapshots.cfg
         Require valid-user
         Order Deny,Allow
         Allow from All
         Options Indexes
     </Directory>
-    Alias /filestorage ${buildout:directory}/var/filestorage
+    Alias /blobstorage ${buildout:directory}/var/blobstorage
 </VirtualHost>
