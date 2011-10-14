@@ -360,7 +360,7 @@ def _bootstrap():
 
 def _buildout():
     '''Buildout.'''
-    logging.info('Building out %#x, this may take some time',
+    logging.info('Building out %#x, this may take some time (over 30 minutes)',
         os.stat(os.path.abspath(os.path.join('bin', 'buildout')))[6])
     out, rc = _exec(['bin/buildout', '-c', 'site.cfg'], os.path.abspath(os.path.join('bin', 'buildout')), os.getcwd())
     if rc != 0: raise IOError('Buildout failed')
