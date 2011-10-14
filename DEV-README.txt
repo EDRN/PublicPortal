@@ -19,20 +19,18 @@ Are you hard core?  Forget documentation!  Try the following::
 
     svn co http://tumor.jpl.nasa.gov/repo/ic/app-server/edrn.nci.nih.gov/trunk edrn.nci.nih.gov
     cd edrn.nci.nih.gov
-    python2.4 bootstrap.py -dc test.cfg        # bootstrap it
-    bin/buildout -c test.cfg                   # build it
-    bin/buildout -c dev.cfg                    # activate developer mode
-    bin/buildout -c dev.cfg install edrnsite   # deploy it
-    bin/supervisord                            # start the database
+    python2.4 bootstrap.py -dc dev.cfg         # bootstrap it
+    bin/buildout -c dev.cfg                    # build it in "developer mode"
+    support/devrebuild.sh                      # sit back and relax
     bin/instance-debug fg                      # start the app server
     ...                                        # visit http://localhost:8080/edrn, notice a bug
     CTRL+C                                     # stop the app server
     bin/develop checkout edrnsite.policy       # say the bug's in edrnsite.policy
     bin/buildout -c dev.cfg                    # let the buildout notice the new dev egg
-    vi src/edrnsite.policy/../test.py          # make a test case to expose the bug
-    bin/instance-debug test -s edrnsite.policy # ensure failure
-    vi src/ednrsite.policy/../menu.py          # make the fix
-    bin/instance-debug test -s edrnsite.policy # ensure success
+    vi src/edrnsite.policy/.../test.py         # make a test case to expose the bug
+    bin/roadrunner -s edrnsite.policy          # ensure failure
+    vi src/ednrsite.policy/.../menu.py         # make the fix
+    bin/roadrunner -s edrnsite.policy          # ensure success
     bin/instance-debug fg                      # start the app server
     ...                                        # re-visit http://localhost:8080/ern
     ...                                        # bask in your bug fix glory
@@ -54,9 +52,63 @@ of the operational setup:
 
 Setting up the above is easy.  First off, your system will need to meet the
 requirements listed in the "Requirements" section of README.txt.  In a
-nutshell, that means you need gcc, make, Python 2.4, and the Python Imaging
-Library.  All the other dependent components will be downloaded, configured,
-and deployed automatically.
+nutshell, that means you need gcc, make, and Python 2.4.  All the other
+dependent components will be downloaded, configured, and deployed
+automatically.
+
+
+Python 2.4
+----------
+
+Getting a version of Python that supports development can be tricky,
+especially on Mac OS X 10.6 "Snow Leopard".  By far the easiest way to get a
+decent Python version, regardless of what platform you're on, is to use the
+Plone Collective Python Buildout:
+
+1. svn co http://svn.plone.org/svn/collective/buildout/python
+2. python bootstrap.py -d
+3. bin/buildout
+4. sudo bin/install-links
+
+You'll be left with /opt/local/bin/python2.4 (as well as other versions),
+ready to go and pre-loaded with all needed dependencies.
+
+Want the links in /home/python instead of /opt/local?  Don't need Python 2.5,
+2.6?  Want 3.1 as well?  Easy.  Make a file, say local.cfg, with the
+following::
+
+    [buildout]
+    extends =
+        src/base.cfg
+        src/readline.cfg
+        src/libjpeg.cfg
+        src/python24.cfg
+        src/python31.cfg
+        src/links.cfg
+    parts =
+        ${buildout:base-parts}
+        ${buildout:readline-parts}
+        ${buildout:libjpeg-parts}
+        ${buildout:python24-parts}
+        ${buildout:python31-parts}
+        ${buildout:links-parts}
+    python-buildout-root = ${buildout:directory}/src
+    eggs-directory = eggs
+    [install-links]
+    prefix = /home/python
+
+Then build as follows:
+
+1. python boostrap.py -dc local.cfg
+2. bin/buildout -c local.cfg
+3. sudo bin/install-links
+
+You can even set the install-links prefix to the bin directory of the buildout
+itself, keeping everything in one nice package.  When doing so, run "yes n |
+bin/install-links".
+
+For the EDRN Portal, use this generated python2.4 executable link instead of
+any system-provided one.
 
 
 Compiling and Testing
@@ -67,10 +119,8 @@ the EDRN public portal, using a Buildout_ procedure like the following::
 
     svn co http://tumor.jpl.nasa.gov/repo/ic/app-server/edrn.nci.nih.gov/trunk edrn.nci.nih.gov
     cd edrn.nci.nih.gov
-    python2.4 bootstrap.py -dc test.cfg
-    bin/buildout -c test.cfg
+    python2.4 bootstrap.py -dc dev.cfg
     python2.4 runtests.py
-    bin/buildout -c dev.cfg
 
 This gives you an EDRN portal with the release versions of each component and
 runs their tests, which had better damn well all be successful.  Then, it puts
@@ -82,8 +132,15 @@ Viewing Your Local Portal
 =========================
 
 Right now, you've got all the software set up and configured, but your
-application server's bare.  You need to actually install the EDRN public
-portal.  To do that, run::
+application server is bare.  You need to actually install the EDRN portal into
+the application server.  To do that, you need to
+
+1. Download a snapshot of the portal database from NCI
+2. Extract the snapshot into your local database
+3. Upgrade the database 
+
+
+  To do that, run::
 
     bin/buildout -c dev.cfg install edrnsite
 
