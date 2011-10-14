@@ -2,14 +2,14 @@
  Early Detection Research Network Public Portal and Knowledge Environment
 **************************************************************************
 
-.. contents::
-
 Welcome to the Early Detection Research Network (EDRN) public portal and
 knowledge environment.  This software package sets up various software
 components that provide a functioning website for EDRN, normally hosted at
 http://edrn.nci.nih.gov/.
 
-This software was developed by and is copyrighted 2010 by the California
+This is version 4 of the EDRN portal.
+
+This software was developed by and is copyrighted 2010-2011 by the California
 Institute of Technology.  ALL RIGHTS RESERVED.  U.S.  Government sponsorship
 acknowledged.
 
@@ -40,5 +40,5 @@ DEV-README.txt.
     California Institute of Technology
 
 .. Copyright:
-    Copyright 2010 California Institute of Technology. ALL RIGHTS RESERVED.
-    U.S. Government sponsorship acknowledged.
+    Copyright 2010-2011 California Institute of Technology. ALL RIGHTS
+    RESERVED.  U.S. Government sponsorship acknowledged.
