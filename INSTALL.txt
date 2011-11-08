@@ -369,7 +369,7 @@ If your operating system provides /etc/cron.daily, /etc/cron.weekly, and
 
 1.  Install $INSTALL_DIR/bin/backup as /etc/cron.daily/edrn-backup.
 2.  Install $INSTALL_DIR/bin/zeopack as /etc/cron.monthly/edrn-pack.
-3.  Create a script /etc/cron.weekly/edrn-maint with the following contents
+3.  Create a script /etc/cron.daily/edrn-maint with the following contents
     (substituting the appropriate value for $PARENT_DIR)::
 
         #!/bin/sh
@@ -381,7 +381,7 @@ If your operating system provides /etc/cron.daily, /etc/cron.weekly, and
         esac
         exit 0
 
-4.  Make the script executable: ``sudo chmod 755 /etc/cron.weekly/edrn-maint``
+4.  Make the script executable: ``sudo chmod 755 /etc/cron.daily/edrn-maint``
 
 
 Log Rotation
