@@ -283,29 +283,6 @@ For your reference, an HTTPD configuration is generated in
 $INSTALL_DIR/ops/apache-httpd.conf.  Feel free to use it as a guide.
 
 
-Post-Deployment Configuration
------------------------------
-
-The EDRN site requires little configuration after deployment and startup.
-This section tells you what you need to do, if anything.
-
-
-Mail Server
-~~~~~~~~~~~
-
-By default, the EDRN site will use the SMTP server on localhost without a
-username or password in order to send email messages.  If that's OK, skip this
-section.  However, if you need to change the server address and/or the SMTP
-access username+password, do the following:
-
-1.  Visit the site's ``plone_control_panel`` with a browser at the address
-    http://edrn.nci.nih.gov/plone_control_panel (adjust the URL if you changed
-    the $ADDRESS).
-2.  Log in using Zope user and password in ``site.cfg``.
-3.  Click on "Mail".
-4.  Adjust the SMTP settings on the form and click "Save".
-
-
 Hooking into the Operating System
 ---------------------------------
 
