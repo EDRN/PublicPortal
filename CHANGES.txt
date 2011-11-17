@@ -1,5 +1,26 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
+
+Release Notes - Early Detection of Cancer - Version Portal 4.1.3 - 2011-11-17
+
+** Bug
+    * [CA-564] - Protocol Folder not a linkable type in portal WYSIWYG editor
+    * [CA-739] - If the ERNE protocol can't be found, it prevents upgrading of portal
+    * [CA-800] - Funny fonts under the "Data" tab of a Collaborative Group
+    * [CA-812] - WYSIWYG editor is set to "Kupu" in Portal 4, should be "TinyMCE"
+
+** Improvement
+    * [CA-770] - Enable versioning on files
+    * [CA-804] - Need access to operational blobs
+    * [CA-823] - Modify eke.specimens per Christos's commentary
+    * [CA-825] - Evening telecon
+
+** New Feature
+    * [CA-277] - Integrate Review Group View w/security
+
+
+
+
 Release Notes - Early Detection of Cancer - Version Portal 4.1.2 - 2011-11-09
 
 ** New Feature
