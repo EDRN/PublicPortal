@@ -1,6 +1,13 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
 
+Release Notes - Early Detection of Cancer - Version Portal 4.1.4 - 2011-12-02
+
+** New Feature
+    * [CA-806] - Create a "Highlights" section on the Collaborative Group pages
+
+
+
 Release Notes - Early Detection of Cancer - Version Portal 4.1.3 - 2011-11-17
 
 ** Bug
