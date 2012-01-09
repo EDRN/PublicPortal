@@ -38,7 +38,8 @@ def main(app, siteID, adminUser, policy):
 
     # Disable CacheFu.  If we don't, the CMF Squid Tool will start a purge thread, and that
     # purge thread isn't a daemon thread (it probably should be).  Since it's not a daemon,
-    # we won't ever terminate.
+    # we won't ever terminate.  Note also that CacheFu died out with Plone 3, but this code
+    # is pretty harmless so I'm leaving it for historical reasons.
     cacheTool = getToolByName(portal, 'portal_cache_settings', None)
     if cacheTool:
         if hasattr(cacheTool, 'setEnabled'): cacheTool.setEnabled(False)
