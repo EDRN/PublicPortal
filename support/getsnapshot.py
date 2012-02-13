@@ -51,7 +51,7 @@ class FileFinder(HTMLParser):
 
 def openConnection(url, user, password):
     request = urllib2.Request(url)
-    authString = base64.encodestring('%s:%s' % (user, password)).replace('\n', '')
+    authString = base64.encodestring('%s:%s\n' % (user, password)).replace('\n', '')
     request.add_header('Authorization', 'Basic %s' % authString)
     return urllib2.urlopen(request)
 
@@ -126,3 +126,4 @@ def main(argv):
 
 if __name__ == '__main__':
     main(sys.argv)
+    
