@@ -2,6 +2,11 @@
 #
 # Rebuild from scratch, for developers.
 
+    BROKEN! BORKEO!
+    
+    Rsync the blobs & the snapshots
+    And the snapshots are currenly borkeod too.
+
 if [ $# -ne 0 ]; then
     echo Usage: `basename $0` 1>&2
     echo "(This program takes no arguments.)" 1>&2
@@ -48,9 +53,10 @@ EOF
     echo 'Number of zeoservers found: ' $numZeos
     sleep 10
 fi
-[ -d var ] && echo 'Nuking database and logs...\c' && rm -rf var/blobstorage var/filestorage var/log && echo done
-mkdir var/blobstorage var/filestorage var/log
+[ -d var ] && echo 'Nuking database and logs...\c' && rm -rf var/filestorage var/log && echo done
+mkdir var/filestorage var/log
 echo 'Restoring database from snapshot...' && bin/repozo -v -R -r var/snapshotbackups -o var/filestorage/Data.fs
+echo 'Updating blobs...' && rsync 
 echo 'Starting supervisor...' && bin/supervisord && sleep 3
 zeoRunning=`bin/supervisorctl status zeoserver | egrep -c RUNNING`
 if [ $zeoRunning -ne 1 ]; then

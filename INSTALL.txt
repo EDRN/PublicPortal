@@ -347,12 +347,16 @@ If your operating system provides /etc/cron.daily, /etc/cron.weekly, and
 1.  Install $INSTALL_DIR/bin/backup as /etc/cron.daily/edrn-backup.
 2.  Install $INSTALL_DIR/bin/zeopack as /etc/cron.monthly/edrn-pack.
 3.  Create a script /etc/cron.daily/edrn-maint with the following contents
-    (substituting the appropriate value for $PARENT_DIR)::
+    (substituting the appropriate value for $INSTALL_DIR)::
 
         #!/bin/sh
         day=`/bin/date '+%w'`
         case $day in
-        0) $INSTALL_DIR/bin/snapshotbackup ;;
+        0) $INSTALL_DIR/bin/snapshotbackup 
+        /usr/bin/find $INSTALL_DIR/var/snapshotbackups -type f -print0 | /usr/bin/xargs -0 /bin/chmod 644
+        /usr/bin/find $INSTALL_DIR/var/blobstorage -type f -print0 | /usr/bin/xargs -0 /bin/chmod 644
+        /usr/bin/find $INSTALL_DIR/var/blobstorage -type d -print0 | /usr/bin/xargs -0 /bin/chmod 755
+        ;;
         5) $INSTALL_DIR/bin/supervisorctl restart instance2 ;;
         6) $INSTALL_DIR/bin/supervisorctl restart instance1 ;;
         esac
