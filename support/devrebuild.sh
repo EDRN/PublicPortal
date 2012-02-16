@@ -2,10 +2,7 @@
 #
 # Rebuild from scratch, for developers.
 
-    BROKEN! BORKEO!
-    
-    Rsync the blobs & the snapshots
-    And the snapshots are currenly borkeod too.
+opsdb=tumor.jpl.nasa.gov:/usr/local/edrn-portal/ops-nci/var
 
 if [ $# -ne 0 ]; then
     echo Usage: `basename $0` 1>&2
@@ -18,17 +15,6 @@ if [ ! -f bootstrap.py -o ! -f dev.cfg -o ! -d etc ]; then
     echo "There should be bootstrap.py, dev.cfg, etc. files in current directory." 1>&2 
     echo "Also an 'etc' subdirectory, and other subdirectories too!" 1>&2
     echo "(As well as any/many buildout-generated artifacts.)" 1>&2
-    exit 1
-fi
-if [ ! -d var/snapshotbackups ]; then
-    echo "You don't have a var/snapshotbackups directory." 1>&2
-    echo "Run support/getsnapshot.py to get a fresh snapshot." 1>&2
-    exit 1
-fi
-files=var/snapshotbackups/*
-if [ "$files" = var/snapshotbackups ]; then
-    echo "Your var/snapshotbackups directory is empty." 1>&2
-    echo "Run support/getsnapshot.py to fill it up with files first." 1>&2
     exit 1
 fi
 cat <<EOF
@@ -55,8 +41,9 @@ EOF
 fi
 [ -d var ] && echo 'Nuking database and logs...\c' && rm -rf var/filestorage var/log && echo done
 mkdir var/filestorage var/log
-echo 'Restoring database from snapshot...' && bin/repozo -v -R -r var/snapshotbackups -o var/filestorage/Data.fs
-echo 'Updating blobs...' && rsync 
+echo 'Updating snapshot...' && rsync -rv "${opsdb}/cleansnap" var
+echo 'Restoring database from snapshot...' && bin/repozo -v -R -r var/cleansnap -o var/filestorage/Data.fs
+echo 'Updating blobs...' && rsync -rv "${opsdb}/blobstorage" var
 echo 'Starting supervisor...' && bin/supervisord && sleep 3
 zeoRunning=`bin/supervisorctl status zeoserver | egrep -c RUNNING`
 if [ $zeoRunning -ne 1 ]; then
