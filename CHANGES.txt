@@ -1,5 +1,41 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
+Release Notes - Early Detection of Cancer - Version Portal 4.1.5 - 2012-03-01
+
+** Bug
+    * [CA-542] - Highlighted search terms have a bizarre-looking left padding
+    * [CA-592] - Thumbnails of EDRN investigator photographs broken
+    * [CA-593] - Link to EDRN Report 2002 Broken
+    * [CA-594] - Links to Breast and Colon Cancer Family Registries broken
+    * [CA-596] - Fix link to Manual of Operations
+    * [CA-643] - Site ingest yields broken Site Folder view
+    * [CA-656] - Live editing of Vanderbilt Ingram Cancer Center (240) causes error
+    * [CA-661] - Specimens in Portal show "Unknown Site"
+    * [CA-663] - Cannot view certain sites - get a "We're sorry, but there seems to be an error..." message
+    * [CA-747] - Don't show login form on the logged_out template because it goes via http, not https
+    * [CA-841] - Project flags cleared and disassociated from Collaborative Groups (from Kincaid via IM)
+    * [CA-849] - Collaborative Group's "Top 3 Projects" list appears on EVERY tab; supposed to be just on the Overview & 
+    * [CA-872] - Tabs gone from Collaborative Groups post-4.1.4.
+    * [CA-879] - Emails from Collaborative Groups occasionally have ${fields} with no substituted information
+
+** Improvement
+    * [CA-513] - Science Data List on the Portal
+    * [CA-533] - Portal delivery to NCI needs daily backup and monthly pack tasks
+    * [CA-607] - Require login for access to Biomarker Review Pages under Resources
+    * [CA-614] - Add EDRN Informatics Movie (newer version) to EDRN Public Portal
+    * [CA-689] - Add Body Text to Specimen Tab
+    * [CA-716] - Sort Specimen Search Results
+    * [CA-832] - Correct NYU Specimen Site, PI and Organ
+    * [CA-844] - Combine PRoBE and Reference Sets in the "Specimens" tab
+    * [CA-845] - Make "Specimen Collections" compute total specimens
+    * [CA-873] - Login Lockout database should be cleared on upgrade
+
+** New Feature
+    * [CA-641] - Document the Upgrade Process
+    * [CA-850] - Move EDRN SC Announcement to EDRN Public Portal
+
+
+
 
 Release Notes - Early Detection of Cancer - Version Portal 4.1.4 - 2011-12-02
 
