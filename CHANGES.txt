@@ -1,5 +1,22 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
+Release Notes - Early Detection of Cancer - Version Portal 4.1.6 - 2012-05-02
+
+** Bug
+    * [CA-883] - Syntax error in edrnsite/search/tests/base.py
+    * [CA-885] - Creating collaborative groups relies on well-known content rules—which may be reconfigured or even deleted
+
+** Improvement
+    * [CA-917] - Preserve locally-updated content during demonstration site deployment
+    * [CA-926] - Improve Specimen Reference Sets based on feedback from Jackie Dahlgren
+    * [CA-937] - Add pagination to Specimen Tab list on left
+    * [CA-938] - Add specimen contact information to detail page of specimen sets
+    * [CA-939] - Remove total specimens and replace with total participants on reference sets
+
+** New Feature
+    * [CA-535] - ERNE RDF dump to the EDRN Public Portal
+
+
 Release Notes - Early Detection of Cancer - Version Portal 4.1.5 - 2012-03-01
 
 ** Bug
