@@ -41,9 +41,9 @@ EOF
 fi
 [ -d var ] && echo 'Nuking database and logs...\c' && rm -rf var/filestorage var/log && echo done
 mkdir var/filestorage var/log
-echo 'Updating snapshot...' && rsync -crv "${opsdb}/cleansnap" var
+echo 'Updating snapshot...' && rsync -crv --progress "${opsdb}/cleansnap" var
 echo 'Restoring database from snapshot...' && bin/repozo -v -R -r var/cleansnap -o var/filestorage/Data.fs
-echo 'Updating blobs...' && rsync -crv "${opsdb}/blobstorage" var
+echo 'Updating blobs...' && rsync -crv --progress "${opsdb}/blobstorage" var
 echo 'Starting supervisor...' && bin/supervisord && sleep 3
 zeoRunning=`bin/supervisorctl status zeoserver | egrep -c RUNNING`
 if [ $zeoRunning -ne 1 ]; then
