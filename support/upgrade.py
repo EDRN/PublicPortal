@@ -17,9 +17,17 @@ from AccessControl.SecurityManagement import newSecurityManager, noSecurityManag
 from Products.CMFCore.utils import getToolByName
 from Testing import makerequest
 from zope.app.component.hooks import setSite
-import transaction, sys
+import transaction, sys, logging
 
 def main(app, siteID, adminUser, policy):
+    # Get logging
+    channel = logging.StreamHandler()
+    channel.setFormatter(logging.Formatter('%(asctime)-15s %(levelname)-8s %(message)s'))
+    for logname in ('edrnsite', 'eke'):
+        logger = logging.getLogger(logname)
+        logger.setLevel(logging.DEBUG)
+        logger.addHandler(channel)
+
     # Get a test request installed.
     app = makerequest.makerequest(app)
 
