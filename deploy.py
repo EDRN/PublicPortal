@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright 2011 California Institute of Technology. ALL RIGHTS
+# Copyright 2011-2012 California Institute of Technology. ALL RIGHTS
 # RESERVED. U.S. Government Sponsorship acknowledged.
 
 _version = 'UNKNOWN'
@@ -344,6 +344,11 @@ def _writeConfig(login, zopeu, zopep, superu, superp, ports):
         print >>out, '%s = %d' % (k, ports[v])
     out.close()
     logging.info('Postflight %#x', os.stat(os.path.abspath('site.cfg'))[6])
+    out = open(os.path.abspath('p4a.cfg'), 'w')
+    print >>out, '[buildout]'
+    print >>out, 'extends = site.cfg p4a-removal.cfg'
+    out.close()
+    logging.info('Artists %#x', os.stat(os.path.abspath('p4a.cfg'))[6])
     
 
 def _bootstrap():
@@ -354,17 +359,48 @@ def _bootstrap():
         return
     logging.info('Bootstrapping %#x', os.stat(os.path.abspath('bootstrap.py'))[6])
     p = os.path.abspath(os.path.join('support', 'int', 'bin', 'python'))
-    out, rc = _exec([p, 'bootstrap.py', '-dc', os.path.abspath('site.cfg')], p, os.getcwd())
+    out, rc = _exec([p, 'bootstrap.py', '-dc', os.path.abspath('p4a.cfg')], p, os.getcwd())
     if rc != 0: raise IOError('Bootstrap failed')
 
 
 def _buildout():
     '''Buildout.'''
-    logging.info('Building out %#x, this may take some time (over 30 minutes)',
+    logging.info('Building out %#x, this may take less time (a minute or so)',
         os.stat(os.path.abspath(os.path.join('bin', 'buildout')))[6])
     out, rc = _exec(['bin/buildout', '-c', 'site.cfg'], os.path.abspath(os.path.join('bin', 'buildout')), os.getcwd())
     if rc != 0: raise IOError('Buildout failed')
 
+def _p4aBuildout():
+    '''P4A buildout'''
+    logging.info('Nuking P4A at %#x, this may take some time (over 30 minutes)',
+        os.stat(os.path.abspath(os.path.join('bin', 'buildout')))[6])
+    out, rc = _exec(['bin/buildout', '-c', 'p4a.cfg'], os.path.abspath(os.path.join('bin', 'buildout')), os.getcwd())
+    if rc != 0: raise IOError('P4A Buildout failed')
+    
+def _nukeP4A(zopeu, zopep):
+    '''Nuke P4A.'''
+    logging.info('Nuking P4A')
+    logging.info('Setting Zope user & password for P4A nukage')
+    out, rc = _exec(['bin/instance-debug', 'adduser', zopeu, zopep], os.path.abspath(os.path.join('bin', 'instance-debug')),
+        os.getcwd())
+    if rc != 0: raise IOError('Setting Zope username & password for P4A nukage failed with status %d' % rc)
+    out, rc = _exec(['bin/instance-debug', 'run', 'etc/p4a_terminator.py', zopeu],
+        os.path.abspath(os.path.join('bin', 'instance-debug')), os.getcwd()) # Expect nonzero, ignore
+    if rc != 0:
+        logging.warning('Got exit code %d from p4a_terminator; check log', rc)
+        logging.info(out)
+    out, rc = _exec(['bin/instance-debug', 'run', 'etc/other_terminators.py', zopeu],
+        os.path.abspath(os.path.join('bin', 'instance-debug')), os.getcwd()) # Expect nonzero, ignore
+    if rc != 0:
+        logging.warning('Got exit code %d from other_terminator; check log', rc)
+        logging.info(out)
+    cleansnap = os.path.abspath(os.path.join(_workspace, 'cleansnap'))
+    shutil.rmtree(cleansnap, ignore_errors=True)
+    os.makedirs(cleansnap)
+    logging.info('Snapshotting cleansnap')
+    out, rc = _exec(['bin/repozo', '-BFzr', cleansnap, '-f', 'var/filestorage/Data.fs'],
+        os.path.abspath(os.path.join('bin', 'repozo')), os.getcwd())
+    if rc != 0: raise IOError('repozo failed of cleaned up database')
 
 def _snapshotDB(existing):
     logging.info('Snapshotting current database')
@@ -376,10 +412,9 @@ def _snapshotDB(existing):
         os.path.abspath(os.path.join('bin', 'repozo')), os.getcwd())
     if rc != 0: raise IOError('Taking a snapshot of the existing database failed with status %d' % rc)
 
-
-def _extractSnapshot():
-    logging.info('Extracting snapshot into new operational location')
-    snapshotdir = os.path.abspath(os.path.join(_workspace, 'snapshot'))
+def _extractSnapshot(repo):
+    logging.info('Extracting snapshot from %s into new operational location', repo)
+    snapshotdir = os.path.abspath(os.path.join(_workspace, repo))
     fsdir = os.path.abspath(os.path.join('var', 'filestorage'))
     if not os.path.isdir(fsdir):
         os.makedirs(fsdir)
@@ -388,7 +423,6 @@ def _extractSnapshot():
         os.path.abspath(os.path.join('bin', 'repozo')), os.getcwd())
     if rc != 0: raise IOError('Restoring the database from the snapshot failed with status %d' % rc)
     logging.info('Data.fs %#x', os.stat(newdb)[6])
-
 
 def _updateDatabase(zopeu, zopep):
     logging.info('Starting DB server')
@@ -432,9 +466,12 @@ def main(argv=sys.argv):
         _deployInt()
         _writeConfig(login, options.zope_user, zopePasswd, options.supervisor_user, superPasswd, ports)
         _bootstrap()
-        _buildout()
+        _p4aBuildout()
         _snapshotDB(options.existing_install)
-        _extractSnapshot()
+        _extractSnapshot('snapshot')
+        _nukeP4A(options.zope_user, zopePasswd)
+        _buildout()
+        _extractSnapshot('cleansnap')
         _updateDatabase(options.zope_user, zopePasswd)
         logging.info('DEPLOYMENT COMPLETE')
     except Exception, ex:
