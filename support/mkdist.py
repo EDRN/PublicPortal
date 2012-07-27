@@ -11,14 +11,15 @@ _optParser = optparse.OptionParser(description='''Make a distribution of the EDR
 _optParser.add_option('-u', '--url', default=_python, help='Override default URL to a Python 2.6 bzip2 tarball.')
 
 _distItems = (
-    'CHANGES.txt',
-    'INSTALL.txt',
-    'README.txt',
     'bootstrap.py',
+    'CHANGES.txt',
     'deploy.py',
     'etc',
     'externals',
+    'INSTALL.txt',
     'operations.cfg',
+    'p4a-removal.cfg',
+    'README.txt',
     'support',
     'templates',
     'versions',
