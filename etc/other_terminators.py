@@ -11,6 +11,8 @@ import sys
 def main(app):
     try:
         portal = app['edrn']
+        # Die.
+        portal.manage_delObjects('specimens')
         # Get rid of some packages
         qi = getToolByName(portal, 'portal_quickinstaller')
         qi.uninstallProducts(['eke.specimens'])
