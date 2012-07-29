@@ -388,12 +388,10 @@ def _nukeP4A(zopeu, zopep):
         os.path.abspath(os.path.join('bin', 'instance-debug')), os.getcwd()) # Expect nonzero, ignore
     if rc != 0:
         logging.warning('Got exit code %d from p4a_terminator; check log', rc)
-        logging.info(out)
     out, rc = _exec(['bin/instance-debug', 'run', 'etc/other_terminators.py', zopeu],
         os.path.abspath(os.path.join('bin', 'instance-debug')), os.getcwd()) # Expect nonzero, ignore
     if rc != 0:
         logging.warning('Got exit code %d from other_terminator; check log', rc)
-        logging.info(out)
     cleansnap = os.path.abspath(os.path.join(_workspace, 'cleansnap'))
     shutil.rmtree(cleansnap, ignore_errors=True)
     os.makedirs(cleansnap)
