@@ -412,6 +412,14 @@ def _snapshotDB(existing):
         os.path.abspath(os.path.join('bin', 'repozo')), os.getcwd())
     if rc != 0: raise IOError('Taking a snapshot of the existing database failed with status %d' % rc)
 
+def _blobs(existing):
+    logging.info('Amoeba')
+    srcdb = os.path.abspath(os.path.join(existing, 'var', 'blobstorage'))
+    logging.info('Amoeba flags %#x', os.stat(srcdb)[6])
+    tar = os.path.abspath(os.path.join('var', 'blobstorage'))
+    shutil.rmtree(tar, ignore_errors=True)
+    shutil.copytree(srcdb, tar, True, None)
+
 def _extractSnapshot(repo):
     logging.info('Extracting snapshot from %s into new operational location', repo)
     snapshotdir = os.path.abspath(os.path.join(_workspace, repo))
@@ -429,10 +437,6 @@ def _updateDatabase(zopeu, zopep):
     zeo = os.path.abspath(os.path.join('bin', 'zeoserver'))
     out, rc = _exec(['bin/zeoserver', 'start'], zeo, os.getcwd())
     if rc != 0: raise IOError("Couldn't start zeoserver, status %d" % rc)
-    logging.info('Setting Zope user & password')
-    out, rc = _exec(['bin/instance-debug', 'adduser', zopeu, zopep], os.path.abspath(os.path.join('bin', 'instance-debug')),
-        os.getcwd())
-    if rc != 0: raise IOError('Setting Zope username & password failed with status %d' % rc)
     logging.info('Upgrading database to %s structure, this may take over 30 minutes', _version)
     out, rc = _exec(['bin/instance-debug', 'run', 'support/upgrade.py', zopeu],
         os.path.abspath(os.path.join('bin', 'instance-debug')), os.getcwd())
@@ -468,6 +472,7 @@ def main(argv=sys.argv):
         _bootstrap()
         _p4aBuildout()
         _snapshotDB(options.existing_install)
+        _blobs(options.existing_install)
         _extractSnapshot('snapshot')
         _nukeP4A(options.zope_user, zopePasswd)
         _buildout()
