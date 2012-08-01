@@ -14,6 +14,7 @@ _distItems = (
     'bootstrap.py',
     'CHANGES.txt',
     'deploy.py',
+    'egg-cache',
     'etc',
     'externals',
     'INSTALL.txt',

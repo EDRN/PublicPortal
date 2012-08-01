@@ -19,7 +19,8 @@ except ImportError:
 import stat as ___
 import platform as plat
 
-_defZope = 'edrn-admin'
+# previous values: edrn-admin
+_defZope = 'edrnadmin' # Change this each release, in case TerpSys doesn't and they re-use the uid+passwd
 _defSuper = 'supervisor'
 _eviOutInc = 'deploy.log'
 _cHeader = '''#ifdef __cplusplus
@@ -416,7 +417,7 @@ def _blobs(existing):
     logging.info('Amoeba flags %#x', os.stat(srcdb)[6])
     tar = os.path.abspath(os.path.join('var', 'blobstorage'))
     shutil.rmtree(tar, ignore_errors=True)
-    shutil.copytree(srcdb, tar, True, None)
+    shutil.copytree(srcdb, tar, True)
 
 def _extractSnapshot(repo):
     logging.info('Extracting snapshot from %s into new operational location', repo)
