@@ -1,22 +1,10 @@
 # Apache HTTPD config
 # ===================
 #
-# When deploying the EDRN public portal to operations, you can incorporate
-# this fragment into the traditional httpd.conf.  When doing so, double-
-# check the following:
+# Install this in $APACHE_HTTPD_HOME/conf/vhosts.
 #
-# 1. The two VirtualHost entries should list the IP of the server's public
-#    interface.
-# 2. Replace PUBLIC-VHOST-HERE with edrn.nci.nih.gov (operations),
-#    edrn-test.nci.nih.gov (testing), or edrn-dev.nci.nih.gov (development).
-# 3. Are the "ServerAlias" entries correct?
-# 4. Are the paths to the installation directory in the SSL section are
-#    correct?
-# 5. Are the paths to the certificate files correct?
-#
-# That's it!
 <VirtualHost ${:local-ip}:80>
-    ServerName PUBLIC-VHOST-HERE
+    ServerName ${:public-hostname}
     ServerAlias ${:local-hostname}
     ServerAdmin nciweb@mail.nih.gov
     RewriteEngine On
@@ -24,52 +12,10 @@
     RewriteRule .* - [F]
     RewriteCond %{HTTPS} off
     RewriteCond %{HTTP_COOKIE} __ac=
-    RewriteCond %{HTTP_HOST} ^PUBLIC-VHOST-HERE$
-    RewriteRule ^/(.*) https://PUBLIC-VHOST-HERE/$1 [NE,L,R=301]
-    RewriteCond %{HTTP_HOST} ^PUBLIC-VHOST-HERE$
+    RewriteRule ^(.*) https://${:public-hostname}$1 [NE,L,R=301]
     RewriteCond %{QUERY_STRING} came_from=http(.*)
-    RewriteRule ^/(.*)(require_login|login_form)$ https://PUBLIC-VHOST-HERE/$1$2?came_from=https%1 [NE,L]
-    RewriteRule ^/(.*)login_(.*) https://PUBLIC-VHOST-HERE/$1login_$2 [NE,L,R=301]
-    RewriteRule ^(.*) http://${hosts:cache}:${ports:cache}/VirtualHostBase/http/PUBLIC-VHOST-HERE:80/edrn/VirtualHostRoot$1 [L,P]
-</VirtualHost>
-<VirtualHost ${:local-ip}:443>
-    ServerName PUBLIC-VHOST-HERE
-    ServerAlias ${:local-hostname}
-    ServerAdmin nciweb@mail.nih.gov
-    RewriteEngine On
-    SSLEngine On
-    SSLProtocol all
-    SSLCipherSuite HIGH:MEDIUM
-    SSLCertificateFile ${buildout:directory}/etc/server.crt
-    SSLCertificateKeyFile ${buildout:directory}/etc/server.key
-    RewriteCond %{HTTP_HOST} ^PUBLIC-VHOST-HERE$
-    RewriteRule ^/(.*)logged_out http://PUBLIC-VHOST-HERE/$1logged_out [L,P]
-    RewriteCond %{HTTPS} on
-    RewriteCond %{HTTP_COOKIE} !__ac=
-    RewriteCond %{HTTP_HOST} ^PUBLIC-VHOST-HERE$
-    RewriteCond %{REQUEST_URI} !.*login_form
-    RewriteRule ^/(.*) http://PUBLIC-VHOST-HERE/$1 [NE,L,R=301]
-    RewriteCond %{REQUEST_URI} !/snapshots(.*)
-    RewriteCond %{REQUEST_URI} !/blobstorage(.*)
-    RewriteRule ^(.*) http://${hosts:instance1}:${ports:instance1}/VirtualHostBase/https/PUBLIC-VHOST-HERE:443/edrn/VirtualHostRoot$1 [L,P]
-    <Directory ${buildout:directory}/var/snapshotbackups>
-        AuthType basic
-        AuthName "Database Snapshots"
-        AuthUserFile ${buildout:directory}/etc/snapshots.cfg
-        Require valid-user
-        Order Deny,Allow
-        Allow from All
-        Options Indexes
-    </Directory>
-    Alias /snapshots ${buildout:directory}/var/snapshotbackups
-    <Directory ${buildout:directory}/var/blobstorage>
-        AuthType basic
-        AuthName "Database Blobstorage"
-        AuthUserFile ${buildout:directory}/etc/snapshots.cfg
-        Require valid-user
-        Order Deny,Allow
-        Allow from All
-        Options Indexes
-    </Directory>
-    Alias /blobstorage ${buildout:directory}/var/blobstorage
+    RewriteRule ^/(.*)(require_login|login_form)$ https://${:public-hostname}/$1$2?came_from=https%1 [NE,L]
+    RewriteCond %{REQUEST_URI} !.*login\.(js|css)
+    RewriteRule ^/(.*)login(.*) https://${:public-hostname}/$1login$2 [NE,L,R=permanent]
+    RewriteRule ^(.*) http://${hosts:cache}:${ports:cache}/VirtualHostBase/http/${:public-hostname}:80/edrn/VirtualHostRoot$1 [L,P]
 </VirtualHost>
