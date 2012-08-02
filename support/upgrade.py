@@ -1,5 +1,5 @@
 # encoding: utf-8
-# Copyright 2010 California Institute of Technology. ALL RIGHTS
+# Copyright 2010–2012 California Institute of Technology. ALL RIGHTS
 # RESERVED. U.S. Government Sponsorship acknowledged.
 #
 # Upgrade an existing installation of the EDRN public portal.
@@ -10,6 +10,7 @@
 # Assumes that the instance already has a previous edition of the EDRN portal installed.
 
 _adminUser = 'admin'            # Name of the Zope administrative user
+_adminPass = 'admin'            # Default password
 _policy    = 'edrnsite.policy'  # Name of the policy that orchestrates everything
 _siteID    = 'edrn'             # Object ID of the PloneSite object in the Zope app server
 
@@ -19,7 +20,7 @@ from Testing import makerequest
 from zope.app.component.hooks import setSite
 import transaction, sys, logging
 
-def main(app, siteID, adminUser, policy):
+def main(app, siteID, adminUser, adminPass, policy):
     # Get logging
     channel = logging.StreamHandler()
     channel.setFormatter(logging.Formatter('%(asctime)-15s %(levelname)-8s %(message)s'))
@@ -31,8 +32,16 @@ def main(app, siteID, adminUser, policy):
     # Get a test request installed.
     app = makerequest.makerequest(app)
 
-    # Set up security.
+    # Nuke all old admin users
     acl_users = app.acl_users
+    admins = [i for i in acl_users.users.listUserIds()]
+    for i in admins:
+        acl_users.users.removeUser(i)
+
+    # Add our new admin user
+    acl_users.users.manage_addUser(adminUser, adminUser, adminPass, adminPass)
+
+    # Set up security.
     user = acl_users.getUser(adminUser)
     if user:
         user = user.__of__(acl_users)
@@ -67,6 +76,7 @@ def main(app, siteID, adminUser, policy):
     return True
 
 if __name__ == '__main__':
-    adminUser = len(sys.argv) == 2 and sys.argv[1] or _adminUser
-    rc = main(app, _siteID, adminUser, _policy) # ``app`` comes from ``instance run`` magic.
+    adminUser = sys.argv[1] if len(sys.argv) >= 2 else _adminUser
+    adminPass = sys.argv[2] if len(sys.argv) >= 3 else _adminPass
+    rc = main(app, _siteID, adminUser, adminPass, _policy) # ``app`` comes from ``instance run`` magic.
     sys.exit(rc and 0 or -1)

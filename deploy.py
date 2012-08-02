@@ -39,13 +39,13 @@ _base = 7310
 _pence = (055, 063, 056, 060)
 _optParser = optparse.OptionParser(version=_version, description='''Deploys the EDRN portal in this directory.  This program
 will download and configure the EDRN software and dependencies.  It will then extract the old, existing portal's database,
-upgrade it to the structure for this, the new version, and prepare it for operations.  See the README.txt for more details.''')
+upgrade it to the structure for this, the new version, and prepare it for operations.  See the README.txt for more details.''',
+usage='Usage: %prog [options] PUBLIC-HOSTNAME')
 _optParser.add_option('-e', '--existing-install', help='Path to the old pre-existing installation of EDRN portal. Required.')
 _optParser.add_option('-s', '--supervisor-user', default=_defSuper, help='Username to use for Supervisor (default "%default")')
 _optParser.add_option('-x', '--supervisor-password', help='Password for Supervisor (will be generated if not given)')
-_zopeGroup = optparse.OptionGroup(_optParser, 'Zope Options', '''If the Zope username matches the pre-existing installation's
-username, the password *must* also match.  Otherwise, specify a *different* Zope username, and you can specify a new
-password as well, or let the deployment generate one.''')
+_zopeGroup = optparse.OptionGroup(_optParser, 'Zope Options', '''Note that all existing Zope admin users will be erased.
+A single new Zope admin user will be created.''')
 _zopeGroup.add_option('-z', '--zope-user', default=_defZope, help='Username for the Zope appserver (default "%default")')
 _zopeGroup.add_option('-p', '--zope-password', help='Password for the Zope appserver (will be generated if not given)')
 _optParser.add_option_group(_zopeGroup)
@@ -98,7 +98,7 @@ def _setupLogging():
         filename=_eviOutInc, filemode='w')
     console = logging.StreamHandler()
     console.setLevel(logging.INFO)
-    console.setFormatter(logging.Formatter('%(levelname)-8s %(message)s'))
+    console.setFormatter(logging.Formatter('%(asctime)s %(levelname)-8s %(message)s'))
     logging.getLogger('').addHandler(console)
     logging.debug('Logging configured')
 
@@ -123,6 +123,17 @@ def _checkInt():
     shutil.rmtree(os.path.abspath(os.path.join('support', 'int')), True)
     return False
 
+
+def _paintTarget():
+    logging.info('Painting')
+    d = os.path.abspath(os.getcwd())
+    while d != '/':
+        try:
+            logging.debug('Trying %s', d)
+            os.chmod(___.S_IROTH | ___.S_IXOTH | ___.S_IXGRP | ___.S_IRGRP | ___.S_IXUSR | ___.S_IRUSR)
+        except:
+            pass
+        d = os.path.abspath(os.path.join(d, '..'))
 
 def _center():
     sentinel = os.path.abspath(_checksumFile)
@@ -322,12 +333,14 @@ def _collatePorts(options):
     return ports
 
 
-def _writeConfig(login, zopeu, zopep, superu, superp, ports):
+def _writeConfig(login, zopeu, zopep, superu, superp, ports, publicHostname):
     '''Generate site.cfg'''
     logging.info('Generating site.cfg')
     out = open(os.path.abspath('site.cfg'), 'w')
     print >>out, '[buildout]'
     print >>out, 'extends = operations.cfg'
+    print >>out, '[hosts]'
+    print >>out, 'public-hostname = %s' % publicHostname
     print >>out, '[instance-settings]'
     print >>out, 'username = %s' % zopeu
     print >>out, 'password = %s' % zopep
@@ -437,9 +450,11 @@ def _updateDatabase(zopeu, zopep):
     out, rc = _exec(['bin/zeoserver', 'start'], zeo, os.getcwd())
     if rc != 0: raise IOError("Couldn't start zeoserver, status %d" % rc)
     logging.info('Upgrading database to %s structure, this may take over 30 minutes', _version)
-    out, rc = _exec(['bin/instance-debug', 'run', 'support/upgrade.py', zopeu],
+    out, rc = _exec(['bin/instance-debug', 'run', 'support/upgrade.py', zopeu, zopep],
         os.path.abspath(os.path.join('bin', 'instance-debug')), os.getcwd())
     logging.debug('Database upgrade exited with %d', rc)
+    logging.info('Packing')
+    out, rc = _exec(['bin/zeopack'], os.path.abspath(os.path.join('bin', 'zeopack')), os.getcwd())
     logging.info('Stopping DB server')
     out, rc = _exec(['bin/zeoserver', 'stop'], zeo, os.getcwd())
 
@@ -447,8 +462,9 @@ def _updateDatabase(zopeu, zopep):
 def main(argv=sys.argv):
     try:
         options, args = _optParser.parse_args(argv)
-        if len(args) > 1:
-            _optParser.error('The deployment script takes no positional arguments on the command line.')
+        if len(args) != 2:
+            _optParser.error('Specify the public hostname of the portal, such as "edrn.nci.nih.gov", "edrn-dev.nci.nih.gov", etc.')
+        publicHostname = args[1]
         if not options.existing_install:
             _optParser.error('You must indicate the location of the old, existing EDRN portal with the --existing-install option.')
         zopePasswd, superPasswd = options.zope_password, options.supervisor_password
@@ -461,13 +477,14 @@ def main(argv=sys.argv):
         logging.debug('main')
         _checkExisting(options.existing_install)
         _center()
+        _paintTarget()
         _easel()
         _showNotice()
         _checkDepends()
         ip = _checkIP()
         login = _getLogger()
         _deployInt()
-        _writeConfig(login, options.zope_user, zopePasswd, options.supervisor_user, superPasswd, ports)
+        _writeConfig(login, options.zope_user, zopePasswd, options.supervisor_user, superPasswd, ports, publicHostname)
         _bootstrap()
         _p4aBuildout()
         _snapshotDB(options.existing_install)
