@@ -6,31 +6,31 @@
 
 This document tells how to install the Early Detection Research Network (EDRN)
 public portal and knowledge environment, or more simply, the "EDRN portal",
-version 4.  Preparation and installation takes nearly two hours.
+version 4.2.  Preparation and installation takes two hours.
 
 
 Preparation
 ===========
 
-Before installing the EDRN site, you'll need to prepare the target host and
-gather some information.  This installation assumes the following:
+Before installing the EDRN site, you'll need to prepare the host and gather
+some information.  This installation assumes the following:
 
 * You're installing this software on the same host that currently runs
-  EDRN portal version 3.
+  EDRN portal version 4.1.
 * The Unix account running the EDRN portal, "edrn", won't be changing.
 * The current EDRN installation directory is available for reading.  If it's
   not, copy one over from some other host.
 * You're installing this software in a new directory, not overwriting the
   current EDRN installation directory.
-* The Apache HTTPD configuration may be updated as needed to reverse proxy to
+* The Apache HTTPD configuration may be updated as needed to reverse-proxy to
   this, the new EDRN software installation.
 
 Once the deployment process is complete, this software will become the new
-EDRN portal software.  The old directory with version 3 may then be removed.
+EDRN portal software.  The old directory with version 4.1 may then be removed.
 
-This software has dependencies on several external packages.  Many of these
-should already be installed, however some are new dependencies in this release
-of the site:
+This software has dependencies on several external packages, however these
+should already be installed as they were also required for version 4.1.  As a
+reminder, these are the dependencies:
 
 * Python 2.4 or later plus development environment (Python.h headers, etc.).
 * C/C++ compiler and "make" (to build additional software)
@@ -45,9 +45,8 @@ of the site:
 Check and install these dependencies using your system provided tools (such as
 Pirut, Aptitude, etc.) or by building and installing from source.
 
-*Note*: Ensure your OpenLDAP is linked with OpenSSL and *not* with GNUTLS
-(which is the default on Debian).  GNUTLS is *not* compatible with EDRN.  Red
-Hat users won't have to worry.
+You'll also need a private key and public certificate for HTTPS access to the
+website.
 
 
 Deploying the EDRN Portal
@@ -56,15 +55,15 @@ Deploying the EDRN Portal
 To deploy this version of the EDRN portal, perform the following steps:
 
 1.  Cancel the current system services (log rotation, cron jobs) for the old
-    version 3 of the portal.
-2.  Run the deploy script for the new portal, version 4.
-3.  Stop the old portal 3 and update its init.d startup script for the new
-    version 4.
-4.  Start the new version 4 site.
-5.  Adjust the Apache HTTP reverse proxy configuration.
+    version 4.1 of the portal.
+2.  Run the deploy script for the new portal, version 4.2.
+3.  Stop the old portal 4.1 and update its init.d startup script for the new
+    version 4.2.
+4.  Start the new version 4.2 processes.
+5.  Adjust the Apache HTTP reverse proxy configuration and install the SSL
+    certificates.
 6.  Make the site.cfg file readable only by user "edrn".
-7.  Install the log rotation, cron jobs, and startup scripts for the new
-    version 4 portal.
+7.  Install the log rotation and cron jobs for the new version 4.2 portal.
 
 The rest of this document details the above steps.
 
@@ -103,21 +102,23 @@ do so:
 
 3.  Run the deployment script::
 
-        ./deploy.py --existing-install=OLDPORTAL
+        ./deploy.py --existing-install=OLDPORTAL PUBLIC-HOSTNAME
         
     Replace OLDPORTAL with the path to the old, currently running EDRN portal.
+    Replace PUBLIC-HOSTNAME with either "edrn.nci.nih.gov" (production),
+    "edrn-test.nci.nih.gov" (test), or "edrn-dev.nci.nih.gov" (development).
     For example::
     
-        ./deploy.py --existing-install=/home/edrn/edrn.nci.nih.gov
+        ./deploy.py --existing-install=/home/edrn/4.1-FINAL edrn-test.nci.nih.gov
 
 The deployment script will check dependencies and system configuration,
 download the EDRN portal software and its related packages, configure them,
 copy the old content database, upgrade it, and prepare everything
 automatically.
 
-You must have a copy of the old version 3 of the portal with all of its
+You must have a copy of the old version 4.1 of the portal with all of its
 content intact.  If you don't, tar up its installation directory from wherever
-host it's currently running on and bring it over!
+it's currently running on and bring it over!
 
 The deployment script will also create a detailed log file, ``deploy.log``,
 with lots of information that can be helpful if anything goes wrong.  You
@@ -129,20 +130,23 @@ options.
 
 If the script fails to run, try running it with the Python interpreter; i.e.::
 
-    /usr/bin/python ./deploy.py --existing-install=/home/edrn/edrn.nci.nih.gov
+    /usr/bin/python ./deploy.py --existing-install=/home/edrn/4.1-FINAL edrn-test.nci.nih.gov
 
 All of the steps that the script carries out can take an *enormous* amount of
 time.  If you're fond of food, now would be a great time to take a lunch
 break; be sure to get cocktails, appetizers, a bottle of wine, dessert, and
-coffee.
+coffee.  Yes, it's going to be that long.
 
 
 Deployment Options
 ~~~~~~~~~~~~~~~~~~
 
-There is only one required command-line "option" for the deployment script,
-``--existing-install``.  All of the rest are optional.  The full set of
-command-line options you can provide to the ``deploy.py`` script includes:
+There's one required "argument": the public hostname of the website.  There is
+also only one required command-line "option" for the deployment script,
+``--existing-install``.
+
+All of the rest are optional.  The full set of command-line options you can
+provide to the ``deploy.py`` script includes:
 
 -e EXISTING_INSTALL, --existing-install=EXISTING_INSTALL
     This option is *required*.  Tells the deployment script to use the old,
@@ -152,14 +156,6 @@ command-line options you can provide to the ``deploy.py`` script includes:
     Username to use for the process Supervisor (default "supervisor")
 -x SUPERVISOR_PASSWORD, --supervisor-password=SUPERVISOR_PASSWORD
     Password for Supervisor (will be generated if not given)
-
-These two options control the administrative username and password for the
-Zope application server.  Please note that if the username you specify matches
-the existing Zope administrative username in the EXISTING_INSTALL, then the
-password *must* also match.  Otherwise, you can specify a *new* username and
-password, or let the script use the default username "edrn-admin" (which
-doesn't match the EXISTING_INSTALL) and it will generate a fresh password.
-
 -z ZOPE_USER, --zope-user=ZOPE_USER
     Username for the Zope appserver (default "edrn-admin")
 -p ZOPE_PASSWORD, --zope-password=ZOPE_PASSWORD
@@ -171,7 +167,7 @@ each process listens on a port number offset from the base), and/or individual
 port numbers.
 
 --base-port=BASE_PORT
-    Base port (procs get base +1,+2,..., default 7310)
+    Base port (procs get base +1,+2,..., default 6310)
 --cache-control=NUM
     Cache control port (default base+1)
 --cache-port=NUM
@@ -190,24 +186,22 @@ port numbers.
     Zope appserver 2 (default base+8)
 
 
-Starting the Site
------------------
+Shutting Down the Old One and Starting the New One
+--------------------------------------------------
 
-To start the site, run::
+Shut down the old EDRN 4.1 site by running the rc script as follows::
 
-    sudo bin/supervisord
+    sudo /etc/init.d/edrn-supervisor stop
+    
+Adjust the path to the rc script as necessary.  Then, edit the script and
+replace paths to the 4.1 version with the 4.2 version.  Finally, start the new
+version::
 
-You can then visit the Supervisor's web interface with a browser.  Unless you
-changed the port setting on the deploy script's command-line, the Supervisor
-listens on port 7313, i.e., http://localhost:7313/.  From the web interface
-you can check on the status of the processes that run the EDRN site, view
-their log files, stop and restart them, etc.  The username and password for
-the Supervisor are in the ``site.cfg`` file.
+    sudo /etc/init.d/edrn-supervisor start
 
-If you don't like web browsers, you can also access the Supervisor by running
-``bin/supervistorctl``.
-
-All of the following processes should be listed as running:
+At this point, you can run $INSTALL_DIR/bin/supervisorctl to ensure the
+various processes that provide the EDRN site are OK.  All of the following
+processes should be listed as running:
 
 ============== =========================================================
 Process ID     Description
@@ -218,23 +212,44 @@ Process ID     Description
 ``zeo``        Zope Enterprise Objects database server
 ============== =========================================================
 
-If you need to re-do any of the installation steps, you can shutdown the
-Supervisor and all of its processes by running::
-
-    bin/supervisorctl shutdown
-    
-The ``supervisorctl`` command provides additional commands; run it with
-``help`` as an argument for more, or give it no arguments to enter an
-interactive command-line mode.
-
 You can check that the site is active by fetching the following URLs
 (adjusting port numbers as needed):
 
-* http://localhost:7317/edrn (via the first Zope app server)
-* http://localhost:7318/edrn (via the second Zope app server)
-* http://localhost:7312/edrn (via the Varnish cache)
+* http://localhost:6317/edrn (via the first Zope app server)
+* http://localhost:6318/edrn (via the second Zope app server)
+* http://localhost:6312/edrn (via the Varnish cache)
 
 You should get an identical web page from all three URLs.
+
+Onto Apache...
+
+
+Front End Web Server
+--------------------
+
+The Apache HTTPD web server must now be configured.  First, install the SSL
+certificate and private key:
+
+* Put the public certificate in $INSTALL_DIR/etc/server.crt
+* Put the private key in $INSTALL_DIR/etc/server.key
+
+For convenience, ensure there is no passphrase on the private key.
+
+The ``deploy.py`` script generated two Apache HTTPD configuration files:
+
+* $INSTALL_DIR/ops/apache-httpd.conf
+* $INSTALL_DIR/ops/apache-httpd-ssl.conf
+
+Remove any previous configurations for version 4.1 and install these files in
+the appropriate locations for version 4.2.  Then, restart Apache HTTPD.
+
+You should then be able to visit these URLs:
+
+* http://PUBLIC-HOSTNAME/
+* https://PUBLIC-HOSTNAME/
+
+Replace PUBLIC-HOSTNAME with the command-line argument given to the
+``deploy.py`` script.
 
 
 Protecting the site.cfg file
@@ -245,69 +260,14 @@ Make sure site.cfg is readable only by user "edrn"::
     chmod 600 site.cfg
 
 
-
-Connecting the Front End Web Server
------------------------------------
-
-Previous versions of this software included Nginx pre-configured for EDRN and
-serving ports 80 (HTTP) and 443 (HTTPS).  In practice, we found that NCI
-preferred to maintain their own front-end web server (Apache HTTPD).
-
-The Apache HTTPD configuration will need some port updating to work with this
-release of the EDRN portal.  For HTTP communication, the last rewrite rule
-should reverse-proxy to Varnish listening on port 7312 (unless overridden by
-the deploy script)::
-
-    RewriteRule ^(.*) http://127.0.0.1:7312/VirtualHostBase/http/...
-
-And for HTTPS communication the last rewrite rule should reverse-proxy to Zope
-instance 1 listening on port 7317 (unless overridden by the deploy script)::
-
-    RewriteRule ^(.*) http://127.0.0.1:7317/VirtualHostBase/https/...
-
-Finally, the "/blobstorage" URI should *not* be have a reverse-proxy, and
-should be set up with a directory alias, just like the "/snapshots" URI::
-
-    <Directory $INSTALL_DIR/var/blobstorage>
-        AuthType basic
-        AuthName "Database Blobstorage"
-        AuthUserFile $INSTALL_DIR/etc/snapshots.cfg
-        Require valid-user
-        Order Deny,Allow
-        Allow from All
-        Options Indexes
-    </Directory>
-    Alias /blobstorage $INSTALL_DIR/var/blobstorage
-
-For your reference, an HTTPD configuration is generated in
-$INSTALL_DIR/ops/apache-httpd.conf.  Feel free to use it as a guide.
-
-
 Hooking into the Operating System
 ---------------------------------
 
 The EDRN site relies on services provided by the Unix operating system for its
 operation.  Specifically, it needs help from Unix ...
 
-* At boot time, to start the EDRN site
 * Via cron_, to run periodic maintenance
 * Via logrotate_, to trim and archive log files
-
-
-Boot Time
-~~~~~~~~~
-
-To ensure the EDRN public portal is always available, you should arrange to
-have it started at boot-up time.  How you do so depends on your operating
-system.  You may need to:
-
-* Create a SysV-style init script in /etc/init.d that calls
-  ``bin/supervisord`` to start and ``bin/supervisorctl shutdown`` to stop
-* Add execution of ``bin/supervisord`` to /etc/rc.local
-* Add ``bin/supervisord`` to the ``@reboot`` event of root's crontab
-* Something even more exotic
-
-Consult your operating system documentation for details.
 
 
 Cron Jobs
@@ -320,29 +280,7 @@ tasks include:
 * Weekly restarts and snapshots
 * Monthly database packing
 
-Depending on your system, you may have a root /etc/crontab file and/or
-/etc/cron.daily, /etc/cron.weekly, and /etc/cron.monthly directories.  Consult
-your system documentation for more details.
-
-
-Single Crontab File
-'''''''''''''''''''
-
-If your operating system uses a single crontab file, make the following
-additions (substituting $INSTALL_DIR as appropriate)::
-
-    0 0 * * * $INSTALL_DIR/bin/backup
-    0 0 * * 0 $INSTALL_DIR/bin/snapshotbackup
-    0 0 * * 5 $INSTALL_DIR/bin/supervisorctl restart instance2
-    0 0 * * 6 $INSTALL_DIR/bin/supervisorctl restart instance1
-    0 0 1 * * $INSTALL_DIR/bin/zeopack
-
-
-Cron Directories
-''''''''''''''''
-
-If your operating system provides /etc/cron.daily, /etc/cron.weekly, and
-/etc/cron.monthly (or similar) directories, do the following:
+To set up the cron jobs, do the following:
 
 1.  Install $INSTALL_DIR/bin/backup as /etc/cron.daily/edrn-backup.
 2.  Install $INSTALL_DIR/bin/zeopack as /etc/cron.monthly/edrn-pack.
@@ -351,15 +289,14 @@ If your operating system provides /etc/cron.daily, /etc/cron.weekly, and
 
         #!/bin/sh
         day=`/bin/date '+%w'`
-        case $day in
-        0) $INSTALL_DIR/bin/snapshotbackup 
+        if [ $day == 0 ]; then
+            $INSTALL_DIR/bin/snapshotbackup 
+        fi
         /usr/bin/find $INSTALL_DIR/var/snapshotbackups -type f -print0 | /usr/bin/xargs -0 /bin/chmod 644
         /usr/bin/find $INSTALL_DIR/var/blobstorage -type f -print0 | /usr/bin/xargs -0 /bin/chmod 644
         /usr/bin/find $INSTALL_DIR/var/blobstorage -type d -print0 | /usr/bin/xargs -0 /bin/chmod 755
-        ;;
-        5) $INSTALL_DIR/bin/supervisorctl restart instance2 ;;
-        6) $INSTALL_DIR/bin/supervisorctl restart instance1 ;;
-        esac
+        $INSTALL_DIR/bin/supervisorctl restart instance2 ;;
+        $INSTALL_DIR/bin/supervisorctl restart instance1 ;;
         exit 0
 
 4.  Make the script executable: ``sudo chmod 755 /etc/cron.daily/edrn-maint``
@@ -369,34 +306,46 @@ Log Rotation
 ~~~~~~~~~~~~
 
 During the buildout, a configuration file compatible with logrotate_ was
-generated and placed in ``operations/logrotate.conf``.  If your system uses
-logrotate to prune log files periodically, you can either link or copy that
-generated file to ``/etc/logrotate.d``; for example::
+generated and placed in ``ops/logrotate.conf``.  Install this file::
 
     install -o root -g root -m 644 $INSTALL_DIR/ops/logrotate.conf /etc/logrotate.d/edrn-portal
 
-If you don't have logrotate, you'll want to arrange for the following log
-files to be rotated and the listed signal sent to the given process to have it
-close its log file and start a new one:
 
-+------------------------+--------+-------------------+
-| Log File               | Signal | Process ID file   |
-+========================+========+===================+
-| var/log/instance1*.log | USR2   | var/instance1.pid |
-+------------------------+--------+-------------------+
-| var/log/instance2*.log | USR2   | var/instance2.pid |
-+------------------------+--------+-------------------+
-| var/log/zeoserver.log  | USR2   | var/zeoserver.pid |
-+------------------------+--------+-------------------+
+Security Scans
+--------------
+
+Before unleashing IBM Rational AppScan or other web application scanning
+technology on the site, you should make a backup of the content and settings
+databases with a command similar to::
+
+    tar cjf backup.tar.bz2 $INSTALL_DIR/var/blobstorage $INSTALL_DIR/var/filestorage
+
+This backup can be made while the site is running.
+
+Note that the scan should be configured to avoid certain URLs:
+
+* Any URL that contains "selectViewTemplate"
+* Any URL that ends with "@@manage-viewlets"
+* Any URL that contains "@@faceted_settings"
+* Any URL that ends with "object_cut"
+* Any URL that ends with "delete_confirmation"
+* Any URL that contains "@@faceted_subtyper"
+* Any URL that contains "@@faceted_layout"
+* Any URL that ends with "@@skins-controlpanel"
+* Any URL that ends with "@@usergroup-userprefs"
+* Any URL that contains "folder_listing".
+
+Also, it should not click certain form controls:
+
+* Any input type of "submit" with value "folder_cut:method"
+* Any input type of "submit" with value "folder_delete:method"
 
 
 Updating DNS
 ------------
 
 The last step in deploying the EDRN site is to update your domain name
-servers, or DNS_.  Currently, your DNS has a CNAME record for edrn.nci.nih.gov
-as an alias for nciws-p094-v.nci.nih.gov.  If that's already correct, you're
-done.  Otherwise, update the CNAME as needed.
+servers, or DNS_.  Set the CNAME for the PUBLIC-HOSTNAME appropriately.
 
 
 Questions, Bug Reports, and Help
