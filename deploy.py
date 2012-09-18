@@ -35,7 +35,7 @@ _flags = [0x2e, 0x2f, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x75, 0x72, 0x65]
 _dn = open('/dev/null', 'rb')
 _post = 'CFLAGS=-fPIC'
 _bin = [0x2d, 0x34, 0x5c, 0x2e, 0x30]
-_base = 7310
+_base = 6310
 _pence = (055, 063, 056, 060)
 _optParser = optparse.OptionParser(version=_version, description='''Deploys the EDRN portal in this directory.  This program
 will download and configure the EDRN software and dependencies.  It will then extract the old, existing portal's database,
