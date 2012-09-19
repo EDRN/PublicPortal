@@ -38,9 +38,9 @@ reminder, these are the dependencies:
 * OpenSSL_ development libraries
 * wvWare_ tools
 * `PDF-to-HTML`_ tools
-* SASL_ (*new* dependency)
-* OpenLDAP_ (*new* dependency)
-* Varnish_ (*new* dependency)
+* SASL_
+* OpenLDAP_
+* Varnish_
 
 Check and install these dependencies using your system provided tools (such as
 Pirut, Aptitude, etc.) or by building and installing from source.
