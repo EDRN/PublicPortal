@@ -1,5 +1,26 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
+Release Notes - Early Detection of Cancer - Version Portal 4.2.0 - 2012-09-19
+
+** Bug
+    * [CA-785] - The Google Analytics limited cookie Javascript is "user" content, should be "system"
+    * [CA-833] - Users from one LDAP server not recognized as members of groups from another LDAP server
+    * [CA-840] - Auto-generated httpd.conf for EDRN Portal breaks direct access to Zope databases
+    * [CA-927] - Science Data tab broken on latest EDRN Public Portal
+    * [CA-961] - Log in form is being displayed on logout, passes by insecure http, not https
+    * [CA-965] - Log the upgrade process
+    * [CA-978] - eke.study can't handle RDF with duplicate protocol titles
+    * [CA-980] - Scan detected improper SSL setup
+    * [CA-981] - Scan detects unreadable URL paths
+    * [CA-982] - Scan detects improper Google Analytics javascript
+    * [CA-983] - Scan detects unencrypted login form
+
+** Improvement
+    * [CA-820] - Add links within a Specimen Set (Reference Set, specifically) to the PDF descriptions of reference sets
+    * [CA-828] - Refactor eke.specimens
+    * [CA-972] - Put "Group Spaces" in "Collaborations Folders" and change label from "Collaborative Groups" to something else
+
+
 Release Notes - Early Detection of Cancer - Version Portal 4.1.6 - 2012-05-02
 
 ** Bug
