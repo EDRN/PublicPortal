@@ -1,5 +1,17 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
+Release Notes - Early Detection of Cancer - Version Portal 4.2.1 - 2012-09-27
+
+** Bug
+    * [CA-1005] - Non-US-ASCII character in Protocol title causes catalog rebuild to fail
+    * [CA-1008] - Add an open text search to specimens
+    * [CA-1010] - Show blank if values are 0 or 0.0
+
+** Improvement
+    * [CA-1000] - Change "Groups" to "Collaborative Groups" on the QuickLinks portlet
+    * [CA-1001] - Put Group Spaces under "Committees" and ingest via RDF
+
+
 Release Notes - Early Detection of Cancer - Version Portal 4.2.0 - 2012-09-19
 
 ** Bug
