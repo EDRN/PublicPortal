@@ -19,6 +19,8 @@ from Products.CMFCore.utils import getToolByName
 from Testing import makerequest
 from zope.app.component.hooks import setSite
 import transaction, sys, logging
+from Products.CMFCore.tests.base.security import PermissiveSecurityPolicy, OmnipotentUser
+from AccessControl.SecurityManager import setSecurityPolicy
 
 def main(app, siteID, adminUser, adminPass, policy):
     # Get logging
@@ -42,15 +44,12 @@ def main(app, siteID, adminUser, adminPass, policy):
     acl_users.users.manage_addUser(adminUser, adminUser, adminPass, adminPass)
 
     # Set up security.
-    user = acl_users.getUser(adminUser)
-    if user:
-        user = user.__of__(acl_users)
-        newSecurityManager(None, user)
-    else:
-        raise Exception('Admin user "%s" does not exist' % adminUser)
+    setSecurityPolicy(PermissiveSecurityPolicy())
+    newSecurityManager(None, OmnipotentUser().__of__(acl_users))
 
     # Get the portal.
-    portal = getattr(app, siteID)
+    portal = app.unrestrictedTraverse(siteID)
+    portal.setupCurrentSkin(app.REQUEST)
     setSite(portal)
 
     # Disable CacheFu.  If we don't, the CMF Squid Tool will start a purge thread, and that
