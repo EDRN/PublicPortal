@@ -174,5 +174,6 @@ def main(argv):
     return True
 
 if __name__ == '__main__':
-    sys.exit(0 if main(sys.argv) is True else -1)
+    # The [2:] works around plone.recipe.zope2instance-4.2.6's lame bin/interpreter script issue
+    sys.exit(0 if main(sys.argv[2:]) is True else -1)
 
