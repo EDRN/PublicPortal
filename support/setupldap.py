@@ -19,6 +19,8 @@ from plone.app.ldap.ploneldap.util import guaranteePluginExists
 from Products.PluggableAuthService.interfaces.plugins import (
     IAuthenticationPlugin, IPropertiesPlugin, IUserAdderPlugin
 )
+from Products.CMFCore.tests.base.security import PermissiveSecurityPolicy, OmnipotentUser
+from AccessControl.SecurityManager import setSecurityPolicy
 
 # Set up logging
 _logger = logging.getLogger('setupldap')
@@ -30,8 +32,6 @@ _logger.addHandler(_console)
 
 # Set up command-line options
 _optParser = optparse.OptionParser(usage='Usage: %prog [options]')
-_optParser.add_option('-z', '--zope', default='admin', metavar='USER',
-    help='Set Zope admin username to USER, default "%default"')
 _optParser.add_option('-D', '--system-dn', default='uid=admin,ou=system', metavar='DN',
     help='Set LDAP admin username to DN, default "%default"')
 _optParser.add_option('-w', '--password', help='Set LDAP admin password to PASSWORD')
@@ -39,17 +39,11 @@ _optParser.add_option('-W', '--prompt', action='store_true', help='Prompt for LD
 _optParser.add_option('-H', '--ldap-url', default='ldap://localhost', help='URL to LDAP server, default "%default"')
 _optParser.add_option('-v', '--verbose', action='store_true', help='Be overly verbose')
 
-def setupZopeSecurity(app, adminUser):
+def setupZopeSecurity(app):
     _logger.debug('Setting up Zope security')
     acl_users = app.acl_users
-    _logger.debug('Got Zope app acl_users, looking up admin "%s"', adminUser)
-    user = acl_users.getUser(adminUser)
-    if user:
-        user = user.__of__(acl_users)
-        newSecurityManager(None, user)
-        _logger.debug('Security setup complete')
-    else:
-        raise Exception('Admin user "%s" does not exist' % adminUser)
+    setSecurityPolicy(PermissiveSecurityPolicy())
+    newSecurityManager(None, OmnipotentUser().__of__(acl_users))
 
 def getPortal(app, portalID):
     _logger.debug('Getting portal "%s"', portalID)
@@ -139,11 +133,11 @@ def fixPASPlugins(portal):
     setPluginOrder(plugins, IPropertiesPlugin, ('ldap-plugin', 'mutable_properties'))
     setPluginOrder(plugins, IUserAdderPlugin, ('ldap-plugin', 'source_users'))
 
-def setupLDAP(app, portalID, zopeAdmin, ldapURL, systemDN, systemDNpwd):
-    _logger.info('On Zope server with admin "%s", setting up LDAP on portal "%s" ', zopeAdmin, portalID)
+def setupLDAP(app, portalID, ldapURL, systemDN, systemDNpwd):
+    _logger.info('Setting up LDAP on portal "%s"', portalID)
     _logger.info('Using LDAP at "%s" with system DN "%s" and password [REDACTED]', ldapURL, systemDN)
     app = makerequest.makerequest(app)
-    setupZopeSecurity(app, zopeAdmin)
+    setupZopeSecurity(app)
     portal = getPortal(app, portalID)
     deleteLDAPPlugins(portal)
     reloadLDAPSetup(portal)
@@ -159,7 +153,7 @@ def main(argv):
     options, args = _optParser.parse_args(argv)
     if len(args) > 1: 
         _optParser.error('This script takes no arguments (only options)')
-    zopeAdmin, systemDN, ldapURL = options.zope, options.system_dn, options.ldap_url
+    systemDN, ldapURL = options.system_dn, options.ldap_url
     if options.prompt:
         systemDNpwd = getpass.getpass(u'Password for "%s": ' % systemDN)
     else:
@@ -170,7 +164,7 @@ def main(argv):
     if options.verbose:
         _logger.setLevel(logging.DEBUG)
     global app, portalID
-    setupLDAP(app, portalID, zopeAdmin, ldapURL, systemDN, systemDNpwd)
+    setupLDAP(app, portalID, ldapURL, systemDN, systemDNpwd)
     return True
 
 if __name__ == '__main__':
