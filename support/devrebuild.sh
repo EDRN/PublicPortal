@@ -28,15 +28,13 @@ sleep 5
 numZeos=0
 [ -x bin/supervisorctl ] && echo 'Shutting down supervisor...' && bin/supervisorctl shutdown && sleep 3
 
-numZeos=`ps auxww | egrep -c '[z]eoserver'`
-if [ $numZeos -ge 1 ]; then
+if pgrep -U `id -u` -q zeoserver; then
     cat <<EOF
 Warning: There are still zeoserver processes still running on this host even
 after shutting down the supervisor.  They may conflict with populating the
 site's content, or they may be unrelated to this buildout.  Regardless, I'll
 continue in 10 seconds.
 EOF
-    echo 'Number of zeoservers found: ' $numZeos
     sleep 10
 fi
 [ -d var ] && echo 'Nuking database and logs...\c' && rm -rf var/filestorage var/log && echo done
