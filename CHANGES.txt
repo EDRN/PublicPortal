@@ -1,5 +1,23 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
+Release Notes - Early Detection of Cancer - Version Portal 4.3.0 - 2013-04-11
+
+** Bug
+    * [CA-1019] - You can assign PIs to a site who are staff from another site
+    * [CA-1037] - Karen Andrerson not listed as PI of Dana Farber
+    * [CA-1049] - Allow duplicate people at different sites
+    * [CA-1078] - Access to Vanity Pages
+    * [CA-1081] - Double login on operational portal
+    * [CA-1083] - eke.biomarker RDF ingest should treat predicate "hasBiomarkerStudyDatas" as a resource-pointing predicate
+    * [CA-1084] - Modifications to Specimen Tab
+    * [CA-1090] - For biomarkers, show a "-" or "N/A" or SOMETHING for prevalence, NPV, and PPV if they're zero or not given.
+
+** Improvement
+    * [CA-971] - Sponsoring site is non-optional, must be optional
+    * [CA-1029] - Sites cannot be displayed if the have outside PIs
+    * [CA-1087] - Additional Specimen_Stored_Code Permissible Values
+
+
 Release Notes - Early Detection of Cancer - Version Portal 4.2.1 - 2012-09-27
 
 ** Bug
@@ -12,7 +30,7 @@ Release Notes - Early Detection of Cancer - Version Portal 4.2.1 - 2012-09-27
     * [CA-1001] - Put Group Spaces under "Committees" and ingest via RDF
 
 
-Release Notes - Early Detection of Cancer - Version Portal 4.2.0 - 2012-09-19
+Release Notes - Early Detection of Cancer - Version Portal 4.2.0 - 2012-09-19 - OPERATIONAL
 
 ** Bug
     * [CA-785] - The Google Analytics limited cookie Javascript is "user" content, should be "system"
