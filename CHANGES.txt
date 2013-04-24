@@ -1,5 +1,11 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
+Release Notes - Early Detection of Cancer - Version Portal 4.3.1 - 2013-04-24
+
+** Improvement
+    * [CA-1100] - Show "N/A" for Prevalence, NPV and PPV
+
+
 Release Notes - Early Detection of Cancer - Version Portal 4.3.0 - 2013-04-11
 
 ** Bug
