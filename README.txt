@@ -27,6 +27,15 @@ For feedback about this product, please visit the feedback page at
 http://cancer.jpl.nasa.gov/contact-info.
 
 
+Support
+=======
+
+Once the EDRN Portal is in operations at NCI, you can get post-operational
+support by emailing:
+
+    ncicb@pop.nci.nih.gov
+
+
 Development
 ===========
 
