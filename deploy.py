@@ -19,8 +19,11 @@ except ImportError:
 import stat as ___
 import platform as plat
 
-# previous values: edrn-admin
-_defZope = 'edrnadmin' # Change this each release, in case TerpSys doesn't and they re-use the uid+passwd
+# important
+BUILDOUT_CHECKSUM_MD5_HASH = '1.6.3'
+
+# previous values: edrnadmin, edrn-admin
+_defZope = 'manager-edrn' # Change this each release, in case TerpSys doesn't and they re-use the uid+passwd
 _defSuper = 'supervisor'
 _eviOutInc = 'deploy.log'
 _cHeader = '''#ifdef __cplusplus
@@ -263,7 +266,7 @@ def _checkDepends():
     logging.info('Checking for pdftohtml')
     if not _which('pdftohtml'): raise IOError('No "pdftohtml" executable found; try installing poppler-utils')
     logging.info('Checking for varnishd')
-    if not _which('varnishd'): raise IOError('No "varnishd" executable found; try installing varnish or put it in PATH')
+    if not _which('varnishd'): raise IOError('No "varnishd" executable found; try installing varnish-2.1.5 or put it in PATH')
     _checkLib('jpeg', 'jpeg_read_header', cc)
     _checkLib('ssl', 'SSL_accept', cc)
     _checkLib('sasl2', 'sasl_setpass', cc)
@@ -373,46 +376,16 @@ def _bootstrap():
         return
     logging.info('Bootstrapping %#x', os.stat(os.path.abspath('bootstrap.py'))[6])
     p = os.path.abspath(os.path.join('support', 'int', 'bin', 'python'))
-    out, rc = _exec([p, 'bootstrap.py', '-dc', os.path.abspath('p4a.cfg')], p, os.getcwd())
+    out, rc = _exec([p, 'bootstrap.py', '-d', '-v', BUILDOUT_CHECKSUM_MD5_HASH, '-c', os.path.abspath('site.cfg')], p, os.getcwd())
     if rc != 0: raise IOError('Bootstrap failed')
 
 
-def _buildout():
+def _buildout(zopeu, zopep):
     '''Buildout.'''
-    logging.info('Building out %#x, this may take less time (a minute or so)',
+    logging.info('Building out %#x, this may take a LONG time (20 mins to full hour)',
         os.stat(os.path.abspath(os.path.join('bin', 'buildout')))[6])
     out, rc = _exec(['bin/buildout', '-c', 'site.cfg'], os.path.abspath(os.path.join('bin', 'buildout')), os.getcwd())
     if rc != 0: raise IOError('Buildout failed')
-
-def _p4aBuildout():
-    '''P4A buildout'''
-    logging.info('Nuking P4A at %#x, this may take some time (over 30 minutes)',
-        os.stat(os.path.abspath(os.path.join('bin', 'buildout')))[6])
-    out, rc = _exec(['bin/buildout', '-c', 'p4a.cfg'], os.path.abspath(os.path.join('bin', 'buildout')), os.getcwd())
-    if rc != 0: raise IOError('P4A Buildout failed')
-    
-def _nukeP4A(zopeu, zopep):
-    '''Nuke P4A.'''
-    logging.info('Nuking P4A')
-    logging.info('Setting Zope user & password for P4A nukage')
-    out, rc = _exec(['bin/instance-debug', 'adduser', zopeu, zopep], os.path.abspath(os.path.join('bin', 'instance-debug')),
-        os.getcwd())
-    if rc != 0: raise IOError('Setting Zope username & password for P4A nukage failed with status %d' % rc)
-    out, rc = _exec(['bin/instance-debug', 'run', 'etc/p4a_terminator.py', zopeu],
-        os.path.abspath(os.path.join('bin', 'instance-debug')), os.getcwd()) # Expect nonzero, ignore
-    if rc != 0:
-        logging.warning('Got exit code %d from p4a_terminator; check log', rc)
-    out, rc = _exec(['bin/instance-debug', 'run', 'etc/other_terminators.py', zopeu],
-        os.path.abspath(os.path.join('bin', 'instance-debug')), os.getcwd()) # Expect nonzero, ignore
-    if rc != 0:
-        logging.warning('Got exit code %d from other_terminator; check log', rc)
-    cleansnap = os.path.abspath(os.path.join(_workspace, 'cleansnap'))
-    shutil.rmtree(cleansnap, ignore_errors=True)
-    os.makedirs(cleansnap)
-    logging.info('Snapshotting cleansnap')
-    out, rc = _exec(['bin/repozo', '-BFzr', cleansnap, '-f', 'var/filestorage/Data.fs'],
-        os.path.abspath(os.path.join('bin', 'repozo')), os.getcwd())
-    if rc != 0: raise IOError('repozo failed of cleaned up database')
 
 def _snapshotDB(existing):
     logging.info('Snapshotting current database')
@@ -449,6 +422,9 @@ def _updateDatabase(zopeu, zopep):
     zeo = os.path.abspath(os.path.join('bin', 'zeoserver'))
     out, rc = _exec(['bin/zeoserver', 'start'], zeo, os.getcwd())
     if rc != 0: raise IOError("Couldn't start zeoserver, status %d" % rc)
+    logging.info('Setting Zope user & password')
+    out, rc = _exec(['bin/instance-debug', 'adduser', zopeu, zopep], os.path.abspath(os.path.join('bin', 'instance-debug')),
+        os.getcwd())
     logging.info('Upgrading database to %s structure, this may take over 30 minutes', _version)
     out, rc = _exec(['bin/instance-debug', 'run', 'support/upgrade.py', zopeu, zopep],
         os.path.abspath(os.path.join('bin', 'instance-debug')), os.getcwd())
@@ -457,7 +433,6 @@ def _updateDatabase(zopeu, zopep):
     out, rc = _exec(['bin/zeopack'], os.path.abspath(os.path.join('bin', 'zeopack')), os.getcwd())
     logging.info('Stopping DB server')
     out, rc = _exec(['bin/zeoserver', 'stop'], zeo, os.getcwd())
-
 
 def main(argv=sys.argv):
     try:
@@ -486,13 +461,10 @@ def main(argv=sys.argv):
         _deployInt()
         _writeConfig(login, options.zope_user, zopePasswd, options.supervisor_user, superPasswd, ports, publicHostname)
         _bootstrap()
-        _p4aBuildout()
+        _buildout()
         _snapshotDB(options.existing_install)
         _blobs(options.existing_install)
         _extractSnapshot('snapshot')
-        _nukeP4A(options.zope_user, zopePasswd)
-        _buildout()
-        _extractSnapshot('cleansnap')
         _updateDatabase(options.zope_user, zopePasswd)
         logging.info('DEPLOYMENT COMPLETE')
     except Exception, ex:

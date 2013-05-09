@@ -5,7 +5,7 @@
 
 import optparse, logging, sys, os, shutil, tempfile, atexit, urllib2, tarfile, base64, bz2
 
-_python = 'http://www.python.org/ftp/python/2.6.7/Python-2.6.7.tar.bz2'
+_python = 'http://python.org/ftp/python/2.7.4/Python-2.7.4.tar.bz2'
 
 _optParser = optparse.OptionParser(description='''Make a distribution of the EDRN portal.''', usage='%prog [options] VERSION')
 _optParser.add_option('-u', '--url', default=_python, help='Override default URL to a Python 2.6 bzip2 tarball.')
@@ -19,7 +19,6 @@ _distItems = (
     'externals',
     'INSTALL.txt',
     'operations.cfg',
-    'p4a-removal.cfg',
     'README.txt',
     'support',
     'templates',
