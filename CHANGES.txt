@@ -1,5 +1,12 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
+Release Notes - Early Detection of Cancer - Version Portal 4.3.2 - 2013-05-10
+
+** Bug
+    * [CA-1065] - bin/test is being generated in operations mode
+    * [CA-1107] - Part [egglist] activated in operational buildout, draws in eggs still in development in 4.2.0 (like edrnsite.vanity)
+
+
 Release Notes - Early Detection of Cancer - Version Portal 4.3.1 - 2013-04-24
 
 ** Improvement
