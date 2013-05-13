@@ -461,7 +461,7 @@ def main(argv=sys.argv):
         _deployInt()
         _writeConfig(login, options.zope_user, zopePasswd, options.supervisor_user, superPasswd, ports, publicHostname)
         _bootstrap()
-        _buildout()
+        _buildout(options.zope_user, zopePasswd)
         _snapshotDB(options.existing_install)
         _blobs(options.existing_install)
         _extractSnapshot('snapshot')
