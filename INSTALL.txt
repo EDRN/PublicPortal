@@ -6,7 +6,7 @@
 
 This document tells how to install the Early Detection Research Network (EDRN)
 public portal and knowledge environment, or more simply, the "EDRN portal",
-version 4.2.  Preparation and installation takes two hours.
+version 4.3.  Preparation and installation takes two hours.
 
 
 Preparation
@@ -16,7 +16,7 @@ Before installing the EDRN site, you'll need to prepare the host and gather
 some information.  This installation assumes the following:
 
 * You're installing this software on the same host that currently runs
-  EDRN portal version 4.1.
+  EDRN portal version 4.2.
 * The Unix account running the EDRN portal, "edrn", won't be changing.
 * The current EDRN installation directory is available for reading.  If it's
   not, copy one over from some other host.
@@ -26,10 +26,10 @@ some information.  This installation assumes the following:
   this, the new EDRN software installation.
 
 Once the deployment process is complete, this software will become the new
-EDRN portal software.  The old directory with version 4.1 may then be removed.
+EDRN portal software.  The old directory with version 4.2 may then be removed.
 
 This software has dependencies on several external packages, however these
-should already be installed as they were also required for version 4.1.  As a
+should already be installed as they were also required for version 4.3.  As a
 reminder, these are the dependencies:
 
 * Python 2.4 or later plus development environment (Python.h headers, etc.).
@@ -55,15 +55,15 @@ Deploying the EDRN Portal
 To deploy this version of the EDRN portal, perform the following steps:
 
 1.  Cancel the current system services (log rotation, cron jobs) for the old
-    version 4.1 of the portal.
-2.  Run the deploy script for the new portal, version 4.2.
-3.  Stop the old portal 4.1 and update its init.d startup script for the new
-    version 4.2.
-4.  Start the new version 4.2 processes.
+    version 4.2 of the portal.
+2.  Run the deploy script for the new portal, version 4.3.
+3.  Stop the old portal 4.2 and update its init.d startup script for the new
+    version 4.3.
+4.  Start the new version 4.3 processes.
 5.  Adjust the Apache HTTP reverse proxy configuration and install the SSL
     certificates.
 6.  Make the site.cfg file readable only by user "edrn".
-7.  Install the log rotation and cron jobs for the new version 4.2 portal.
+7.  Install the log rotation and cron jobs for the new version 4.3 portal.
 
 The rest of this document details the above steps.
 
@@ -109,14 +109,14 @@ do so:
     "edrn-test.nci.nih.gov" (test), or "edrn-dev.nci.nih.gov" (development).
     For example::
     
-        ./deploy.py --existing-install=/home/edrn/4.1-FINAL edrn-test.nci.nih.gov
+        ./deploy.py --existing-install=/home/edrn/4.2-FINAL edrn-test.nci.nih.gov
 
 The deployment script will check dependencies and system configuration,
 download the EDRN portal software and its related packages, configure them,
 copy the old content database, upgrade it, and prepare everything
 automatically.
 
-You must have a copy of the old version 4.1 of the portal with all of its
+You must have a copy of the old version 4.2 of the portal with all of its
 content intact.  If you don't, tar up its installation directory from wherever
 it's currently running on and bring it over!
 
@@ -130,7 +130,7 @@ options.
 
 If the script fails to run, try running it with the Python interpreter; i.e.::
 
-    /usr/bin/python ./deploy.py --existing-install=/home/edrn/4.1-FINAL edrn-test.nci.nih.gov
+    /usr/bin/python ./deploy.py --existing-install=/home/edrn/4.2-FINAL edrn-test.nci.nih.gov
 
 All of the steps that the script carries out can take an *enormous* amount of
 time.  If you're fond of food, now would be a great time to take a lunch
@@ -189,12 +189,12 @@ port numbers.
 Shutting Down the Old One and Starting the New One
 --------------------------------------------------
 
-Shut down the old EDRN 4.1 site by running the rc script as follows::
+Shut down the old EDRN 4.2 site by running the rc script as follows::
 
     sudo /etc/init.d/edrn-supervisor stop
     
 Adjust the path to the rc script as necessary.  Then, edit the script and
-replace paths to the 4.1 version with the 4.2 version.  Finally, start the new
+replace paths to the 4.2 version with the 4.3 version.  Finally, start the new
 version::
 
     sudo /etc/init.d/edrn-supervisor start
@@ -240,8 +240,8 @@ The ``deploy.py`` script generated two Apache HTTPD configuration files:
 * $INSTALL_DIR/ops/apache-httpd.conf
 * $INSTALL_DIR/ops/apache-httpd-ssl.conf
 
-Remove any previous configurations for version 4.1 and install these files in
-the appropriate locations for version 4.2.  Then, restart Apache HTTPD.
+Remove any previous configurations for version 4.2 and install these files in
+the appropriate locations for version 4.3.  Then, restart Apache HTTPD.
 
 You should then be able to visit these URLs:
 
