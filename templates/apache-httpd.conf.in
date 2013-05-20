@@ -10,12 +10,19 @@
     RewriteEngine On
     RewriteCond %{REQUEST_METHOD} %(TRACE|TRACK)
     RewriteRule .* - [F]
+
     RewriteCond %{HTTPS} off
     RewriteCond %{HTTP_COOKIE} __ac=
-    RewriteRule ^(.*) https://${:public-hostname}$1 [NE,L,R=301]
+    RewriteCond %{HTTP_HOST} ^${:public-hostname-escaped}$
+    RewriteRule ^/(.*) https://${:public-hostname}/$1 [NE,L,R=301]
+
+    RewriteCond %{HTTP_HOST} ^${:public-hostname-escaped}$
     RewriteCond %{QUERY_STRING} came_from=http(.*)
     RewriteRule ^/(.*)(require_login|login_form)$ https://${:public-hostname}/$1$2?came_from=https%1 [NE,L]
-    RewriteCond %{REQUEST_URI} !.*login\.(js|css)
-    RewriteRule ^/(.*)login(.*) https://${:public-hostname}/$1login$2 [NE,L,R=permanent]
+
+    RewriteRule ^/(.*)login_(.*) https://${:public-hostname}/$1login_$2 [NE,L,R=301]
+
+    RewriteRule ^(.*)/login$ https://${:public-hostname}/$1/login [NE,L,R=301]
+
     RewriteRule ^(.*) http://${hosts:cache}:${ports:cache}/VirtualHostBase/http/${:public-hostname}:80/edrn/VirtualHostRoot$1 [L,P]
 </VirtualHost>

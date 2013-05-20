@@ -13,39 +13,29 @@
     SSLCipherSuite HIGH:MEDIUM
     SSLCertificateFile ${buildout:directory}/etc/server.crt
     SSLCertificateKeyFile ${buildout:directory}/etc/server.key
-    RewriteCond %{HTTPS} on
-    RewriteRule ^/(.*)logged_out http://${:public-hostname}/$1logged_out [NE,L,R=permanent]
-    RewriteCond %{HTTPS} on
-    RewriteCond %{HTTP_COOKIE} !__ac=
-    RewriteCond %{REQUEST_URI} !.*login(_form)?
-    RewriteCond %{REQUEST_URI} !/(snapshots|blobstorage)(.*)
-    RewriteRule ^/(.*) http://${:public-hostname}/$1 [NE,L,R=permanent]
-    RewriteCond %{HTTPS} on
-    RewriteRule ^(.*)login\.(js|css)(.*) http://${hosts:instance1}:${ports:instance1}/VirtualHostBase/https/${:public-hostname}:443/edrn/VirtualHostRoot/$1login.$2$3 [L,P]
-    RewriteCond %{HTTPS} on
-    RewriteCond %{HTTP_COOKIE} !__ac=
-    RewriteCond %{REQUEST_URI} !.*login\.(js|css)
-    RewriteRule ^(.*)/(require_)?login(_form)?(.*) http://${hosts:instance1}:${ports:instance1}/VirtualHostBase/https/${:public-hostname}:443/edrn/VirtualHostRoot/$1/$2login$3$4 [L,P]
-    RewriteCond %{HTTPS} on
-    RewriteCond %{HTTP_COOKIE} __ac=
-    RewriteCond %{REQUEST_URI} !/(snapshots|blobstorage)(.*)
+
+    RewriteCond %{HTTP_HOST} ^${:public-hostname-escaped}$
+    RewriteRule ^/(.*)logged_out http://${:public-hostname}/$1logged_out [L,P]
+
+    RewriteCond %{REQUEST_URI} !/snapshots(.*)
+    RewriteCond %{REQUEST_URI} !/blobstorage(.*)
     RewriteRule ^(.*) http://${hosts:instance1}:${ports:instance1}/VirtualHostBase/https/${:public-hostname}:443/edrn/VirtualHostRoot$1 [L,P]
-    Alias /snapshots ${buildout:directory}/var/snapshotbackups
-    RewriteCond %{HTTPS} on
-    RewriteRule /snapshots(.*) /snapshots$1 [PT]
-    <Directory ${buildout:directory}/var/snapshotbackups>
-        AuthType basic
-        AuthName "Database Snapshots"
+
+    Alias /snapshots "${buildout:directory}/var/snapshotbackups"
+    <Directory "${buildout:directory}/var/snapshotbackups">
+	    AuthType basic
+	    AuthName "Database Snapshots"
         AuthUserFile ${buildout:directory}/etc/snapshots.cfg
         Require valid-user
         Order Deny,Allow
-        Allow from All
-        Options Indexes
+	    Allow from All
+	    Options Indexes FollowSymLinks
+        AllowOverride none
     </Directory>
+    ProxyPass /snapshots !
+
     Alias /blobstorage ${buildout:directory}/var/blobstorage
-    RewriteCond %{HTTPS} on
-    RewriteRule /blobstorage(.*) /blobstorage$1 [PT]
-    <Directory ${buildout:directory}/var/blobstorage>
+    <Directory "${buildout:directory}/var/blobstorage">
         AuthType basic
         AuthName "Database Blobstorage"
         AuthUserFile ${buildout:directory}/etc/snapshots.cfg
@@ -54,4 +44,5 @@
         Allow from All
         Options Indexes
     </Directory>
+    ProxyPass /blobstorage !
 </VirtualHost>
