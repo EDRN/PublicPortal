@@ -1,5 +1,13 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
+
+Release Notes - Early Detection of Cancer - Version Portal 4.4.0 - 2013-05-20 - OPERATIONAL
+
+** Bug
+    * [CA-1111] - Update LDAPS certificates shipped with portal
+    * [CA-1112] - Portal needs NCI-styled Apache HTTPD configuration
+
+
 Release Notes - Early Detection of Cancer - Version Portal 4.3.2 - 2013-05-10
 
 ** Bug
