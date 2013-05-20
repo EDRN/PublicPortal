@@ -1,729 +1,397 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.8.1: http://docutils.sourceforge.net/" />
-<title>Installing the Early Detection Research Network Site</title>
-<style type="text/css">
+******************************************************
+ Installing the Early Detection Research Network Site
+******************************************************
 
-/*
-:Author: David Goodger (goodger@python.org)
-:Id: $Id: html4css1.css 7056 2011-06-17 10:50:48Z milde $
-:Copyright: This stylesheet has been placed in the public domain.
+.. contents::
 
-Default cascading style sheet for the HTML output of Docutils.
+This document tells how to install the Early Detection Research Network (EDRN)
+public portal and knowledge environment, or more simply, the "EDRN portal",
+version 4.4.  Preparation and installation takes two hours.
 
-See http://docutils.sf.net/docs/howto/html-stylesheets.html for how to
-customize this style sheet.
-*/
 
-/* used to remove borders from tables and images */
-.borderless, table.borderless td, table.borderless th {
-  border: 0 }
+Preparation
+===========
 
-table.borderless td, table.borderless th {
-  /* Override padding for "table.docutils td" with "! important".
-     The right padding separates the table cells. */
-  padding: 0 0.5em 0 0 ! important }
+Before installing the EDRN site, you'll need to prepare the host and gather
+some information.  This installation assumes the following:
 
-.first {
-  /* Override more specific margin styles with "! important". */
-  margin-top: 0 ! important }
+* You're installing this software on the same host that currently runs
+  EDRN portal version 4.2.
+* The Unix account running the EDRN portal, "edrn", won't be changing.
+* The current EDRN installation directory is available for reading.  If it's
+  not, copy one over from some other host.
+* You're installing this software in a new directory, not overwriting the
+  current EDRN installation directory.
+* The Apache HTTPD configuration may be updated as needed to reverse-proxy to
+  this, the new EDRN software installation.
 
-.last, .with-subtitle {
-  margin-bottom: 0 ! important }
+Once the deployment process is complete, this software will become the new
+EDRN portal software.  The old directory with version 4.2 may then be removed.
 
-.hidden {
-  display: none }
-
-a.toc-backref {
-  text-decoration: none ;
-  color: black }
-
-blockquote.epigraph {
-  margin: 2em 5em ; }
-
-dl.docutils dd {
-  margin-bottom: 0.5em }
-
-object[type="image/svg+xml"], object[type="application/x-shockwave-flash"] {
-  overflow: hidden;
-}
-
-/* Uncomment (and remove this text!) to get bold-faced definition list terms
-dl.docutils dt {
-  font-weight: bold }
-*/
-
-div.abstract {
-  margin: 2em 5em }
-
-div.abstract p.topic-title {
-  font-weight: bold ;
-  text-align: center }
-
-div.admonition, div.attention, div.caution, div.danger, div.error,
-div.hint, div.important, div.note, div.tip, div.warning {
-  margin: 2em ;
-  border: medium outset ;
-  padding: 1em }
-
-div.admonition p.admonition-title, div.hint p.admonition-title,
-div.important p.admonition-title, div.note p.admonition-title,
-div.tip p.admonition-title {
-  font-weight: bold ;
-  font-family: sans-serif }
-
-div.attention p.admonition-title, div.caution p.admonition-title,
-div.danger p.admonition-title, div.error p.admonition-title,
-div.warning p.admonition-title {
-  color: red ;
-  font-weight: bold ;
-  font-family: sans-serif }
-
-/* Uncomment (and remove this text!) to get reduced vertical space in
-   compound paragraphs.
-div.compound .compound-first, div.compound .compound-middle {
-  margin-bottom: 0.5em }
-
-div.compound .compound-last, div.compound .compound-middle {
-  margin-top: 0.5em }
-*/
-
-div.dedication {
-  margin: 2em 5em ;
-  text-align: center ;
-  font-style: italic }
-
-div.dedication p.topic-title {
-  font-weight: bold ;
-  font-style: normal }
-
-div.figure {
-  margin-left: 2em ;
-  margin-right: 2em }
-
-div.footer, div.header {
-  clear: both;
-  font-size: smaller }
-
-div.line-block {
-  display: block ;
-  margin-top: 1em ;
-  margin-bottom: 1em }
-
-div.line-block div.line-block {
-  margin-top: 0 ;
-  margin-bottom: 0 ;
-  margin-left: 1.5em }
-
-div.sidebar {
-  margin: 0 0 0.5em 1em ;
-  border: medium outset ;
-  padding: 1em ;
-  background-color: #ffffee ;
-  width: 40% ;
-  float: right ;
-  clear: right }
-
-div.sidebar p.rubric {
-  font-family: sans-serif ;
-  font-size: medium }
-
-div.system-messages {
-  margin: 5em }
-
-div.system-messages h1 {
-  color: red }
-
-div.system-message {
-  border: medium outset ;
-  padding: 1em }
-
-div.system-message p.system-message-title {
-  color: red ;
-  font-weight: bold }
-
-div.topic {
-  margin: 2em }
-
-h1.section-subtitle, h2.section-subtitle, h3.section-subtitle,
-h4.section-subtitle, h5.section-subtitle, h6.section-subtitle {
-  margin-top: 0.4em }
-
-h1.title {
-  text-align: center }
-
-h2.subtitle {
-  text-align: center }
-
-hr.docutils {
-  width: 75% }
-
-img.align-left, .figure.align-left, object.align-left {
-  clear: left ;
-  float: left ;
-  margin-right: 1em }
-
-img.align-right, .figure.align-right, object.align-right {
-  clear: right ;
-  float: right ;
-  margin-left: 1em }
-
-img.align-center, .figure.align-center, object.align-center {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.align-left {
-  text-align: left }
-
-.align-center {
-  clear: both ;
-  text-align: center }
-
-.align-right {
-  text-align: right }
-
-/* reset inner alignment in figures */
-div.align-right {
-  text-align: inherit }
-
-/* div.align-center * { */
-/*   text-align: left } */
-
-ol.simple, ul.simple {
-  margin-bottom: 1em }
-
-ol.arabic {
-  list-style: decimal }
-
-ol.loweralpha {
-  list-style: lower-alpha }
-
-ol.upperalpha {
-  list-style: upper-alpha }
-
-ol.lowerroman {
-  list-style: lower-roman }
-
-ol.upperroman {
-  list-style: upper-roman }
-
-p.attribution {
-  text-align: right ;
-  margin-left: 50% }
-
-p.caption {
-  font-style: italic }
-
-p.credits {
-  font-style: italic ;
-  font-size: smaller }
-
-p.label {
-  white-space: nowrap }
-
-p.rubric {
-  font-weight: bold ;
-  font-size: larger ;
-  color: maroon ;
-  text-align: center }
-
-p.sidebar-title {
-  font-family: sans-serif ;
-  font-weight: bold ;
-  font-size: larger }
-
-p.sidebar-subtitle {
-  font-family: sans-serif ;
-  font-weight: bold }
-
-p.topic-title {
-  font-weight: bold }
-
-pre.address {
-  margin-bottom: 0 ;
-  margin-top: 0 ;
-  font: inherit }
-
-pre.literal-block, pre.doctest-block, pre.math {
-  margin-left: 2em ;
-  margin-right: 2em }
-
-span.classifier {
-  font-family: sans-serif ;
-  font-style: oblique }
-
-span.classifier-delimiter {
-  font-family: sans-serif ;
-  font-weight: bold }
-
-span.interpreted {
-  font-family: sans-serif }
-
-span.option {
-  white-space: nowrap }
-
-span.pre {
-  white-space: pre }
-
-span.problematic {
-  color: red }
-
-span.section-subtitle {
-  /* font-size relative to parent (h1..h6 element) */
-  font-size: 80% }
-
-table.citation {
-  border-left: solid 1px gray;
-  margin-left: 1px }
-
-table.docinfo {
-  margin: 2em 4em }
-
-table.docutils {
-  margin-top: 0.5em ;
-  margin-bottom: 0.5em }
-
-table.footnote {
-  border-left: solid 1px black;
-  margin-left: 1px }
-
-table.docutils td, table.docutils th,
-table.docinfo td, table.docinfo th {
-  padding-left: 0.5em ;
-  padding-right: 0.5em ;
-  vertical-align: top }
-
-table.docutils th.field-name, table.docinfo th.docinfo-name {
-  font-weight: bold ;
-  text-align: left ;
-  white-space: nowrap ;
-  padding-left: 0 }
-
-h1 tt.docutils, h2 tt.docutils, h3 tt.docutils,
-h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
-  font-size: 100% }
-
-ul.auto-toc {
-  list-style-type: none }
-
-</style>
-</head>
-<body>
-<div class="document" id="installing-the-early-detection-research-network-site">
-<h1 class="title">Installing the Early Detection Research Network Site</h1>
-
-<div class="contents topic" id="contents">
-<p class="topic-title first">Contents</p>
-<ul class="simple">
-<li><a class="reference internal" href="#preparation" id="id1">Preparation</a></li>
-<li><a class="reference internal" href="#deploying-the-edrn-portal" id="id2">Deploying the EDRN Portal</a><ul>
-<li><a class="reference internal" href="#canceling-the-current-system-services" id="id3">Canceling the Current System Services</a></li>
-<li><a class="reference internal" href="#running-the-deploy-script" id="id4">Running the Deploy Script</a><ul>
-<li><a class="reference internal" href="#deployment-options" id="id5">Deployment Options</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#shutting-down-the-old-one-and-starting-the-new-one" id="id6">Shutting Down the Old One and Starting the New One</a></li>
-<li><a class="reference internal" href="#front-end-web-server" id="id7">Front End Web Server</a></li>
-<li><a class="reference internal" href="#protecting-the-site-cfg-file" id="id8">Protecting the site.cfg file</a></li>
-<li><a class="reference internal" href="#hooking-into-the-operating-system" id="id9">Hooking into the Operating System</a><ul>
-<li><a class="reference internal" href="#cron-jobs" id="id10">Cron Jobs</a></li>
-<li><a class="reference internal" href="#log-rotation" id="id11">Log Rotation</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#security-scans" id="id12">Security Scans</a></li>
-<li><a class="reference internal" href="#updating-dns" id="id13">Updating DNS</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#questions-bug-reports-and-help" id="id14">Questions, Bug Reports, and Help</a></li>
-</ul>
-</div>
-<p>This document tells how to install the Early Detection Research Network (EDRN)
-public portal and knowledge environment, or more simply, the &quot;EDRN portal&quot;,
-version 4.4.  Preparation and installation takes two hours.</p>
-<div class="section" id="preparation">
-<h1><a class="toc-backref" href="#id1">Preparation</a></h1>
-<p>Before installing the EDRN site, you'll need to prepare the host and gather
-some information.  This installation assumes the following:</p>
-<ul class="simple">
-<li>You're installing this software on the same host that currently runs
-EDRN portal version 4.2.</li>
-<li>The Unix account running the EDRN portal, &quot;edrn&quot;, won't be changing.</li>
-<li>The current EDRN installation directory is available for reading.  If it's
-not, copy one over from some other host.</li>
-<li>You're installing this software in a new directory, not overwriting the
-current EDRN installation directory.</li>
-<li>The Apache HTTPD configuration may be updated as needed to reverse-proxy to
-this, the new EDRN software installation.</li>
-</ul>
-<p>Once the deployment process is complete, this software will become the new
-EDRN portal software.  The old directory with version 4.2 may then be removed.</p>
-<p>This software has dependencies on several external packages, however these
+This software has dependencies on several external packages, however these
 should already be installed as they were also required for version 4.4.  As a
-reminder, these are the dependencies:</p>
-<ul class="simple">
-<li>Python 2.4 or later plus development environment (Python.h headers, etc.).</li>
-<li>C/C++ compiler and &quot;make&quot; (to build additional software)</li>
-<li><a class="reference external" href="http://www.ijg.org/">JPEG</a> 6B development libraries</li>
-<li><a class="reference external" href="http://www.openssl.org/">OpenSSL</a> development libraries</li>
-<li><a class="reference external" href="http://wvware.sourceforge.net/">wvWare</a> tools</li>
-<li><a class="reference external" href="http://poppler.freedesktop.org/releases.html">PDF-to-HTML</a> tools</li>
-<li><a class="reference external" href="http://asg.web.cmu.edu/sasl/">SASL</a></li>
-<li><a class="reference external" href="http://asg.web.cmu.edu/sasl/">OpenLDAP</a></li>
-<li><a class="reference external" href="https://www.varnish-cache.org/">Varnish</a></li>
-</ul>
-<p>Check and install these dependencies using your system provided tools (such as
-Pirut, Aptitude, etc.) or by building and installing from source.</p>
-<p>You'll also need a private key and public certificate for HTTPS access to the
-website.</p>
-</div>
-<div class="section" id="deploying-the-edrn-portal">
-<h1><a class="toc-backref" href="#id2">Deploying the EDRN Portal</a></h1>
-<p>To deploy this version of the EDRN portal, perform the following steps:</p>
-<ol class="arabic simple">
-<li>Cancel the current system services (log rotation, cron jobs) for the old
-version 4.2 of the portal.</li>
-<li>Run the deploy script for the new portal, version 4.4.</li>
-<li>Stop the old portal 4.2 and update its init.d startup script for the new
-version 4.4.</li>
-<li>Start the new version 4.4 processes.</li>
-<li>Adjust the Apache HTTP reverse proxy configuration and install the SSL
-certificates.</li>
-<li>Make the site.cfg file readable only by user &quot;edrn&quot;.</li>
-<li>Install the log rotation and cron jobs for the new version 4.4 portal.</li>
-</ol>
-<p>The rest of this document details the above steps.</p>
-<div class="section" id="canceling-the-current-system-services">
-<h2><a class="toc-backref" href="#id3">Canceling the Current System Services</a></h2>
-<p>The old version of the EDRN portal currently running takes advantage of a few
+reminder, these are the dependencies:
+
+* Python 2.4 or later plus development environment (Python.h headers, etc.).
+* C/C++ compiler and "make" (to build additional software)
+* JPEG_ 6B development libraries
+* OpenSSL_ development libraries
+* wvWare_ tools
+* `PDF-to-HTML`_ tools
+* SASL_
+* OpenLDAP_
+* Varnish_
+
+Check and install these dependencies using your system provided tools (such as
+Pirut, Aptitude, etc.) or by building and installing from source.
+
+You'll also need a private key and public certificate for HTTPS access to the
+website.
+
+
+Deploying the EDRN Portal
+=========================
+
+To deploy this version of the EDRN portal, perform the following steps:
+
+1.  Cancel the current system services (log rotation, cron jobs) for the old
+    version 4.2 of the portal.
+2.  Run the deploy script for the new portal, version 4.4.
+3.  Stop the old portal 4.2 and update its init.d startup script for the new
+    version 4.4.
+4.  Start the new version 4.4 processes.
+5.  Adjust the Apache HTTP reverse proxy configuration and install the SSL
+    certificates.
+6.  Make the site.cfg file readable only by user "edrn".
+7.  Install the log rotation and cron jobs for the new version 4.4 portal.
+
+The rest of this document details the above steps.
+
+
+Canceling the Current System Services
+-------------------------------------
+
+The old version of the EDRN portal currently running takes advantage of a few
 operating system services, including log file rotation and periodic cron jobs.
-These need to be canceled.  To do so, remove the following files/symlinks:</p>
-<ul class="simple">
-<li>/etc/cron.daily/edrn (might be named &quot;backup&quot; or &quot;edrn-backup&quot;)</li>
-<li>/etc/cron.weekly/edrn (might be named &quot;edrn-maint&quot;)</li>
-<li>/etc/cron.monthly/edrn (might be named &quot;zeopack&quot; or &quot;edrn-pack&quot;)</li>
-<li>/etc/logrotate.d/edrn (might be named &quot;edrn-portal&quot;)</li>
-</ul>
-</div>
-<div class="section" id="running-the-deploy-script">
-<h2><a class="toc-backref" href="#id4">Running the Deploy Script</a></h2>
-<p>Deploying the new version of the EDRN portal is easier than ever before.  To
-do so:</p>
-<ol class="arabic">
-<li><p class="first">Extract the software archive:</p>
-<pre class="literal-block">
-tar xjf edrn-portal-VERSION.tar.bz2
-</pre>
-<p>Replace VERSION with the version number being deployed.  Do <em>not</em> extract
-the file over an existing installation directory; as a sibling directory,
-or elsewhere, is fine.  Do so as the EDRN user &quot;edrn&quot;.</p>
-</li>
-<li><p class="first">Change the current working directory to the newly extracted directory,
-which from here on out we'll call $INSTALL_DIR:</p>
-<pre class="literal-block">
-cd edrn-portal-VERSION
-</pre>
-</li>
-<li><p class="first">Run the deployment script:</p>
-<pre class="literal-block">
-./deploy.py --existing-install=OLDPORTAL PUBLIC-HOSTNAME
-</pre>
-<p>Replace OLDPORTAL with the path to the old, currently running EDRN portal.
-Replace PUBLIC-HOSTNAME with either &quot;edrn.nci.nih.gov&quot; (production),
-&quot;edrn-test.nci.nih.gov&quot; (test), or &quot;edrn-dev.nci.nih.gov&quot; (development).
-For example:</p>
-<pre class="literal-block">
-./deploy.py --existing-install=/home/edrn/4.2-FINAL edrn-test.nci.nih.gov
-</pre>
-</li>
-</ol>
-<p>The deployment script will check dependencies and system configuration,
+These need to be canceled.  To do so, remove the following files/symlinks:
+
+* /etc/cron.daily/edrn (might be named "backup" or "edrn-backup")
+* /etc/cron.weekly/edrn (might be named "edrn-maint")
+* /etc/cron.monthly/edrn (might be named "zeopack" or "edrn-pack")
+* /etc/logrotate.d/edrn (might be named "edrn-portal")
+
+
+Running the Deploy Script
+-------------------------
+
+Deploying the new version of the EDRN portal is easier than ever before.  To
+do so:
+
+1.  Extract the software archive::
+
+        tar xjf edrn-portal-VERSION.tar.bz2
+        
+    Replace VERSION with the version number being deployed.  Do *not* extract
+    the file over an existing installation directory; as a sibling directory,
+    or elsewhere, is fine.  Do so as the EDRN user "edrn".
+
+2.  Change the current working directory to the newly extracted directory,
+    which from here on out we'll call $INSTALL_DIR::
+
+        cd edrn-portal-VERSION
+
+3.  Run the deployment script::
+
+        ./deploy.py --existing-install=OLDPORTAL PUBLIC-HOSTNAME
+        
+    Replace OLDPORTAL with the path to the old, currently running EDRN portal.
+    Replace PUBLIC-HOSTNAME with either "edrn.nci.nih.gov" (production),
+    "edrn-test.nci.nih.gov" (test), or "edrn-dev.nci.nih.gov" (development).
+    For example::
+    
+        ./deploy.py --existing-install=/home/edrn/4.2-FINAL edrn-test.nci.nih.gov
+
+The deployment script will check dependencies and system configuration,
 download the EDRN portal software and its related packages, configure them,
 copy the old content database, upgrade it, and prepare everything
-automatically.</p>
-<p>You must have a copy of the old version 4.2 of the portal with all of its
+automatically.
+
+You must have a copy of the old version 4.2 of the portal with all of its
 content intact.  If you don't, tar up its installation directory from wherever
-it's currently running on and bring it over!</p>
-<p>The deployment script will also create a detailed log file, <tt class="docutils literal">deploy.log</tt>,
+it's currently running on and bring it over!
+
+The deployment script will also create a detailed log file, ``deploy.log``,
 with lots of information that can be helpful if anything goes wrong.  You
-won't need to redirect or save the console output of the command at all.</p>
-<p>For finer control over what the deployment script does, you can specify
-additional command-line arguments.  Run <tt class="docutils literal">./deploy.py <span class="pre">--help</span></tt> for a list of
-options.</p>
-<p>If the script fails to run, try running it with the Python interpreter; i.e.:</p>
-<pre class="literal-block">
-/usr/bin/python ./deploy.py --existing-install=/home/edrn/4.2-FINAL edrn-test.nci.nih.gov
-</pre>
-<p>All of the steps that the script carries out can take an <em>enormous</em> amount of
+won't need to redirect or save the console output of the command at all.
+
+For finer control over what the deployment script does, you can specify
+additional command-line arguments.  Run ``./deploy.py --help`` for a list of
+options.
+
+If the script fails to run, try running it with the Python interpreter; i.e.::
+
+    /usr/bin/python ./deploy.py --existing-install=/home/edrn/4.2-FINAL edrn-test.nci.nih.gov
+
+All of the steps that the script carries out can take an *enormous* amount of
 time.  If you're fond of food, now would be a great time to take a lunch
 break; be sure to get cocktails, appetizers, a bottle of wine, dessert, and
-coffee.  Yes, it's going to be that long.</p>
-<div class="section" id="deployment-options">
-<h3><a class="toc-backref" href="#id5">Deployment Options</a></h3>
-<p>There's one required &quot;argument&quot;: the public hostname of the website.  There is
-also only one required command-line &quot;option&quot; for the deployment script,
-<tt class="docutils literal"><span class="pre">--existing-install</span></tt>.</p>
-<p>All of the rest are optional.  The full set of command-line options you can
-provide to the <tt class="docutils literal">deploy.py</tt> script includes:</p>
-<table class="docutils option-list" frame="void" rules="none">
-<col class="option" />
-<col class="description" />
-<tbody valign="top">
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">-e <var>EXISTING_INSTALL</var></span>, <span class="option">--existing-install=<var>EXISTING_INSTALL</var></span></kbd></td>
-</tr>
-<tr><td>&nbsp;</td><td>This option is <em>required</em>.  Tells the deployment script to use the old,
-existing installation of the EDRN portal software in the directory
-EXISTING_INSTALL.</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">-s <var>SUPERVISOR_USER</var></span>, <span class="option">--supervisor-user=<var>SUPERVISOR_USER</var></span></kbd></td>
-</tr>
-<tr><td>&nbsp;</td><td>Username to use for the process Supervisor (default &quot;supervisor&quot;)</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">-x <var>SUPERVISOR_PASSWORD</var></span>, <span class="option">--supervisor-password=<var>SUPERVISOR_PASSWORD</var></span></kbd></td>
-</tr>
-<tr><td>&nbsp;</td><td>Password for Supervisor (will be generated if not given)</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">-z <var>ZOPE_USER</var></span>, <span class="option">--zope-user=<var>ZOPE_USER</var></span></kbd></td>
-</tr>
-<tr><td>&nbsp;</td><td>Username for the Zope appserver (default &quot;edrn-admin&quot;)</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">-p <var>ZOPE_PASSWORD</var></span>, <span class="option">--zope-password=<var>ZOPE_PASSWORD</var></span></kbd></td>
-</tr>
-<tr><td>&nbsp;</td><td>Password for the Zope appserver (will be generated if not given)</td></tr>
-</tbody>
-</table>
-<p>The remaining options control the TCP ports on which the various processes
+coffee.  Yes, it's going to be that long.
+
+
+Deployment Options
+~~~~~~~~~~~~~~~~~~
+
+There's one required "argument": the public hostname of the website.  There is
+also only one required command-line "option" for the deployment script,
+``--existing-install``.
+
+All of the rest are optional.  The full set of command-line options you can
+provide to the ``deploy.py`` script includes:
+
+-e EXISTING_INSTALL, --existing-install=EXISTING_INSTALL
+    This option is *required*.  Tells the deployment script to use the old,
+    existing installation of the EDRN portal software in the directory
+    EXISTING_INSTALL.
+-s SUPERVISOR_USER, --supervisor-user=SUPERVISOR_USER
+    Username to use for the process Supervisor (default "supervisor")
+-x SUPERVISOR_PASSWORD, --supervisor-password=SUPERVISOR_PASSWORD
+    Password for Supervisor (will be generated if not given)
+-z ZOPE_USER, --zope-user=ZOPE_USER
+    Username for the Zope appserver (default "edrn-admin")
+-p ZOPE_PASSWORD, --zope-password=ZOPE_PASSWORD
+    Password for the Zope appserver (will be generated if not given)
+
+The remaining options control the TCP ports on which the various processes
 that comprise the EDRN portal listen.  You can specify a base port number (and
 each process listens on a port number offset from the base), and/or individual
-port numbers.</p>
-<table class="docutils option-list" frame="void" rules="none">
-<col class="option" />
-<col class="description" />
-<tbody valign="top">
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--base-port=<var>BASE_PORT</var></span></kbd></td>
-</tr>
-<tr><td>&nbsp;</td><td>Base port (procs get base +1,+2,..., default 6310)</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--cache-control=<var>NUM</var></span></kbd></td>
-</tr>
-<tr><td>&nbsp;</td><td>Cache control port (default base+1)</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--cache-port=<var>NUM</var></span></kbd></td>
-</tr>
-<tr><td>&nbsp;</td><td>Cache port (default base+2)</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--supervisor-port=<var>NUM</var></span></kbd></td>
-</tr>
-<tr><td>&nbsp;</td><td>Supervisor port (default base+3)</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--zeo-monitor-port=<var>NUM</var></span></kbd></td>
-</tr>
-<tr><td>&nbsp;</td><td>ZEO monitor port (default base+4)</td></tr>
-<tr><td class="option-group">
-<kbd><span class="option">--zeo-port=<var>NUM</var></span></kbd></td>
-<td>ZEO database port (default base+5)</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--zope-debug-port=<var>NUM</var></span></kbd></td>
-</tr>
-<tr><td>&nbsp;</td><td>Zope debug port (default base+6)</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--zope1-port=<var>NUM</var></span></kbd></td>
-</tr>
-<tr><td>&nbsp;</td><td>Zope appserver 1 (default base+7)</td></tr>
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--zope2-port=<var>NUM</var></span></kbd></td>
-</tr>
-<tr><td>&nbsp;</td><td>Zope appserver 2 (default base+8)</td></tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="section" id="shutting-down-the-old-one-and-starting-the-new-one">
-<h2><a class="toc-backref" href="#id6">Shutting Down the Old One and Starting the New One</a></h2>
-<p>Shut down the old EDRN 4.2 site by running the rc script as follows:</p>
-<pre class="literal-block">
-sudo /etc/init.d/edrn-supervisor stop
-</pre>
-<p>Adjust the path to the rc script as necessary.  Then, edit the script and
+port numbers.
+
+--base-port=BASE_PORT
+    Base port (procs get base +1,+2,..., default 6310)
+--cache-control=NUM
+    Cache control port (default base+1)
+--cache-port=NUM
+    Cache port (default base+2)
+--supervisor-port=NUM
+    Supervisor port (default base+3)
+--zeo-monitor-port=NUM
+    ZEO monitor port (default base+4)
+--zeo-port=NUM
+    ZEO database port (default base+5)
+--zope-debug-port=NUM
+    Zope debug port (default base+6)
+--zope1-port=NUM
+    Zope appserver 1 (default base+7)
+--zope2-port=NUM
+    Zope appserver 2 (default base+8)
+
+
+Shutting Down the Old One and Starting the New One
+--------------------------------------------------
+
+Shut down the old EDRN 4.2 site by running the rc script as follows::
+
+    sudo /etc/init.d/edrn-supervisor stop
+    
+Adjust the path to the rc script as necessary.  Then, edit the script and
 replace paths to the 4.2 version with the 4.4 version.  Finally, start the new
-version:</p>
-<pre class="literal-block">
-sudo /etc/init.d/edrn-supervisor start
-</pre>
-<p>At this point, you can run $INSTALL_DIR/bin/supervisorctl to ensure the
+version::
+
+    sudo /etc/init.d/edrn-supervisor start
+
+At this point, you can run $INSTALL_DIR/bin/supervisorctl to ensure the
 various processes that provide the EDRN site are OK.  All of the following
-processes should be listed as running:</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="20%" />
-<col width="80%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head">Process ID</th>
-<th class="head">Description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td><tt class="docutils literal">cache</tt></td>
-<td>Varnish reverse proxy caching engine</td>
-</tr>
-<tr><td><tt class="docutils literal">instance1</tt></td>
-<td>First Zope application server</td>
-</tr>
-<tr><td><tt class="docutils literal">instance2</tt></td>
-<td>Second Zope application server</td>
-</tr>
-<tr><td><tt class="docutils literal">zeo</tt></td>
-<td>Zope Enterprise Objects database server</td>
-</tr>
-</tbody>
-</table>
-<p>You can check that the site is active by fetching the following URLs
-(adjusting port numbers as needed):</p>
-<ul class="simple">
-<li><a class="reference external" href="http://localhost:6317/edrn">http://localhost:6317/edrn</a> (via the first Zope app server)</li>
-<li><a class="reference external" href="http://localhost:6318/edrn">http://localhost:6318/edrn</a> (via the second Zope app server)</li>
-<li><a class="reference external" href="http://localhost:6312/edrn">http://localhost:6312/edrn</a> (via the Varnish cache)</li>
-</ul>
-<p>You should get an identical web page from all three URLs.</p>
-<p>Onto Apache...</p>
-</div>
-<div class="section" id="front-end-web-server">
-<h2><a class="toc-backref" href="#id7">Front End Web Server</a></h2>
-<p>The Apache HTTPD web server must now be configured.  First, install the SSL
-certificate and private key:</p>
-<ul class="simple">
-<li>Put the public certificate in $INSTALL_DIR/etc/server.crt</li>
-<li>Put the private key in $INSTALL_DIR/etc/server.key</li>
-</ul>
-<p>For convenience, ensure there is no passphrase on the private key.</p>
-<p>The <tt class="docutils literal">deploy.py</tt> script generated two Apache HTTPD configuration files:</p>
-<ul class="simple">
-<li>$INSTALL_DIR/ops/apache-httpd.conf</li>
-<li>$INSTALL_DIR/ops/apache-httpd-ssl.conf</li>
-</ul>
-<p>Remove any previous configurations for version 4.2 and install these files in
-the appropriate locations for version 4.4.  Then, restart Apache HTTPD.</p>
-<p>You should then be able to visit these URLs:</p>
-<ul class="simple">
-<li><a class="reference external" href="http://PUBLIC-HOSTNAME/">http://PUBLIC-HOSTNAME/</a></li>
-<li><a class="reference external" href="https://PUBLIC-HOSTNAME/">https://PUBLIC-HOSTNAME/</a></li>
-</ul>
-<p>Replace PUBLIC-HOSTNAME with the command-line argument given to the
-<tt class="docutils literal">deploy.py</tt> script.</p>
-</div>
-<div class="section" id="protecting-the-site-cfg-file">
-<h2><a class="toc-backref" href="#id8">Protecting the site.cfg file</a></h2>
-<p>Make sure site.cfg is readable only by user &quot;edrn&quot;:</p>
-<pre class="literal-block">
-chmod 600 site.cfg
-</pre>
-</div>
-<div class="section" id="hooking-into-the-operating-system">
-<h2><a class="toc-backref" href="#id9">Hooking into the Operating System</a></h2>
-<p>The EDRN site relies on services provided by the Unix operating system for its
-operation.  Specifically, it needs help from Unix ...</p>
-<ul class="simple">
-<li>Via <a class="reference external" href="http://en.wikipedia.org/wiki/Cron">cron</a>, to run periodic maintenance</li>
-<li>Via <a class="reference external" href="http://linuxers.org/howto/howto-use-logrotate-manage-log-files">logrotate</a>, to trim and archive log files</li>
-</ul>
-<div class="section" id="cron-jobs">
-<h3><a class="toc-backref" href="#id10">Cron Jobs</a></h3>
-<p>The EDRN site relies on the Unix cron scheduler for periodic tasks.  These
-tasks include:</p>
-<ul class="simple">
-<li>Daily database backups</li>
-<li>Weekly restarts and snapshots</li>
-<li>Monthly database packing</li>
-</ul>
-<p>To set up the cron jobs, do the following:</p>
-<ol class="arabic">
-<li><p class="first">Install $INSTALL_DIR/bin/backup as /etc/cron.daily/edrn-backup.</p>
-</li>
-<li><p class="first">Install $INSTALL_DIR/bin/zeopack as /etc/cron.monthly/edrn-pack.</p>
-</li>
-<li><p class="first">Create a script /etc/cron.daily/edrn-maint with the following contents
-(substituting the appropriate value for $INSTALL_DIR):</p>
-<pre class="literal-block">
-#!/bin/sh
-day=`/bin/date '+%w'`
-if [ $day == 0 ]; then
-    $INSTALL_DIR/bin/snapshotbackup
-fi
-/usr/bin/find $INSTALL_DIR/var/snapshotbackups -type f -print0 | /usr/bin/xargs -0 /bin/chmod 644
-/usr/bin/find $INSTALL_DIR/var/blobstorage -type f -print0 | /usr/bin/xargs -0 /bin/chmod 644
-/usr/bin/find $INSTALL_DIR/var/blobstorage -type d -print0 | /usr/bin/xargs -0 /bin/chmod 755
-$INSTALL_DIR/bin/supervisorctl restart instance2 ;;
-$INSTALL_DIR/bin/supervisorctl restart instance1 ;;
-exit 0
-</pre>
-</li>
-<li><p class="first">Make the script executable: <tt class="docutils literal">sudo chmod 755 <span class="pre">/etc/cron.daily/edrn-maint</span></tt></p>
-</li>
-</ol>
-</div>
-<div class="section" id="log-rotation">
-<h3><a class="toc-backref" href="#id11">Log Rotation</a></h3>
-<p>During the buildout, a configuration file compatible with <a class="reference external" href="http://linuxers.org/howto/howto-use-logrotate-manage-log-files">logrotate</a> was
-generated and placed in <tt class="docutils literal">ops/logrotate.conf</tt>.  Install this file:</p>
-<pre class="literal-block">
-install -o root -g root -m 644 $INSTALL_DIR/ops/logrotate.conf /etc/logrotate.d/edrn-portal
-</pre>
-</div>
-</div>
-<div class="section" id="security-scans">
-<h2><a class="toc-backref" href="#id12">Security Scans</a></h2>
-<p>Before unleashing IBM Rational AppScan or other web application scanning
+processes should be listed as running:
+
+============== =========================================================
+Process ID     Description
+============== =========================================================
+``cache``      Varnish reverse proxy caching engine
+``instance1``  First Zope application server
+``instance2``  Second Zope application server
+``zeo``        Zope Enterprise Objects database server
+============== =========================================================
+
+You can check that the site is active by fetching the following URLs
+(adjusting port numbers as needed):
+
+* http://localhost:6317/edrn (via the first Zope app server)
+* http://localhost:6318/edrn (via the second Zope app server)
+* http://localhost:6312/edrn (via the Varnish cache)
+
+You should get an identical web page from all three URLs.
+
+Onto Apache...
+
+
+Front End Web Server
+--------------------
+
+The Apache HTTPD web server must now be configured.  First, install the SSL
+certificate and private key:
+
+* Put the public certificate in $INSTALL_DIR/etc/server.crt
+* Put the private key in $INSTALL_DIR/etc/server.key
+
+For convenience, ensure there is no passphrase on the private key.
+
+The ``deploy.py`` script generated two Apache HTTPD configuration files:
+
+* $INSTALL_DIR/ops/apache-httpd.conf
+* $INSTALL_DIR/ops/apache-httpd-ssl.conf
+
+Remove any previous configurations for version 4.2 and install these files in
+the appropriate locations for version 4.4.  Then, restart Apache HTTPD.
+
+You should then be able to visit these URLs:
+
+* http://PUBLIC-HOSTNAME/
+* https://PUBLIC-HOSTNAME/
+
+Replace PUBLIC-HOSTNAME with the command-line argument given to the
+``deploy.py`` script.
+
+
+Protecting the site.cfg file
+----------------------------
+
+Make sure site.cfg is readable only by user "edrn"::
+
+    chmod 600 site.cfg
+
+
+Hooking into the Operating System
+---------------------------------
+
+The EDRN site relies on services provided by the Unix operating system for its
+operation.  Specifically, it needs help from Unix ...
+
+* Via cron_, to run periodic maintenance
+* Via logrotate_, to trim and archive log files
+
+
+Cron Jobs
+~~~~~~~~~
+
+The EDRN site relies on the Unix cron scheduler for periodic tasks.  These
+tasks include:
+
+* Daily database backups
+* Weekly restarts and snapshots
+* Monthly database packing
+
+To set up the cron jobs, do the following:
+
+1.  Install $INSTALL_DIR/bin/backup as /etc/cron.daily/edrn-backup.
+2.  Install $INSTALL_DIR/bin/zeopack as /etc/cron.monthly/edrn-pack.
+3.  Create a script /etc/cron.daily/edrn-maint with the following contents
+    (substituting the appropriate value for $INSTALL_DIR)::
+
+        #!/bin/sh
+        day=`/bin/date '+%w'`
+        if [ $day == 0 ]; then
+            $INSTALL_DIR/bin/snapshotbackup 
+        fi
+        /usr/bin/find $INSTALL_DIR/var/snapshotbackups -type f -print0 | /usr/bin/xargs -0 /bin/chmod 644
+        /usr/bin/find $INSTALL_DIR/var/blobstorage -type f -print0 | /usr/bin/xargs -0 /bin/chmod 644
+        /usr/bin/find $INSTALL_DIR/var/blobstorage -type d -print0 | /usr/bin/xargs -0 /bin/chmod 755
+        $INSTALL_DIR/bin/supervisorctl restart instance2 ;;
+        $INSTALL_DIR/bin/supervisorctl restart instance1 ;;
+        exit 0
+
+4.  Make the script executable: ``sudo chmod 755 /etc/cron.daily/edrn-maint``
+
+
+Log Rotation
+~~~~~~~~~~~~
+
+During the buildout, a configuration file compatible with logrotate_ was
+generated and placed in ``ops/logrotate.conf``.  Install this file::
+
+    install -o root -g root -m 644 $INSTALL_DIR/ops/logrotate.conf /etc/logrotate.d/edrn-portal
+
+
+Security Scans
+--------------
+
+Before unleashing IBM Rational AppScan or other web application scanning
 technology on the site, you should make a backup of the content and settings
-databases with a command similar to:</p>
-<pre class="literal-block">
-tar cjf backup.tar.bz2 $INSTALL_DIR/var/blobstorage $INSTALL_DIR/var/filestorage
-</pre>
-<p>This backup can be made while the site is running.</p>
-<p>Note that the scan should be configured to avoid certain URLs:</p>
-<ul class="simple">
-<li>Any URL that contains &quot;selectViewTemplate&quot;</li>
-<li>Any URL that ends with &quot;&#64;&#64;manage-viewlets&quot;</li>
-<li>Any URL that contains &quot;&#64;&#64;faceted_settings&quot;</li>
-<li>Any URL that ends with &quot;object_cut&quot;</li>
-<li>Any URL that ends with &quot;delete_confirmation&quot;</li>
-<li>Any URL that contains &quot;&#64;&#64;faceted_subtyper&quot;</li>
-<li>Any URL that contains &quot;&#64;&#64;faceted_layout&quot;</li>
-<li>Any URL that ends with &quot;&#64;&#64;skins-controlpanel&quot;</li>
-<li>Any URL that ends with &quot;&#64;&#64;usergroup-userprefs&quot;</li>
-<li>Any URL that contains &quot;folder_listing&quot;.</li>
-</ul>
-<p>Also, it should not click certain form controls:</p>
-<ul class="simple">
-<li>Any input type of &quot;submit&quot; with value &quot;folder_cut:method&quot;</li>
-<li>Any input type of &quot;submit&quot; with value &quot;folder_delete:method&quot;</li>
-</ul>
-</div>
-<div class="section" id="updating-dns">
-<h2><a class="toc-backref" href="#id13">Updating DNS</a></h2>
-<p>The last step in deploying the EDRN site is to update your domain name
-servers, or <a class="reference external" href="http://en.wikipedia.org/wiki/Domain_Name_System">DNS</a>.  Set the CNAME for the PUBLIC-HOSTNAME appropriately.</p>
-</div>
-</div>
-<div class="section" id="questions-bug-reports-and-help">
-<h1><a class="toc-backref" href="#id14">Questions, Bug Reports, and Help</a></h1>
-<p>For feedback about this product, please visit the feedback page at
-<a class="reference external" href="http://cancer.jpl.nasa.gov/contact-info">http://cancer.jpl.nasa.gov/contact-info</a>.</p>
-<!-- References: -->
-<!-- Author:
-Sean Kelly
-Jet Propulsion Laboratory
-California Institute of Technology -->
-<!-- Copyright:
-Copyright 2010-2011 California Institute of Technology. ALL RIGHTS RESERVED.
-U.S. Government sponsorship acknowledged. -->
-</div>
-</div>
-</body>
-</html>
+databases with a command similar to::
+
+    tar cjf backup.tar.bz2 $INSTALL_DIR/var/blobstorage $INSTALL_DIR/var/filestorage
+
+This backup can be made while the site is running.
+
+Note that the scan should be configured to avoid certain URLs:
+
+* Any URL that contains "selectViewTemplate"
+* Any URL that ends with "@@manage-viewlets"
+* Any URL that contains "@@faceted_settings"
+* Any URL that ends with "object_cut"
+* Any URL that ends with "delete_confirmation"
+* Any URL that contains "@@faceted_subtyper"
+* Any URL that contains "@@faceted_layout"
+* Any URL that ends with "@@skins-controlpanel"
+* Any URL that ends with "@@usergroup-userprefs"
+* Any URL that contains "folder_listing".
+
+Also, it should not click certain form controls:
+
+* Any input type of "submit" with value "folder_cut:method"
+* Any input type of "submit" with value "folder_delete:method"
+
+
+Updating DNS
+------------
+
+The last step in deploying the EDRN site is to update your domain name
+servers, or DNS_.  Set the CNAME for the PUBLIC-HOSTNAME appropriately.
+
+
+Questions, Bug Reports, and Help
+================================
+
+For feedback about this product, please visit the feedback page at
+http://cancer.jpl.nasa.gov/contact-info.
+
+
+.. References:
+.. _APT: http://en.wikipedia.org/wiki/Advanced_Packaging_Tool
+.. _Buildout: http://www.buildout.org/
+.. _CNAME: http://en.wikipedia.org/wiki/CNAME_record
+.. _cron: http://en.wikipedia.org/wiki/Cron
+.. _Debian: http://www.debian.org/
+.. _DNS: http://en.wikipedia.org/wiki/Domain_Name_System
+.. _FreeBSD: http://www.freebsd.org/
+.. _GCC: http://gcc.gnu.org/
+.. _logrotate: http://linuxers.org/howto/howto-use-logrotate-manage-log-files
+.. _Plone: http://plone.org/
+.. _Postfix: http://www.postfix.org/
+.. _RHEL: http://www.redhat.com/rhel/
+.. _Supervisor: http://supervisord.org/
+.. _SUSE: http://www.novell.com/linux/
+.. _Xcode: http://developer.apple.com/technologies/tools/xcode.html
+.. _Zope: http://zope2.zope.org/
+.. _virtualenv: http://www.virtualenv.org/
+.. _`GNU Make`: http://www.gnu.org/software/make/
+.. _`Mac OS X`: http://www.apple.com/macosx/
+.. _`Python Source`: http://python.org/download/releases/2.4.6
+.. _JPEG: http://www.ijg.org/
+.. _OpenSSL: http://www.openssl.org/
+.. _wvWare: http://wvware.sourceforge.net/
+.. _pdf-to-html: http://poppler.freedesktop.org/releases.html
+.. _SASL: http://asg.web.cmu.edu/sasl/
+.. _OpenLDAP: http://asg.web.cmu.edu/sasl/
+.. _Varnish: https://www.varnish-cache.org/
+
+
+.. Author:
+    Sean Kelly
+    Jet Propulsion Laboratory
+    California Institute of Technology
+
+.. Copyright:
+    Copyright 2010-2011 California Institute of Technology. ALL RIGHTS RESERVED.
+    U.S. Government sponsorship acknowledged.
+
+
