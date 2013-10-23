@@ -1,6 +1,31 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
 
+Release Notes - Early Detection of Cancer - Version Portal 4.4.1 - 2013-10-23 - Demo
+
+** Bug
+    * [CA-1038] - Samir Hanash - PI missing for Protocols and Science Data
+    * [CA-1114] - Christopher Li Site Disappears after Specimen Ingest (on beta site)
+    * [CA-1123] - Duplicate Person objects in portal when someone moves from one Site to another Site
+    * [CA-1145] - Biomarker study tab not showing studies that are associated in bmdb
+    * [CA-1148] - Remove description from Protocols it's duplicated in the abstract
+    * [CA-1159] - Specimens tab shows error
+    * [CA-1162] - Protocol ingest doesn't update linked biomarkers to link back to protocols (maybe)
+    * [CA-1163] - Make RDF ingest defensive against bad protocols from BMDB
+    * [CA-1189] - Enable left+right portlets on /biomarkers
+    * [CA-1205] - Resources on a biomarker (or a biomarker–body-system) are displayed in random order; should be alphabetical
+    * [CA-1206] - "No resources" appears on a biomarker–body-system when there are no publications, not if there are no resources
+
+** Improvement
+    * [CA-1122] - Indicate if Protocol is not an EDRN Protocol
+    * [CA-1158] - Upgrade Portal to Plone 4.3.1 to close security hole and increase speed/resilience; Upgrade to eea.facetednavigation 5.8
+
+** New Feature
+    * [CA-1156] - Show more attributes for biomarkers that are "mostly public"
+    * [CA-1182] - Recognize "Private" QA State of Biomarker
+    * [CA-1184] - Biomarker "report" by Organ
+
+
 Release Notes - Early Detection of Cancer - Version Portal 4.4.0 - 2013-05-20 - OPERATIONAL
 
 ** Bug
