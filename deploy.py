@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright 2011-2012 California Institute of Technology. ALL RIGHTS
+# Copyright 2011-2013 California Institute of Technology. ALL RIGHTS
 # RESERVED. U.S. Government Sponsorship acknowledged.
 
 _version = 'UNKNOWN'
@@ -14,7 +14,7 @@ try:
 except ImportError:
     print >>sys.stderr, 'FATAL ERROR: cannot import bz2.'
     print >>sys.stderr, 'This version of Python (%s) does not built with libz support.' % sys.executable
-    print >>sys.stderr, "Sadly, there's no way I can proceed without with now."
+    print >>sys.stderr, "Sadly, there's no way I can proceed without libz now."
     sys.exit(-2)
 import stat as ___
 import platform as plat
@@ -40,22 +40,27 @@ _post = 'CFLAGS=-fPIC'
 _bin = [0x2d, 0x34, 0x5c, 0x2e, 0x30]
 _base = 6310
 _pence = (055, 063, 056, 060)
-_optParser = optparse.OptionParser(version=_version, description='''Deploys the EDRN portal in this directory.  This program
-will download and configure the EDRN software and dependencies.  It will then extract the old, existing portal's database,
-upgrade it to the structure for this, the new version, and prepare it for operations.  See the README.txt for more details.''',
-usage='Usage: %prog [options] PUBLIC-HOSTNAME')
-_optParser.add_option('-e', '--existing-install', help='Path to the old pre-existing installation of EDRN portal. Required.')
-_optParser.add_option('-s', '--supervisor-user', default=_defSuper, help='Username to use for Supervisor (default "%default")')
+
+_optParser = optparse.OptionParser(version=_version, description='''Deploys the EDRN portal in this directory.  This
+program will download and configure the EDRN software and dependencies.  It will then extract the old, existing portal's
+database, upgrade it to the structure for this, the new version, and prepare it for operations.  See the README.txt for
+more details.''', usage='Usage: %prog [options] PUBLIC-HOSTNAME')
+_optParser.add_option('-e', '--existing-install', help='''Path to the old pre-existing installation of EDRN portal.
+Required.''')
+_optParser.add_option('-s', '--supervisor-user', default=_defSuper,
+        help='Username to use for Supervisor (default "%default")')
 _optParser.add_option('-x', '--supervisor-password', help='Password for Supervisor (will be generated if not given)')
 _zopeGroup = optparse.OptionGroup(_optParser, 'Zope Options', '''Note that all existing Zope admin users will be erased.
 A single new Zope admin user will be created.''')
-_zopeGroup.add_option('-z', '--zope-user', default=_defZope, help='Username for the Zope appserver (default "%default")')
+_zopeGroup.add_option('-z', '--zope-user', default=_defZope,
+    help='Username for the Zope appserver (default "%default")')
 _zopeGroup.add_option('-p', '--zope-password', help='Password for the Zope appserver (will be generated if not given)')
 _optParser.add_option_group(_zopeGroup)
-_portGroup = optparse.OptionGroup(_optParser, 'Port Options', '''Each process listens on a TCP port bound to localhost (save
-Supervisor, which binds to all interfaces).  You can select a base port (each process gets base +1, +2, etc.) or select
-ports individually.''')
-_portGroup.add_option('--base-port', default=_base, type='int', help='Base port (procs get base +1,+2,..., default %default)')
+_portGroup = optparse.OptionGroup(_optParser, 'Port Options', '''Each process listens on a TCP port bound to localhost
+(save Supervisor, which binds to all interfaces).  You can select a base port (each process gets base +1, +2, etc.) or
+select ports individually.''')
+_portGroup.add_option('--base-port', default=_base, type='int',
+    help='Base port (procs get base +1,+2,..., default %default)')
 _portGroup.add_option('--cache-control',    metavar='NUM', type='int', help='Cache control port (default base+1)')
 _portGroup.add_option('--cache-port',       metavar='NUM', type='int', help='Cache port (default base+2)')
 _portGroup.add_option('--supervisor-port',  metavar='NUM', type='int', help='Supervisor port (default base+3)')
@@ -84,7 +89,8 @@ _cfgFileMap = {
 
 def _exec(cl, binary, cwd):
     '''Exec binary w/cl in cwd redir 2 to 1 and return seq of outlines + rc'''
-    sub = subprocess.Popen(cl, _ALTC_FLAG, binary, _dn, subprocess.PIPE, subprocess.STDOUT, None, True, False, cwd, None, True)
+    sub = subprocess.Popen(cl, _ALTC_FLAG, binary, _dn, subprocess.PIPE, subprocess.STDOUT, None, True, False, cwd,
+        None, True)
     out, ignore = sub.communicate()
     sub.wait()
     lines = out.split('\n')
@@ -266,7 +272,8 @@ def _checkDepends():
     logging.info('Checking for pdftohtml')
     if not _which('pdftohtml'): raise IOError('No "pdftohtml" executable found; try installing poppler-utils')
     logging.info('Checking for varnishd')
-    if not _which('varnishd'): raise IOError('No "varnishd" executable found; try installing varnish-2.1.5 or put it in PATH')
+    if not _which('varnishd'):
+        raise IOError('No "varnishd" executable found; try installing varnish-2.1.5 or put it in PATH')
     _checkLib('jpeg', 'jpeg_read_header', cc)
     _checkLib('ssl', 'SSL_accept', cc)
     _checkLib('sasl2', 'sasl_setpass', cc)
@@ -279,7 +286,8 @@ def _checkIP():
     import socket
     ip = socket.gethostbyname(socket.gethostname())
     if ip == '127.0.0.1':
-        logging.warning('IP for host-by-name for hostname is 127.0.0.1 (localhost), but I expected a non-localhost address')
+        logging.warning('''IP for host-by-name for hostname is 127.0.0.1 (localhost), but I expected a '''
+            '''non-localhost address''')
         logging.warning('This is OK for multihomed systems and might be OK in general')
     return ip
 
@@ -300,7 +308,8 @@ def _checkPasswd(passtype, passwd):
  
 def _checkExisting(location):
     '''Make sure existing installation looks OK'''
-    for fragment in (('bin', 'supervisorctl'), ('bin', 'repozo'), ('var', 'blobstorage'), ('var', 'filestorage', 'Data.fs')):
+    for fragment in (('bin', 'supervisorctl'), ('bin', 'repozo'), ('var', 'blobstorage'),
+        ('var', 'filestorage', 'Data.fs')):
         path = os.path.abspath(os.path.join(location, *fragment))
         if not os.path.exists(path):
             raise IOError('Item "%s" not found in old, existing portal at "%s"; check --existing-install option'
@@ -312,7 +321,8 @@ def _getLogger():
     username = pwd.getpwuid(os.getuid())[0]
     logname = os.environ['LOGNAME']
     if logname != username:
-        logging.warning("LOGNAME \"%s\" does not match current user ID's account name \"%s\", preferring latter", logname, username)
+        logging.warning("LOGNAME \"%s\" does not match current user ID's account name \"%s\", preferring latter",
+            logname, username)
     logging.info('EDRN processes will run under Unix account "%s"', username)
     return username
 
@@ -331,7 +341,8 @@ def _collatePorts(options):
         if pnum in ports.values():
             _optParser.error('Port %d already in use; try a different number for "%s"' % (pnum, name))
         if pnum < 1024:
-            _optParser.error('Port %d for "%s" requires root to run; please configure higher port numbers' % (pnum, name))
+            _optParser.error('Port %d for "%s" requires root to run; please configure higher port numbers'
+                % (pnum, name))
         ports[name] = pnum
     return ports
 
@@ -376,7 +387,8 @@ def _bootstrap():
         return
     logging.info('Bootstrapping %#x', os.stat(os.path.abspath('bootstrap.py'))[6])
     p = os.path.abspath(os.path.join('support', 'int', 'bin', 'python'))
-    out, rc = _exec([p, 'bootstrap.py', '-d', '-v', BUILDOUT_CHECKSUM_MD5_HASH, '-c', os.path.abspath('site.cfg')], p, os.getcwd())
+    out, rc = _exec([p, 'bootstrap.py', '-d', '-v', BUILDOUT_CHECKSUM_MD5_HASH, '-c', os.path.abspath('site.cfg')], p,
+            os.getcwd())
     if rc != 0: raise IOError('Bootstrap failed')
 
 
@@ -423,8 +435,8 @@ def _updateDatabase(zopeu, zopep):
     out, rc = _exec(['bin/zeoserver', 'start'], zeo, os.getcwd())
     if rc != 0: raise IOError("Couldn't start zeoserver, status %d" % rc)
     logging.info('Setting Zope user & password')
-    out, rc = _exec(['bin/instance-debug', 'adduser', zopeu, zopep], os.path.abspath(os.path.join('bin', 'instance-debug')),
-        os.getcwd())
+    out, rc = _exec(['bin/instance-debug', 'adduser', zopeu, zopep],
+        os.path.abspath(os.path.join('bin', 'instance-debug')), os.getcwd())
     logging.info('Upgrading database to %s structure, this may take over 30 minutes', _version)
     out, rc = _exec(['bin/instance-debug', 'run', 'support/upgrade.py', zopeu, zopep],
         os.path.abspath(os.path.join('bin', 'instance-debug')), os.getcwd())
@@ -438,10 +450,12 @@ def main(argv=sys.argv):
     try:
         options, args = _optParser.parse_args(argv)
         if len(args) != 2:
-            _optParser.error('Specify the public hostname of the portal, such as "edrn.nci.nih.gov", "edrn-dev.nci.nih.gov", etc.')
+            _optParser.error('''Specify the public hostname of the portal, such as "edrn.nci.nih.gov", '''
+                '''"edrn-dev.nci.nih.gov", etc.''')
         publicHostname = args[1]
         if not options.existing_install:
-            _optParser.error('You must indicate the location of the old, existing EDRN portal with the --existing-install option.')
+            _optParser.error('''You must indicate the location of the old, existing EDRN portal with the '''
+                '''--existing-install option.''')
         zopePasswd, superPasswd = options.zope_password, options.supervisor_password
         if not zopePasswd: zopePasswd = _generatePasswd()
         if not superPasswd: superPasswd = _generatePasswd()
