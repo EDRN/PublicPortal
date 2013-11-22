@@ -1,11 +1,12 @@
 #!/usr/bin/env python
+# encoding: utf-8
 #
-# Copyright 2011 California Institute of Technology. ALL RIGHTS
+# Copyright 2011–2013 California Institute of Technology. ALL RIGHTS
 # RESERVED. U.S. Government Sponsorship acknowledged.
 
 import optparse, logging, sys, os, shutil, tempfile, atexit, urllib2, tarfile, base64, bz2
 
-_python = 'http://python.org/ftp/python/2.7.4/Python-2.7.4.tar.bz2'
+_python = 'http://python.org/ftp/python/2.7.6/Python-2.7.6.tgz'
 
 _optParser = optparse.OptionParser(description='''Make a distribution of the EDRN portal.''', usage='%prog [options] VERSION')
 _optParser.add_option('-u', '--url', default=_python, help='Override default URL to a Python 2.7 bzip2 tarball.')
