@@ -20,10 +20,10 @@ import stat as ___
 import platform as plat
 
 # important
-BUILDOUT_CHECKSUM_MD5_HASH = '1.6.3'
+BUILDOUT_CHECKSUM_MD5_HASH = '2.2.1'
 
-# previous values: edrnadmin, edrn-admin
-_defZope = 'manager-edrn' # Change this each release, in case TerpSys doesn't and they re-use the uid+passwd
+# previous values: edrnadmin, edrn-admin, manager-edrn
+_defZope = 'manage-edrn' # Change this each release, in case TerpSys doesn't and they re-use the uid+passwd
 _defSuper = 'supervisor'
 _eviOutInc = 'deploy.log'
 _cHeader = '''#ifdef __cplusplus
@@ -46,7 +46,9 @@ program will download and configure the EDRN software and dependencies.  It will
 database, upgrade it to the structure for this, the new version, and prepare it for operations.  See the README.txt for
 more details.''', usage='Usage: %prog [options] PUBLIC-HOSTNAME')
 _optParser.add_option('-e', '--existing-install', help='''Path to the old pre-existing installation of EDRN portal.
-Required.''')
+If not given, a new empty portal will be created.  This is fine for testing or for security scans, but for
+operational or production use, you *must* tell where the old portal instllation directory was so the content can be
+migrated and preserved.''')
 _optParser.add_option('-s', '--supervisor-user', default=_defSuper,
         help='Username to use for Supervisor (default "%default")')
 _optParser.add_option('-x', '--supervisor-password', help='Password for Supervisor (will be generated if not given)')
@@ -387,7 +389,7 @@ def _bootstrap():
         return
     logging.info('Bootstrapping %#x', os.stat(os.path.abspath('bootstrap.py'))[6])
     p = os.path.abspath(os.path.join('support', 'int', 'bin', 'python'))
-    out, rc = _exec([p, 'bootstrap.py', '-d', '-v', BUILDOUT_CHECKSUM_MD5_HASH, '-c', os.path.abspath('site.cfg')], p,
+    out, rc = _exec([p, 'bootstrap.py', '-v', BUILDOUT_CHECKSUM_MD5_HASH, '-c', os.path.abspath('site.cfg')], p,
             os.getcwd())
     if rc != 0: raise IOError('Bootstrap failed')
 
@@ -453,9 +455,6 @@ def main(argv=sys.argv):
             _optParser.error('''Specify the public hostname of the portal, such as "edrn.nci.nih.gov", '''
                 '''"edrn-dev.nci.nih.gov", etc.''')
         publicHostname = args[1]
-        if not options.existing_install:
-            _optParser.error('''You must indicate the location of the old, existing EDRN portal with the '''
-                '''--existing-install option.''')
         zopePasswd, superPasswd = options.zope_password, options.supervisor_password
         if not zopePasswd: zopePasswd = _generatePasswd()
         if not superPasswd: superPasswd = _generatePasswd()
@@ -464,7 +463,8 @@ def main(argv=sys.argv):
         ports = _collatePorts(options)
         _setupLogging()
         logging.debug('main')
-        _checkExisting(options.existing_install)
+        if options.existing_install:
+            _checkExisting(options.existing_install)
         _center()
         _paintTarget()
         _easel()
@@ -476,10 +476,13 @@ def main(argv=sys.argv):
         _writeConfig(login, options.zope_user, zopePasswd, options.supervisor_user, superPasswd, ports, publicHostname)
         _bootstrap()
         _buildout(options.zope_user, zopePasswd)
-        _snapshotDB(options.existing_install)
-        _blobs(options.existing_install)
-        _extractSnapshot('snapshot')
-        _updateDatabase(options.zope_user, zopePasswd)
+        if options.existing_install:
+            _snapshotDB(options.existing_install)
+            _blobs(options.existing_install)
+            _extractSnapshot('snapshot')
+            _updateDatabase(options.zope_user, zopePasswd)
+        else:
+            _installEDRN(options.zope_user, zopePasswd)
         logging.info('DEPLOYMENT COMPLETE')
     except Exception, ex:
         logging.exception('Deployment failed: %s', str(ex))
