@@ -448,6 +448,24 @@ def _updateDatabase(zopeu, zopep):
     logging.info('Stopping DB server')
     out, rc = _exec(['bin/zeoserver', 'stop'], zeo, os.getcwd())
 
+def _installEDRN(zopeu, zopep):
+    logging.info('Star-starting DB server')
+    zeo = os.path.abspath(os.path.join('bin', 'zeoserver'))
+    out, rc = _exec(['bin/zeoserver', 'start'], zeo, os.getcwd())
+    if rc != 0: raise IOError("Couldn't start zeoserver, status %d" % rc)
+    logging.info('Setting Zope user & password')
+    out, rc = _exec(['bin/instance-debug', 'adduser', zopeu, zopep],
+        os.path.abspath(os.path.join('bin', 'instance-debug')), os.getcwd())
+    logging.info('Upgrading database to %s structure, this may take over 30 minutes', _version)
+    out, rc = _exec(['bin/instance-debug', 'run', 'support/upgrade.py', zopeu, zopep],
+        os.path.abspath(os.path.join('bin', 'instance-debug')), os.getcwd())
+    logging.debug('Database upgrade exited with %d', rc)
+    logging.info('Packing')
+    out, rc = _exec(['bin/zeopack'], os.path.abspath(os.path.join('bin', 'zeopack')), os.getcwd())
+    logging.info('Stopping DB server')
+    out, rc = _exec(['bin/zeoserver', 'stop'], zeo, os.getcwd())
+
+
 def main(argv=sys.argv):
     try:
         options, args = _optParser.parse_args(argv)
