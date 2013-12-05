@@ -449,17 +449,17 @@ def _updateDatabase(zopeu, zopep):
     out, rc = _exec(['bin/zeoserver', 'stop'], zeo, os.getcwd())
 
 def _installEDRN(zopeu, zopep):
-    logging.info('Star-starting DB server')
+    logging.info('Starting DB server for minimal EDRN portal')
     zeo = os.path.abspath(os.path.join('bin', 'zeoserver'))
     out, rc = _exec(['bin/zeoserver', 'start'], zeo, os.getcwd())
     if rc != 0: raise IOError("Couldn't start zeoserver, status %d" % rc)
-    logging.info('Setting Zope user & password')
+    logging.info('Setting Zope user & password for minimal EDRN portal')
     out, rc = _exec(['bin/instance-debug', 'adduser', zopeu, zopep],
         os.path.abspath(os.path.join('bin', 'instance-debug')), os.getcwd())
-    logging.info('Upgrading database to %s structure, this may take over 30 minutes', _version)
-    out, rc = _exec(['bin/instance-debug', 'run', 'support/upgrade.py', zopeu, zopep],
-        os.path.abspath(os.path.join('bin', 'instance-debug')), os.getcwd())
-    logging.debug('Database upgrade exited with %d', rc)
+    logging.info('Populating minimal EDRN portal at version %s', _version)
+    out, rc = _exec(['bin/buildout', '-c', 'site.cfg', 'install', 'edrn-basic-site'],
+        os.path.abspath(os.path.join('bin', 'buildout')), os.getcwd())
+    logging.debug('Basic site exited with %d', rc)
     logging.info('Packing')
     out, rc = _exec(['bin/zeopack'], os.path.abspath(os.path.join('bin', 'zeopack')), os.getcwd())
     logging.info('Stopping DB server')
