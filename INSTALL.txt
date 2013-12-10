@@ -40,7 +40,7 @@ reminder, these are the dependencies:
 * `PDF-to-HTML`_ tools
 * SASL_
 * OpenLDAP_
-* Varnish_
+* Varnish_ version 3
 
 Check and install these dependencies using your system provided tools (such as
 Pirut, Aptitude, etc.) or by building and installing from source.
