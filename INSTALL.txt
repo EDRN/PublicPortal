@@ -15,11 +15,23 @@ Preparation
 Before installing the EDRN site, you'll need to prepare the host and gather
 some information.  This installation assumes the following:
 
-* You're installing this software on the same host that currently runs
-  EDRN portal version 4.2.
+For Development and Testing Tiers
+---------------------------------
+
+* You're installing this software in a new directory, not overwriting the
+  current EDRN installation directory, if any.
+* The Apache HTTPD configuration may be updated as needed to reverse-proxy to
+  this, the new EDRN software installation.
+
+
+For Operational or Production Tiers
+-----------------------------------
+
 * The Unix account running the EDRN portal, "edrn", won't be changing.
 * The current EDRN installation directory is available for reading.  If it's
   not, copy one over from some other host.
+* You're installing this software on the same host that currently runs
+  the older EDRN portal, version 4.2.
 * You're installing this software in a new directory, not overwriting the
   current EDRN installation directory.
 * The Apache HTTPD configuration may be updated as needed to reverse-proxy to
@@ -28,9 +40,11 @@ some information.  This installation assumes the following:
 Once the deployment process is complete, this software will become the new
 EDRN portal software.  The old directory with version 4.2 may then be removed.
 
-This software has dependencies on several external packages, however these
-should already be installed as they were also required for version 4.4.  As a
-reminder, these are the dependencies:
+
+Dependencies
+------------
+
+This software has dependencies on several external packages:
 
 * Python 2.4 or later plus development environment (Python.h headers, etc.).
 * C/C++ compiler and "make" (to build additional software)
@@ -41,6 +55,8 @@ reminder, these are the dependencies:
 * SASL_
 * OpenLDAP_
 * Varnish_ version 3
+
+NOTE: We now require Varnish 3; previously Varnish 2 was necessary.
 
 Check and install these dependencies using your system provided tools (such as
 Pirut, Aptitude, etc.) or by building and installing from source.
@@ -55,10 +71,10 @@ Deploying the EDRN Portal
 To deploy this version of the EDRN portal, perform the following steps:
 
 1.  Cancel the current system services (log rotation, cron jobs) for the old
-    version 4.2 of the portal.
+    version 4.2 of the portal, if any.
 2.  Run the deploy script for the new portal, version 4.4.
-3.  Stop the old portal 4.2 and update its init.d startup script for the new
-    version 4.4.
+3.  Stop the old portal 4.2 (if any) and update its init.d startup script for
+    the new version 4.4.
 4.  Start the new version 4.4 processes.
 5.  Adjust the Apache HTTP reverse proxy configuration and install the SSL
     certificates.
@@ -100,25 +116,26 @@ do so:
 
         cd edrn-portal-VERSION
 
-3.  Run the deployment script::
+3.  Run the deployment script.  For development and testing tiers, type::
 
-        ./deploy.py --existing-install=OLDPORTAL PUBLIC-HOSTNAME
+        ./deploy.py PUBLIC-HOSTNAME
         
+    Replace PUBLIC-HOSTNAME with edrn-dev.nci.nih.gov (for development tier),
+    edrn-test.nci.nih.gov (for the testing tier), or whatever else you
+    require.  For example::
+
+        ./deploy.py edrn-test.nci.nih.gov
+
     Replace OLDPORTAL with the path to the old, currently running EDRN portal.
-    Replace PUBLIC-HOSTNAME with either "edrn.nci.nih.gov" (production),
-    "edrn-test.nci.nih.gov" (test), or "edrn-dev.nci.nih.gov" (development).
+    Replace PUBLIC-HOSTNAME with edrn.nci.nih.gov.
     For example::
     
-        ./deploy.py --existing-install=/home/edrn/4.2-FINAL edrn-test.nci.nih.gov
+        ./deploy.py --existing-install=/home/edrn/edrn-portal-4.2.0 edrn.nci.nih.gov
 
-The deployment script will check dependencies and system configuration,
-download the EDRN portal software and its related packages, configure them,
-copy the old content database, upgrade it, and prepare everything
-automatically.
-
-You must have a copy of the old version 4.2 of the portal with all of its
-content intact.  If you don't, tar up its installation directory from wherever
-it's currently running on and bring it over!
+The deployment script will check dependencies and system configuration, download
+the EDRN portal software and its related packages, and configure them
+automatically.  For operational installations, it will also copy the old content
+database and upgrade it.
 
 The deployment script will also create a detailed log file, ``deploy.log``,
 with lots of information that can be helpful if anything goes wrong.  You
@@ -130,7 +147,7 @@ options.
 
 If the script fails to run, try running it with the Python interpreter; i.e.::
 
-    /usr/bin/python ./deploy.py --existing-install=/home/edrn/4.2-FINAL edrn-test.nci.nih.gov
+    /usr/bin/python ./deploy.py --existing-install=/home/edrn/edrn-portal-4.2.0 edrn.nci.nih.gov
 
 All of the steps that the script carries out can take an *enormous* amount of
 time.  If you're fond of food, now would be a great time to take a lunch
@@ -141,17 +158,16 @@ coffee.  Yes, it's going to be that long.
 Deployment Options
 ~~~~~~~~~~~~~~~~~~
 
-There's one required "argument": the public hostname of the website.  There is
-also only one required command-line "option" for the deployment script,
-``--existing-install``.
+There's one required command-line argument for the "deploy.py" script: the
+public hostname of the website.
 
-All of the rest are optional.  The full set of command-line options you can
-provide to the ``deploy.py`` script includes:
+The full set of command-line options you can provide to the ``deploy.py`` script
+includes:
 
 -e EXISTING_INSTALL, --existing-install=EXISTING_INSTALL
-    This option is *required*.  Tells the deployment script to use the old,
-    existing installation of the EDRN portal software in the directory
-    EXISTING_INSTALL.
+    This option is *required* for production/operational installlations.  Tells
+    the deployment script to use the old, existing installation of the EDRN
+    portal software in the directory EXISTING_INSTALL.
 -s SUPERVISOR_USER, --supervisor-user=SUPERVISOR_USER
     Username to use for the process Supervisor (default "supervisor")
 -x SUPERVISOR_PASSWORD, --supervisor-password=SUPERVISOR_PASSWORD
@@ -189,7 +205,9 @@ port numbers.
 Shutting Down the Old One and Starting the New One
 --------------------------------------------------
 
-Shut down the old EDRN 4.2 site by running the rc script as follows::
+After running the "deploy.py" script, you're ready to start the new EDRN portal.
+
+First, stop any older EDRN 4.2 portal site by running the rc script as follows::
 
     sudo /etc/init.d/edrn-supervisor stop
     
@@ -227,26 +245,27 @@ Onto Apache...
 Front End Web Server
 --------------------
 
-The Apache HTTPD web server must now be configured.  First, install the SSL
-certificate and private key:
+The Apache HTTPD web server must now be configured.  On most NCI web systems,
+Apache is already configured for EDRN, and all that is necessary is to update
+the configuration with filesystem paths to the new installation directory
+(typically /home/edrn/edrn-portal-4.4.X) and any new reverse-proxy TCP ports.
 
-* Put the public certificate in $INSTALL_DIR/etc/server.crt
-* Put the private key in $INSTALL_DIR/etc/server.key
+You'll also want to double check the SSL certificates for both HTTPS access to
+the EDRN site.
 
-For convenience, ensure there is no passphrase on the private key.
-
-The ``deploy.py`` script generated two Apache HTTPD configuration files:
+The ``deploy.py`` script generated two Apache HTTPD configuration files that you
+can use an examples:
 
 * $INSTALL_DIR/ops/apache-httpd.conf
 * $INSTALL_DIR/ops/apache-httpd-ssl.conf
 
-Remove any previous configurations for version 4.2 and install these files in
-the appropriate locations for version 4.4.  Then, restart Apache HTTPD.
-
-You should then be able to visit these URLs:
+Ultimately, you should be able to visit the following URLs with a browser:
 
 * http://PUBLIC-HOSTNAME/
 * https://PUBLIC-HOSTNAME/
+* https://PUBLIC-HOSTNAME/logs (should require a password)
+* https://PUBLIC-HOSTNAME/snapshots (should require a password)
+* https://PUBLIC-HOSTNAME/blobstorage (should require a password)
 
 Replace PUBLIC-HOSTNAME with the command-line argument given to the
 ``deploy.py`` script.
@@ -258,6 +277,8 @@ Protecting the site.cfg file
 Make sure site.cfg is readable only by user "edrn"::
 
     chmod 600 site.cfg
+
+It contains passwords, after all.
 
 
 Hooking into the Operating System
@@ -391,7 +412,6 @@ http://cancer.jpl.nasa.gov/contact-info.
     California Institute of Technology
 
 .. Copyright:
-    Copyright 2010-2011 California Institute of Technology. ALL RIGHTS RESERVED.
     U.S. Government sponsorship acknowledged.
 
 
