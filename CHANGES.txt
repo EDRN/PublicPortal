@@ -1,5 +1,9 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
+Release Notes - Early Detection of Cancer - Version Portal 4.4.2 - 2013-10-23 - NCI Development and Testing
+
+This release is identical to 4.4.1 save for updated dependencies on Varnish 3.
+
 
 Release Notes - Early Detection of Cancer - Version Portal 4.4.1 - 2013-10-23 - Demo
 
