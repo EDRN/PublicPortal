@@ -294,40 +294,25 @@ operation.  Specifically, it needs help from Unix ...
 Cron Jobs
 ~~~~~~~~~
 
-The EDRN site relies on the Unix cron scheduler for periodic tasks.  These
-tasks include:
+The EDRN site relies on the Unix cron scheduler for periodic tasks, such as
+database backups and content refreshing.
 
-* Daily database backups
-* Weekly restarts and snapshots
-* Monthly database packing
+To set up the cron jobs, first delete any old EDRN scripts from
+/etc/cron.hourly, /etc/cron.daily, /etc/cron.weekly, and /etc/cron.monthly.
+Then run::
 
-To set up the cron jobs, do the following:
+    install -o root -g root -m 755 $INSTALL_DIR/ops/cron.daily /etc/cron.daily/edrn-daily
+    install -o root -g root -m 755 $INSTALL_DIR/ops/cron.hourly /etc/cron.hourly/edrn-hourly
 
-1.  Install $INSTALL_DIR/bin/backup as /etc/cron.daily/edrn-backup.
-2.  Install $INSTALL_DIR/bin/zeopack as /etc/cron.monthly/edrn-pack.
-3.  Create a script /etc/cron.daily/edrn-maint with the following contents
-    (substituting the appropriate value for $INSTALL_DIR)::
-
-        #!/bin/sh
-        day=`/bin/date '+%w'`
-        if [ $day == 0 ]; then
-            $INSTALL_DIR/bin/snapshotbackup 
-        fi
-        /usr/bin/find $INSTALL_DIR/var/snapshotbackups -type f -print0 | /usr/bin/xargs -0 /bin/chmod 644
-        /usr/bin/find $INSTALL_DIR/var/blobstorage -type f -print0 | /usr/bin/xargs -0 /bin/chmod 644
-        /usr/bin/find $INSTALL_DIR/var/blobstorage -type d -print0 | /usr/bin/xargs -0 /bin/chmod 755
-        $INSTALL_DIR/bin/supervisorctl restart instance2 ;;
-        $INSTALL_DIR/bin/supervisorctl restart instance1 ;;
-        exit 0
-
-4.  Make the script executable: ``sudo chmod 755 /etc/cron.daily/edrn-maint``
+EDRN no longer uses any weekly or monthly cron jobs.
 
 
 Log Rotation
 ~~~~~~~~~~~~
 
 During the buildout, a configuration file compatible with logrotate_ was
-generated and placed in ``ops/logrotate.conf``.  Install this file::
+generated and placed in ``ops/logrotate.conf``.  First, delete any old EDRN
+logrotate files, then run::
 
     install -o root -g root -m 644 $INSTALL_DIR/ops/logrotate.conf /etc/logrotate.d/edrn-portal
 

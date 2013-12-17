@@ -8,7 +8,7 @@
 home="${buildout:directory}"
 
 for d in "blobstorage" "snapshotbackups"; do
-    /usr/bin/find "${:dollar}{home}/var/${:dollar}{d}" -type d -print0 | /usr/bin/xargs -0 /bin/chmod 755
-    /usr/bin/find "${:dollar}{home}/var/${:dollar}{d}" -type f -print0 | /usr/bin/xargs -0 /bin/chmod 644
+    /usr/bin/find "${:dollar}{home}/var/${:dollar}{d}" -type d -print0 | /usr/bin/xargs -r0 /bin/chmod 755
+    /usr/bin/find "${:dollar}{home}/var/${:dollar}{d}" -type f -print0 | /usr/bin/xargs -r0 /bin/chmod 644
 done
 exit 0
