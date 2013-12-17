@@ -22,6 +22,9 @@ import platform as plat
 # important
 BUILDOUT_CHECKSUM_MD5_HASH = '2.2.1'
 
+# just as so
+_ezsetupURL = u'https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py'
+
 # previous values: edrnadmin, edrn-admin, manager-edrn
 _defZope = 'manage-edrn' # Change this each release, in case TerpSys doesn't and they re-use the uid+passwd
 _defSuper = 'supervisor'
@@ -204,6 +207,18 @@ def _composeInt():
     if rc != 0: raise OSError('Make failed with return code %d' % rc)
     
 
+def _ezsetup():
+    py = os.path.abspath(os.path.join('support', 'int', 'bin', 'python'))
+    curl = os.path.abspath('/usr/bin/curl')
+    out, rc = _exec(['curl', '-kLO', _ezsetupURL], curl, os.path.abspath('.'))
+    logging.debug('RC: %d', rc)
+    if rc != 0: raise OSError('Cannot fetch %s' % _ezsetupURL)
+    ezloc = os.path.abspath('ez_setup.py')
+    out, rc = _exec([py, ezloc, '--insecure'], py, os.path.abspath('.'))
+    logging.debug('RC: %d', rc)
+    if rc != 0: raise OSError('Cannot install ez_setup')
+
+
 def _deployInt():
     '''Deploy the int'''
     global _workspace
@@ -213,7 +228,7 @@ def _deployInt():
     logging.info('Deploying int')
     _withdrawInt()
     _composeInt()
-    
+    _ezsetup()
 
 def _easel():
     '''Create a suitable workspace'''
