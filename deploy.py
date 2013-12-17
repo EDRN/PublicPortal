@@ -132,7 +132,7 @@ def _checkInt():
     if ___.S_ISREG(m) and ___.S_IMODE(m) & ___.S_IEXEC:
         logging.debug('ipath has isreg + imode pos iexec')
         out, rc = _exec(['python', name], ipath, os.path.abspath(_workspace))
-        if rc == 0 and out[0].startswith("('CPython', 'tags"): return True
+        if rc == 0 and out[0].startswith("('CPython'"): return True
     logging.debug('ipath not useable so del')
     shutil.rmtree(os.path.abspath(os.path.join('support', 'int')), True)
     return False
