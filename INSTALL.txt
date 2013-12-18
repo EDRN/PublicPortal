@@ -276,16 +276,6 @@ Replace PUBLIC-HOSTNAME with the command-line argument given to the
 ``deploy.py`` script.
 
 
-Protecting the site.cfg file
-----------------------------
-
-Make sure site.cfg is readable only by user "edrn"::
-
-    chmod 600 site.cfg
-
-It contains passwords, after all.
-
-
 Hooking into the Operating System
 ---------------------------------
 
@@ -306,8 +296,8 @@ To set up the cron jobs, first delete any old EDRN scripts from
 /etc/cron.hourly, /etc/cron.daily, /etc/cron.weekly, and /etc/cron.monthly.
 Then run::
 
-    install -o root -g root -m 755 $INSTALL_DIR/ops/cron.daily /etc/cron.daily/edrn-daily
-    install -o root -g root -m 755 $INSTALL_DIR/ops/cron.hourly /etc/cron.hourly/edrn-hourly
+    install -o root -g root -m 755 $INSTALL_DIR/ops/cron.daily /etc/cron.daily/edrn
+    install -o root -g root -m 755 $INSTALL_DIR/ops/cron.hourly /etc/cron.hourly/edrn
 
 EDRN no longer uses any weekly or monthly cron jobs.
 
@@ -319,7 +309,18 @@ During the buildout, a configuration file compatible with logrotate_ was
 generated and placed in ``ops/logrotate.conf``.  First, delete any old EDRN
 logrotate files, then run::
 
-    install -o root -g root -m 644 $INSTALL_DIR/ops/logrotate.conf /etc/logrotate.d/edrn-portal
+    install -o root -g root -m 644 $INSTALL_DIR/ops/logrotate.conf /etc/logrotate.d/edrn
+
+
+Protecting the site.cfg file
+----------------------------
+
+Three files contain the Zope manager username and password and must be
+protected::
+
+    chmod 600 $INSTALL_DIR/site.cfg
+    chmod 700 $INSTALL_DIR/ops/edrn-daily
+    chmod 700 /etc/cron.daily/edrn
 
 
 Security Scans
