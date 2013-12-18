@@ -1,8 +1,21 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
-Release Notes - Early Detection of Cancer - Version Portal 4.4.2 - 2013-10-23 - NCI Development and Testing
+Release Notes - Early Detection of Cancer - Version Portal 4.4.2 - 2013-12-18 - NCI Development and Testing
 
-This release is identical to 4.4.1 save for updated dependencies on Varnish 3.
+** Bug
+    * [CA-1211] - Remove description in protocols it's a duplicate of the abstract
+    * [CA-1212] - Specimen tab error
+    * [CA-1213] - Protocol ingest fails if protocol titles aren't unique
+    * [CA-1220] - Nightly ingest not happening
+    * [CA-1229] - Discussion re-enabled after upgrade
+    * [CA-1230] - Quick Links Portlets needs buttons for Informatics and Network Consulting Team
+    * [CA-1231] - Stripped down EDRN Portal doesn't have LDAP
+    * [CA-1234] - UnicodeDecodeError on person ingest
+    * [CA-1237] - Stripped-down portal has ingest enabled; should be disabled
+
+** Improvement
+    * [CA-1219] - Portal installer should provide option to cull content for speedy scanning
+    * [CA-1236] - Stripped-down portal's Super User LDAP group has no Management permissions
 
 
 Release Notes - Early Detection of Cancer - Version Portal 4.4.1 - 2013-10-23 - Demo
