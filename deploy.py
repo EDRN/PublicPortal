@@ -208,6 +208,7 @@ def _composeInt():
     
 
 def _ezsetup():
+    import stat
     py = os.path.abspath(os.path.join('support', 'int', 'bin', 'python'))
     curl = os.path.abspath('/usr/bin/curl')
     out, rc = _exec(['curl', '-kLO', _ezsetupURL], curl, os.path.abspath('.'))
@@ -217,6 +218,14 @@ def _ezsetup():
     out, rc = _exec([py, ezloc, '--insecure'], py, os.path.abspath('.'))
     logging.debug('RC: %d', rc)
     if rc != 0: raise OSError('Cannot install ez_setup')
+    libdir = os.path.abspath(os.path.join('support', 'int', 'lib'))
+    for root, dirs, files in os.walk(libdir):
+        for i in dirs:
+            path = os.path.join(root, i)
+            os.chmod(path, stat.S_IRUSR | stat.S_IXUSR | stat.S_IRGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IXOTH)
+        for i in files:
+            path = os.path.join(root, i)
+            os.chmod(path, stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH)
 
 
 def _deployInt():
