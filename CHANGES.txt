@@ -1,6 +1,13 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
-Release Notes - Early Detection of Cancer - Version Portal 4.4.2 - 2013-12-18 - NCI Development and Testing
+
+Release Notes - Early Detection of Cancer - Version Portal 4.4.3 - 2014-01-07 - NCI Development and Testing
+
+** Bug
+    * [CA-1240] - collective.vdexvocabulary requires old "distribute" instead of new "setuptools", breaks NCI deployment
+
+
+Release Notes - Early Detection of Cancer - Version Portal 4.4.2 - 2013-12-18
 
 ** Bug
     * [CA-1211] - Remove description in protocols it's a duplicate of the abstract
