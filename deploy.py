@@ -299,7 +299,7 @@ def _checkDepends():
     if not _which('pdftohtml'): raise IOError('No "pdftohtml" executable found; try installing poppler-utils')
     logging.info('Checking for varnishd')
     if not _which('varnishd'):
-        raise IOError('No "varnishd" executable found; try installing varnish-2.1.5 or put it in PATH')
+        raise IOError('No "varnishd" executable found; try installing varnish-3 or put it in PATH')
     _checkLib('jpeg', 'jpeg_read_header', cc)
     _checkLib('ssl', 'SSL_accept', cc)
     _checkLib('sasl2', 'sasl_setpass', cc)
