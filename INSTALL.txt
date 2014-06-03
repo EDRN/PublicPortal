@@ -319,7 +319,7 @@ Three files contain the Zope manager username and password and must be
 protected::
 
     chmod 600 $INSTALL_DIR/site.cfg
-    chmod 700 $INSTALL_DIR/ops/edrn-daily
+    chmod 700 $INSTALL_DIR/ops/cron.daily
     chmod 700 /etc/cron.daily/edrn
 
 
