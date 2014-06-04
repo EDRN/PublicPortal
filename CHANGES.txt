@@ -1,7 +1,27 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
+Release Notes - Early Detection of Cancer - Version Portal 4.4.4 - 2014-06-04
 
-Release Notes - Early Detection of Cancer - Version Portal 4.4.3 - 2014-01-07 - NCI Development and Testing
+** Bug
+    * [CA-1238] - Add free text search to Biomarkers
+
+** Content Update
+    * [CA-1250] - RFAs on Portal are out of date
+
+** Improvement
+    * [CA-744] - Portal content not centered under the NCI banner
+    * [CA-1063] - Search Filter for Portal
+    * [CA-1235] - Make biomarkers link ID end with HGNC name
+    * [CA-1247] - Link back to BioMuta from EDRN Portal's biomarkers
+
+** New Feature
+    * [CA-760] - Pull delta papers from pubmed
+
+This release also adds CLIA and FDA certifications to biomarkers.  (This feature
+was never entered into JIRA.)
+
+
+Release Notes - Early Detection of Cancer - Version Portal 4.4.3 - 2014-01-07 - NCI OPERATIONS
 
 ** Bug
     * [CA-1240] - collective.vdexvocabulary requires old "distribute" instead of new "setuptools", breaks NCI deployment
