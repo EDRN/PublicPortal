@@ -129,7 +129,7 @@ do so:
 
     For *operational/production tiers*, instead type::
 
-            ./deploy.py --existing-install=OLDPORTAL PUBLIC-HOSTNAME
+         ./deploy.py --existing-install=OLDPORTAL PUBLIC-HOSTNAME
 
     Replace OLDPORTAL with the path to the old, currently running EDRN portal.
     Replace PUBLIC-HOSTNAME with edrn.nci.nih.gov (or whatever is required).

@@ -17,9 +17,9 @@ Quick Start
 
 Are you hard core?  Forget documentation!  Try the following::
 
-    svn co http://tumor.jpl.nasa.gov/repo/ic/app-server/edrn.nci.nih.gov/trunk edrn.nci.nih.gov
-    cd edrn.nci.nih.gov
-    python2.7 bootstrap.py -v 1.6.7 -dc dev.cfg # bootstrap it
+    git clone ...
+    cd ...
+    python2.7 bootstrap.py -v 2.2.1 -c dev.cfg  # bootstrap it
     bin/buildout -c dev.cfg                     # build it in "developer mode"
     support/devrebuild.sh                       # sit back and relax
     bin/instance-debug fg                       # start the app server
@@ -56,7 +56,7 @@ Python Buildout:
 
 1. git clone https://github.com/collective/buildout.python.git
 2. cd buildout.python
-3. /usr/bin/python bootstrap.py -d
+3. /usr/bin/python bootstrap.py
 4. bin/buildout
 5. sudo bin/install-links
 
@@ -105,9 +105,9 @@ Building Out
 To get your development environment ready for action, check out and bootstrap
 the EDRN public portal, using a Buildout_ procedure like the following::
 
-    svn co http://tumor.jpl.nasa.gov/repo/ic/app-server/edrn.nci.nih.gov/trunk edrn.nci.nih.gov
-    cd edrn.nci.nih.gov
-    python2.7 bootstrap.py -v 1.6.7 -dc dev.cfg
+    git clone ...
+    cd ...
+    python2.7 bootstrap.py -v 2.2.1 -c dev.cfg
     bin/buildout -c dev.cfg
 
 This gives you an EDRN portal with the release versions of each component and
@@ -164,12 +164,12 @@ Updating
 --------
 
 You can update your checked out eggs by visiting each checkout directory under
-``src`` and running ``svn update``.  But there's an easier way::
+``src`` and running ``git pull``.  But there's an easier way::
 
     bin/develop update
     
 This has the added benefit of working with other version control systems; you
-don't need to worry about Subversion.
+don't need to worry about Subversion, Git, etc.
 
 
 Help
@@ -199,5 +199,5 @@ http://cancer.jpl.nasa.gov/contact-info.
     California Institute of Technology
 
 .. Copyright:
-    Copyright 2009-2013 California Institute of Technology. ALL RIGHTS
+    Copyright 2009-2014 California Institute of Technology. ALL RIGHTS
     RESERVED. U.S. Government sponsorship acknowledged.

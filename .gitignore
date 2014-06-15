@@ -1,0 +1,8 @@
+.DS_Store
+._*
+bin
+develop-eggs
+parts
+var
+eggs
+*.log

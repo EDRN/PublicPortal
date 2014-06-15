@@ -9,7 +9,7 @@ http://edrn.nci.nih.gov/.
 
 This is version 4 of the EDRN portal.
 
-This software was developed by and is copyrighted 2010-2011 by the California
+This software was developed by and is copyrighted 2010-2014 by the California
 Institute of Technology.  ALL RIGHTS RESERVED.  U.S.  Government sponsorship
 acknowledged.
 
@@ -17,7 +17,7 @@ acknowledged.
 Installation
 ============
 
-See INSTALL.txt for instructions.
+See INSTALL.rst for instructions.
 
 
 Questions, Bug Reports, and Help
@@ -40,7 +40,7 @@ Development
 ===========
 
 If you're a developer of the EDRN public portal, take a look at
-DEV-README.txt.
+DEV-README.rst.
 
 
 .. Author:
@@ -49,5 +49,5 @@ DEV-README.txt.
     California Institute of Technology
 
 .. Copyright:
-    Copyright 2010-2011 California Institute of Technology. ALL RIGHTS
+    Copyright 2010-2014 California Institute of Technology. ALL RIGHTS
     RESERVED.  U.S. Government sponsorship acknowledged.
