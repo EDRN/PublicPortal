@@ -6,3 +6,6 @@ parts
 var
 eggs
 *.log
+.*.cfg
+*.sublime-*
+src
