@@ -1,5 +1,12 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
+
+Release Notes - Early Detection of Cancer - Version Portal 4.5.0 - 2014-08-08 - NCI OPERATIONS
+
+** Bug
+    * [CA-1239] - Preserve biomarker URLs in portal
+
+
 Release Notes - Early Detection of Cancer - Version Portal 4.4.4 - 2014-06-04
 
 ** Bug
