@@ -237,7 +237,8 @@ Process ID     Description
 ============== =========================================================
 
 You can check that the site is active by fetching the following URLs
-(adjusting port numbers as needed):
+(adjusting port numbers as needed, and substituting 127.0.0.1 for
+localhost, if necessary):
 
 * http://localhost:6317/edrn (via the first Zope app server)
 * http://localhost:6318/edrn (via the second Zope app server)
@@ -257,7 +258,7 @@ configuration with filesystem paths to the new installation directory (typically
 /home/edrn/edrn-portal-4.5.X) and any new reverse-proxy TCP ports.
 
 However, for release 4.5, there are a large number of rewrites that must also be
-installed.  These are in rewrites.cfg; place them in both the plain HTTP and SSL
+installed.  These are in rewrites.conf; place them in both the plain HTTP and SSL
 HTTPS configurations for Apache HTTPD.
 
 You'll also want to double check the SSL certificates for both HTTPS access to
