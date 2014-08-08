@@ -9,7 +9,7 @@ import optparse, logging, sys, os, shutil, tempfile, atexit, urllib2, tarfile, b
 _python = 'http://python.org/ftp/python/2.7.6/Python-2.7.6.tgz'
 
 _optParser = optparse.OptionParser(description='''Make a distribution of the EDRN portal.''', usage='%prog [options] VERSION')
-_optParser.add_option('-u', '--url', default=_python, help='Override default URL to a Python 2.7 bzip2 tarball.')
+_optParser.add_option('-u', '--url', default=_python, help='Override default URL to a Python 2.7 bzip2/gzip tarball.')
 
 _distItems = (
     'bootstrap.py',
@@ -17,10 +17,9 @@ _distItems = (
     'deploy.py',
     'egg-cache',
     'etc',
-    'externals',
-    'INSTALL.txt',
+    'INSTALL.rst',
     'operations.cfg',
-    'README.txt',
+    'README.rst',
     'support',
     'templates',
     'versions',
