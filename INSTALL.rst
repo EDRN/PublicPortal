@@ -56,7 +56,7 @@ This software has dependencies on several external packages:
 * OpenLDAP_
 * Varnish_ version 3
 
-NOTE: We now require Varnish 3; previously Varnish 2 was necessary.
+NOTE: We now require Varnish 3.
 
 Check and install these dependencies using your system provided tools (such as
 Pirut, Aptitude, etc.) or by building and installing from source.
@@ -93,8 +93,6 @@ These need to be canceled.  To do so, remove the following files/symlinks:
 
 * /etc/cron.hourly/edrn (might be named "edrn-perms")
 * /etc/cron.daily/edrn (might be named "backup" or "edrn-backup")
-* /etc/cron.weekly/edrn (might be named "edrn-maint")
-* /etc/cron.monthly/edrn (might be named "zeopack" or "edrn-pack")
 * /etc/logrotate.d/edrn (might be named "edrn-portal")
 
 
@@ -104,7 +102,10 @@ Running the Deploy Script
 Deploying the new version of the EDRN portal is easier than ever before.  To
 do so:
 
-1.  Extract the software archive::
+1.  Download the software from GitHub at
+    https://github.com/EDRN/PublicPortal/releases.  Current release is 4.5.
+
+2.  Extract the software archive::
 
         tar xjf edrn-portal-VERSION.tar.bz2
         
@@ -112,12 +113,12 @@ do so:
     the file over an existing installation directory; as a sibling directory,
     or elsewhere, is fine.  Do so as the EDRN user "edrn".
 
-2.  Change the current working directory to the newly extracted directory,
-    which from here on out we'll call $INSTALL_DIR::
+3.  Change the current working directory to the newly extracted directory,
+    which from from here on out we'll call $INSTALL_DIR::
 
-        cd edrn-portal-VERSION
+        cd edrn-portal-4.5.0
 
-3.  Run the deployment script.  For *development and testing tiers*, type::
+4.  Run the deployment script.  For *development and testing tiers*, type::
 
         ./deploy.py PUBLIC-HOSTNAME
         
