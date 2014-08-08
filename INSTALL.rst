@@ -6,7 +6,7 @@
 
 This document tells how to install the Early Detection Research Network (EDRN)
 public portal and knowledge environment, or more simply, the "EDRN portal",
-version 4.4.  Preparation and installation takes two hours.
+version 4.5.  Preparation and installation takes two hours.
 
 
 Preparation
@@ -72,14 +72,14 @@ To deploy this version of the EDRN portal, perform the following steps:
 
 1.  Cancel the current system services (log rotation, cron jobs) for the old
     version 4.2 of the portal, if any.
-2.  Run the deploy script for the new portal, version 4.4.
-3.  Stop the old portal 4.2 (if any) and update its init.d startup script for
-    the new version 4.4.
-4.  Start the new version 4.4 processes.
+2.  Run the deploy script for the new portal, version 4.5.
+3.  Stop the old portal 4.4 (if any) and update its init.d startup script for
+    the new version 4.5.
+4.  Start the new version 4.5 processes.
 5.  Adjust the Apache HTTP reverse proxy configuration and install the SSL
     certificates.
 6.  Make the site.cfg file readable only by user "edrn".
-7.  Install the log rotation and cron jobs for the new version 4.4 portal.
+7.  Install the log rotation and cron jobs for the new version 4.5 portal.
 
 The rest of this document details the above steps.
 
@@ -217,7 +217,7 @@ First, stop any older EDRN 4.2 portal site by running the rc script as follows::
     sudo /etc/init.d/edrn-supervisor stop
     
 Adjust the path to the rc script as necessary.  Then, edit the script and
-replace paths to the 4.2 version with the 4.4 version.  Finally, start the new
+replace paths to the 4.4 version with the 4.5 version.  Finally, start the new
 version::
 
     sudo /etc/init.d/edrn-supervisor start
@@ -251,15 +251,19 @@ Front End Web Server
 --------------------
 
 The Apache HTTPD web server must now be configured.  On most NCI web systems,
-Apache is already configured for EDRN, and all that is necessary is to update
-the configuration with filesystem paths to the new installation directory
-(typically /home/edrn/edrn-portal-4.4.X) and any new reverse-proxy TCP ports.
+Apache is already configured for EDRN, so you'll just need to update the
+configuration with filesystem paths to the new installation directory (typically
+/home/edrn/edrn-portal-4.5.X) and any new reverse-proxy TCP ports.
+
+However, for release 4.5, there are a large number of rewrites that must also be
+installed.  These are in rewrites.cfg; place them in both the plain HTTP and SSL
+HTTPS configurations for Apache HTTPD.
 
 You'll also want to double check the SSL certificates for both HTTPS access to
 the EDRN site.
 
 The ``deploy.py`` script generated two Apache HTTPD configuration files that you
-can use an examples:
+can use an examples, in case the old ones are lost:
 
 * $INSTALL_DIR/ops/apache-httpd.conf
 * $INSTALL_DIR/ops/apache-httpd-ssl.conf
