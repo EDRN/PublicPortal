@@ -5,7 +5,7 @@
 
 _version = 'UNKNOWN'
 
-import sys, os, os.path, re, logging, tempfile, atexit, shutil, subprocess, optparse, string, random, pwd
+import sys, os, os.path, re, logging, tempfile, atexit, shutil, subprocess, optparse, string, random, pwd, getpass
 try:
     import bz2 as _
     tmp = __import__('bz2', globals(), locals(), ['BZ2File'])
@@ -52,9 +52,12 @@ _optParser.add_option('-e', '--existing-install', help='''Path to the old pre-ex
 If not given, a new empty portal will be created.  This is fine for testing or for security scans, but for
 operational or production use, you *must* tell where the old portal instllation directory was so the content can be
 migrated and preserved.''')
-_optParser.add_option('-s', '--supervisor-user', default=_defSuper,
+_optParser.add_option('-l', '--ldap-password', help='''Password to access the EDRN LDAP server. If not given you will be prompted.''')
+_superGroup = optparse.OptionGroup(_optParser, 'Supervisor Options', '''Process supervisor starts and monitors the processes that comprise the EDRN Public Portal.''')
+_superGroup.add_option('-s', '--supervisor-user', default=_defSuper,
         help='Username to use for Supervisor (default "%default")')
-_optParser.add_option('-x', '--supervisor-password', help='Password for Supervisor (will be generated if not given)')
+_superGroup.add_option('-x', '--supervisor-password', help='Password for Supervisor (will be generated if not given)')
+_optParser.add_option_group(_superGroup)
 _zopeGroup = optparse.OptionGroup(_optParser, 'Zope Options', '''Note that all existing Zope admin users will be erased.
 A single new Zope admin user will be created.''')
 _zopeGroup.add_option('-z', '--zope-user', default=_defZope,
@@ -455,7 +458,7 @@ def _extractSnapshot(repo):
     if rc != 0: raise IOError('Restoring the database from the snapshot failed with status %d' % rc)
     logging.info('Data.fs %#x', os.stat(newdb)[6])
 
-def _updateDatabase(zopeu, zopep):
+def _updateDatabase(zopeu, zopep, ldapPassword):
     logging.info('Starting DB server')
     zeo = os.path.abspath(os.path.join('bin', 'zeoserver'))
     out, rc = _exec(['bin/zeoserver', 'start'], zeo, os.getcwd())
@@ -467,12 +470,17 @@ def _updateDatabase(zopeu, zopep):
     out, rc = _exec(['bin/instance-debug', 'run', 'support/upgrade.py', zopeu, zopep],
         os.path.abspath(os.path.join('bin', 'instance-debug')), os.getcwd())
     logging.debug('Database upgrade exited with %d', rc)
+    out, rc = _exec(['bin/zeoserver', 'stop'], zeo, os.getcwd())
+    zeo = os.path.abspath(os.path.join('bin', 'zeoserver'))
+    out, rc = _exec(['bin/zeoserver', 'start'], zeo, os.getcwd())
+    if rc != 0: raise IOError("Couldn't start zeoserver, status %d" % rc)
+    _updateLDAPPassword(ldapPassword)
     logging.info('Packing')
     out, rc = _exec(['bin/zeopack'], os.path.abspath(os.path.join('bin', 'zeopack')), os.getcwd())
     logging.info('Stopping DB server')
     out, rc = _exec(['bin/zeoserver', 'stop'], zeo, os.getcwd())
 
-def _installEDRN(zopeu, zopep):
+def _installEDRN(zopeu, zopep, ldapPassword):
     logging.info('Starting DB server for minimal EDRN portal')
     zeo = os.path.abspath(os.path.join('bin', 'zeoserver'))
     out, rc = _exec(['bin/zeoserver', 'start'], zeo, os.getcwd())
@@ -484,11 +492,23 @@ def _installEDRN(zopeu, zopep):
     out, rc = _exec(['bin/buildout', '-c', 'site.cfg', 'install', 'edrn-basic-site'],
         os.path.abspath(os.path.join('bin', 'buildout')), os.getcwd())
     logging.debug('Basic site exited with %d', rc)
+    out, rc = _exec(['bin/zeoserver', 'stop'], zeo, os.getcwd())
+    out, rc = _exec(['bin/zeoserver', 'start'], zeo, os.getcwd())
+    if rc != 0: raise IOError("Couldn't start zeoserver, status %d" % rc)
+    _updateLDAPPassword(ldapPassword)
     logging.info('Packing')
+    out, rc = _exec(['bin/zeoserver', 'start'], zeo, os.getcwd())
+    if rc != 0: raise IOError("Couldn't start zeoserver, status %d" % rc)
     out, rc = _exec(['bin/zeopack'], os.path.abspath(os.path.join('bin', 'zeopack')), os.getcwd())
     logging.info('Stopping DB server')
     out, rc = _exec(['bin/zeoserver', 'stop'], zeo, os.getcwd())
 
+def _updateLDAPPassword(ldapPassword):
+    logging.info('Updating LDAP password')
+    out, rc = _exec(['bin/instance-debug', 'run', 'support/setupldap.py', '-H', 'ldaps://edrn.jpl.nasa.gov',
+        '-w', ldapPassword, '-v'], os.path.abspath(os.path.join('bin', 'instance-debug')), os.getcwd())
+    logging.debug('setupldap exited with %d', rc)
+    if rc != 0: raise IOError("Couldn't set LDAP password, status %d" % rc)
 
 def main(argv=sys.argv):
     try:
@@ -497,6 +517,7 @@ def main(argv=sys.argv):
             _optParser.error('''Specify the public hostname of the portal, such as "edrn.nci.nih.gov", '''
                 '''"edrn-dev.nci.nih.gov", etc.''')
         publicHostname = args[1]
+        ldapPassword = options.ldap_password if options.ldap_password else getpass.getpass('EDRN LDAP Password: ')
         zopePasswd, superPasswd = options.zope_password, options.supervisor_password
         if not zopePasswd: zopePasswd = _generatePasswd()
         if not superPasswd: superPasswd = _generatePasswd()
@@ -522,9 +543,9 @@ def main(argv=sys.argv):
             _snapshotDB(options.existing_install)
             _blobs(options.existing_install)
             _extractSnapshot('snapshot')
-            _updateDatabase(options.zope_user, zopePasswd)
+            _updateDatabase(options.zope_user, zopePasswd, ldapPassword)
         else:
-            _installEDRN(options.zope_user, zopePasswd)
+            _installEDRN(options.zope_user, zopePasswd, ldapPassword)
         logging.info('DEPLOYMENT COMPLETE')
     except Exception, ex:
         logging.exception('Deployment failed: %s', str(ex))

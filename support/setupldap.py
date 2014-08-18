@@ -24,7 +24,7 @@ from AccessControl.SecurityManager import setSecurityPolicy
 
 # Set up logging
 _logger = logging.getLogger('setupldap')
-_logger.setLevel(logging.INFO)
+_logger.setLevel(logging.DEBUG)
 _console = logging.StreamHandler(sys.stderr)
 _formatter = logging.Formatter('%(levelname)-8s %(message)s')
 _console.setFormatter(_formatter)
