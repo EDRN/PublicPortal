@@ -1,7 +1,15 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
+Release Notes - Early Detection of Cancer - Version Portal 4.5.1 - 2014.09.04 - NCI OPERATIONS
 
-Release Notes - Early Detection of Cancer - Version Portal 4.5.0 - 2014-08-08 - NCI OPERATIONS
+** Bug
+    * [CA-1274] - EDRN Portal must use Apache 2.4
+    * [CA-1275] - EDRN Portal snapshots.cfg missing
+    * [CA-1276] - Portal cannot access EDRN LDAP
+    * [CA-1277] - EDRN Varnish configuration requires root
+
+
+Release Notes - Early Detection of Cancer - Version Portal 4.5.0 - 2014-08-08
 
 ** Bug
     * [CA-1239] - Preserve biomarker URLs in portal
