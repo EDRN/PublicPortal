@@ -147,7 +147,7 @@ def _paintTarget():
     while d != '/':
         try:
             logging.debug('Trying %s', d)
-            os.chmod(___.S_IROTH | ___.S_IXOTH | ___.S_IXGRP | ___.S_IRGRP | ___.S_IXUSR | ___.S_IRUSR)
+            os.chmod(d, ___.S_IROTH | ___.S_IXOTH | ___.S_IXGRP | ___.S_IRGRP | ___.S_IXUSR | ___.S_IRUSR | ___.S_IWUSR)
         except:
             pass
         d = os.path.abspath(os.path.join(d, '..'))
@@ -163,6 +163,7 @@ def _center():
         logging.debug('Login %s', os.getlogin())
     else:
         logging.debug('WTF %s', os.ctermid()) # corner case
+
 
 
 def _withdrawInt():
@@ -517,7 +518,10 @@ def main(argv=sys.argv):
             _optParser.error('''Specify the public hostname of the portal, such as "edrn.nci.nih.gov", '''
                 '''"edrn-dev.nci.nih.gov", etc.''')
         publicHostname = args[1]
-        ldapPassword = options.ldap_password if options.ldap_password else getpass.getpass('EDRN LDAP Password: ')
+        if options.ldap_password:
+            ldapPassword = options.ldap_password
+        else:
+            ldapPassword = getpass.getpass('EDRN LDAP Password: ')
         zopePasswd, superPasswd = options.zope_password, options.supervisor_password
         if not zopePasswd: zopePasswd = _generatePasswd()
         if not superPasswd: superPasswd = _generatePasswd()
@@ -547,6 +551,8 @@ def main(argv=sys.argv):
         else:
             _installEDRN(options.zope_user, zopePasswd, ldapPassword)
         logging.info('DEPLOYMENT COMPLETE')
+    except SystemExit:
+        return True
     except Exception, ex:
         logging.exception('Deployment failed: %s', str(ex))
         logging.critical('Cannot continue, sorry. Email deploy.log to edrn-ic@jpl.nasa.gov for help.')

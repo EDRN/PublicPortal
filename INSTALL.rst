@@ -15,8 +15,8 @@ Preparation
 Before installing the EDRN site, you'll need to prepare the host and gather
 some information.  This installation assumes the following:
 
-For Development and Testing Tiers
----------------------------------
+For Development and Staging (Testing) Tiers
+-------------------------------------------
 
 * You're installing this software in a new directory, not overwriting the
   current EDRN installation directory, if any.
@@ -24,8 +24,8 @@ For Development and Testing Tiers
   this, the new EDRN software installation.
 
 
-For Operational or Production Tiers
------------------------------------
+For the Production (Operational) Tier
+-------------------------------------
 
 * The Unix account running the EDRN portal, "edrn", won't be changing.
 * The current EDRN installation directory is available for reading.  If it's
@@ -103,7 +103,7 @@ Deploying the new version of the EDRN portal is easier than ever before.  To
 do so:
 
 1.  Download the software from GitHub at
-    https://github.com/EDRN/PublicPortal/releases.  Current release is 4.5.
+    https://github.com/EDRN/PublicPortal/releases.  Current release is 4.5.1.
 
 2.  Extract the software archive::
 
@@ -118,17 +118,18 @@ do so:
 
         cd edrn-portal-4.5.0
 
-4.  Run the deployment script.  For *development and testing tiers*, type::
+4.  Run the deployment script.  For *development and staging (testing) tiers*,
+    type::
 
         ./deploy.py PUBLIC-HOSTNAME
         
     Replace PUBLIC-HOSTNAME with edrn-dev.nci.nih.gov (for development tier),
-    edrn-test.nci.nih.gov (for the testing tier), or whatever else you
+    edrn-test.nci.nih.gov (for the staging/testing tier), or whatever else you
     require.  For example::
 
         ./deploy.py edrn-test.nci.nih.gov
 
-    For *operational/production tiers*, instead type::
+    For the *production tier*, instead type::
 
          ./deploy.py --existing-install=OLDPORTAL PUBLIC-HOSTNAME
 
@@ -137,6 +138,10 @@ do so:
     For example::
     
         ./deploy.py --existing-install=/home/edrn/edrn-portal-4.2.0 edrn.nci.nih.gov
+
+You will be prompted to the EDRN LDAP password.  Contact a member of the EDRN
+Informatics Center to find out what it is.  (To avoid being prompted, add the -l
+or --ldap-password option.)
 
 The deployment script will check dependencies and system configuration, download
 the EDRN portal software and its related packages, and configure them
@@ -174,6 +179,8 @@ includes:
     This option is *required* for production/operational installlations.  Tells
     the deployment script to use the old, existing installation of the EDRN
     portal software in the directory EXISTING_INSTALL.
+-l PASSWORD, --ldap-password=PASSWORD
+    Sets the password to access the EDRN Directory Server to PASSWORD.
 -s SUPERVISOR_USER, --supervisor-user=SUPERVISOR_USER
     Username to use for the process Supervisor (default "supervisor")
 -x SUPERVISOR_PASSWORD, --supervisor-password=SUPERVISOR_PASSWORD
@@ -252,34 +259,36 @@ Onto Apache...
 Front End Web Server
 --------------------
 
-The Apache HTTPD web server must now be configured.  On most NCI web systems,
-Apache is already configured for EDRN, so you'll just need to update the
-configuration with filesystem paths to the new installation directory (typically
-/home/edrn/edrn-portal-4.5.X) and any new reverse-proxy TCP ports.
+The Apache HTTPD web server must now be configured.  The deploy.py script
+generated two Apache HTTPD <VirtualHost> configuration files:
 
-However, for release 4.5, there are a large number of rewrites that must also be
-installed.  These are in rewrites.conf; place them in both the plain HTTP and SSL
-HTTPS configurations for Apache HTTPD.
+* $INSTALL_DIR/ops/apache-httpd.conf - for regular HTTP access
+* $INSTALL_DIR/ops/apache-httpd-ssl.conf - for HTTPS access
 
-You'll also want to double check the SSL certificates for both HTTPS access to
-the EDRN site.
+Install these files by running::
 
-The ``deploy.py`` script generated two Apache HTTPD configuration files that you
-can use an examples, in case the old ones are lost:
+    install -o apache -g apache -m 644 ops/apache-httpd.conf /usr/local/apache/conf/vhosts/edrn.conf
+    install -o apache -g apache -m 644 ops/apache-httpd-ssl.conf /usr/local/apache/conf/vhosts-ssl/edrn.conf
 
-* $INSTALL_DIR/ops/apache-httpd.conf
-* $INSTALL_DIR/ops/apache-httpd-ssl.conf
+You'll also need to place the EDRN SSL/TLS certificate and private key in the
+following locations::
 
-Ultimately, you should be able to visit the following URLs with a browser:
+* $INSTALL_DIR/etc/server.crt (public certificate)
+* $INSTALL_DIR/etc/server.key (private key, unencrypted and readable by Apache
+  HTTPD)
+
+Once Apache is restarted, you should be able to visit the following URLs with a
+browser:
 
 * http://PUBLIC-HOSTNAME/
 * https://PUBLIC-HOSTNAME/
-* https://PUBLIC-HOSTNAME/logs (should require a password)
-* https://PUBLIC-HOSTNAME/snapshots (should require a password)
-* https://PUBLIC-HOSTNAME/blobstorage (should require a password)
+* https://PUBLIC-HOSTNAME/logs
+* https://PUBLIC-HOSTNAME/snapshots
+* https://PUBLIC-HOSTNAME/blobstorage
 
 Replace PUBLIC-HOSTNAME with the command-line argument given to the
-``deploy.py`` script.
+``deploy.py`` script.  (The last three URLs should prompt for an NIH username
+and password.)
 
 
 Hooking into the Operating System
