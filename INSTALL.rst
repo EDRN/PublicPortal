@@ -116,7 +116,7 @@ do so:
 3.  Change the current working directory to the newly extracted directory,
     which from from here on out we'll call $INSTALL_DIR::
 
-        cd edrn-portal-4.5.0
+        cd edrn-portal-4.5.1
 
 4.  Run the deployment script.  For *development and staging (testing) tiers*,
     type::
@@ -276,6 +276,11 @@ following locations::
 * $INSTALL_DIR/etc/server.crt (public certificate)
 * $INSTALL_DIR/etc/server.key (private key, unencrypted and readable by Apache
   HTTPD)
+
+Reminder: to generate a quick self-signed certificate for the development and
+staging (testing) tiers, run::
+
+    openssl req -new -x509 -nodes -out etc/server.crt -keyout etc/server.key
 
 Once Apache is restarted, you should be able to visit the following URLs with a
 browser:
