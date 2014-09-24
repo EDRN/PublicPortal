@@ -865,11 +865,11 @@
     RewriteRule ^/biomarkers/plec /biomarkers/PLEC [L,R=301]
 
     # Send login attempts to https.
-    RewriteRule ^(.*)(/login_?|/require_login|/failsafe_login_form)(.*) https://edrn-dev.nci.nih.gov${:dollar}1${:dollar}2${:dollar}3 [L,R]
+    RewriteRule ^(.*)(/login_?|/require_login|/failsafe_login_form)(.*) https://${:public-hostname}${:dollar}1${:dollar}2${:dollar}3 [L,R]
 
     # If a user manually substituted http while logged in, immediately send back to https.
     RewriteCond expr "%{HTTP_COOKIE} =~ /__ac=(?:[^;]+)(?:;|${:dollar})/"
-    RewriteRule ^(.*) https://edrn-dev.nci.nih.gov${:dollar}1 [L,NE,R=301]
+    RewriteRule ^(.*) https://${:public-hostname}${:dollar}1 [L,NE,R=301]
 
     # Onto the cache, and thence onto the Zope app server, to the Plone site "edrn".
     ProxyPass / http://${hosts:cache}:${ports:cache}/VirtualHostBase/http/${:public-hostname}:80/edrn/VirtualHostRoot/
