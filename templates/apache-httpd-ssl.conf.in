@@ -884,6 +884,9 @@
     ProxyPass /logs !
     ProxyPass / http://${hosts:instance1}:${ports:instance1}/VirtualHostBase/https/${:public-hostname}:443/edrn/VirtualHostRoot/
 
+    # Add secure & http-only flags to all cookies (required by NIH AppScan)
+    Header edit Set-Cookie (.*) "$1; HTTPOnly; Secure"
+
     # For blobstorage, filestorage, and blobs use NIH LDAP.
     Alias /snapshots "${buildout:directory}/var/snapshotbackups"
     <Directory "${buildout:directory}/var/snapshotbackups">
