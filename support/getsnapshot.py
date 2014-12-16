@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # encoding: utf-8
-# Copyright 2011 California Institute of Technology. ALL RIGHTS
+# Copyright 2011–2014 California Institute of Technology. ALL RIGHTS
 # RESERVED. U.S. Government Sponsorship acknowledged.
 
 '''Get the latest database snapshot of the Early Detection Research Network's public portal.'''
 
-import logging, sys, getpass, os, os.path, urllib2, urlparse, base64
+import logging, sys, getpass, os, os.path, urllib2, urlparse, base64, subprocess
 from optparse import OptionParser
 from HTMLParser import HTMLParser
 
@@ -117,11 +117,14 @@ def main(argv):
     if os.path.exists(target) and not os.path.isdir(target):
         logging.critical('"%s" already exists and is not a directory; not overwriting it', target)
         sys.exit(1)
-    for dirname in ('snapshots', 'blobstorage'):
+    for dirname in ('snapshots',):
         d = os.path.join(target, dirname)
         if not os.path.exists(d):
             os.makedirs(d)
         grab(baseURL + dirname + '/', user, password, d)
+    # Use wget for blobs since it can check modification times
+    subprocess.check_call(['/usr/bin/wget', '-N', '--no-check-certificate', '--user=' + user, '--password=' + password,
+        '--relative', ])
 
 
 if __name__ == '__main__':
