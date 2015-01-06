@@ -1,5 +1,26 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
+
+Release Notes - Early Detection of Cancer - Version Portal 4.5.2 - 2015.1.6
+
+** Bug
+    * [CA-1295] - Infinite loop in functional test, but only on some platforms
+
+This release also updates publications ingest to ignore all of the error-prone
+data from the DMCC's publications feed and use only the PubMedID.  The portal
+accesses the PubMed database to retrieve accurate details about each
+publication.  It also displays the publications in a cleaner format, and hides
+the right-side portlets on the publications tab.
+
+In addition, this release
+
+* Fixes an infinite loop in EDRN collaborative groups.
+* Addresses an issue in RDF ingest of biomarker data where information about how
+  a biomarker affects a bodysystem refers to a non-existent biomarker.
+* Fixed LabCAS integration by including a missing API.
+* Works around bad site data from the DMCC.
+
+
 Release Notes - Early Detection of Cancer - Version Portal 4.5.1 - 2014.09.04 - NCI OPERATIONS
 
 ** Bug
