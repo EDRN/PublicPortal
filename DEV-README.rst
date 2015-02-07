@@ -49,54 +49,20 @@ nutshell, that means you need gcc, make, and Python 2.7.
 Python 2.7
 ----------
 
-Getting a version of Python that supports development can be tricky,
-especially on Mac OS X 10.6+.  By far the easiest way to get a decent Python
-version, regardless of what platform you're on, is to use the Plone Collective
-Python Buildout:
+Getting a version of Python that supports development can be tricky, especially
+on Mac OS X.  By far the easiest way to get a decent Python version, regardless
+of what platform you're on, is to use the Plone Collective Python Buildout:
 
 1. git clone https://github.com/collective/buildout.python.git
 2. cd buildout.python
-3. /usr/bin/python bootstrap.py
-4. bin/buildout
-5. sudo bin/install-links
+3. Edit buildout.cfg and delete all lines for python24, 25, 32, 33, and 34.
+   Leave ``src/python27.cfg`` and ``${buildout:python27-parts}`` intact.
+4. /usr/bin/python bootstrap.py
+5. bin/buildout
+6. sudo bin/install-links
 
-You'll be left with /opt/local/bin/python2.7 (as well as other versions),
-ready to go and pre-loaded with all needed dependencies.
-
-Want the links in /home/python instead of /opt/local?  Don't need Python 2.5,
-2.6?  Want 3.1 as well?  Easy.  Make a file, say local.cfg, with the
-following::
-
-    [buildout]
-    extends =
-        src/base.cfg
-        src/readline.cfg
-        src/libjpeg.cfg
-        src/python27.cfg
-        src/python31.cfg
-        src/links.cfg
-    parts =
-        ${buildout:base-parts}
-        ${buildout:readline-parts}
-        ${buildout:libjpeg-parts}
-        ${buildout:python27-parts}
-        ${buildout:python31-parts}
-        ${buildout:links-parts}
-    python-buildout-root = ${buildout:directory}/src
-    eggs-directory = eggs
-    [install-links]
-    prefix = /home/python
-
-Then build as follows:
-
-1. /usr/bin/python boostrap.py -dc local.cfg
-2. bin/buildout -c local.cfg
-3. sudo bin/install-links
-
-Don't want the links?  Skip step 3, and use the parts/opt/bin/python2.7, ...,
-executables.
-
-For the EDRN Portal, use this generated python2.7.
+You'll be left with /opt/local/bin/python2.7 ready to go and pre-loaded with
+needed dependencies.  Use this Python executable from now on.
 
 
 Building Out
@@ -105,22 +71,26 @@ Building Out
 To get your development environment ready for action, check out and bootstrap
 the EDRN public portal, using a Buildout_ procedure like the following::
 
-    git clone ...
-    cd ...
-    python2.7 bootstrap.py -v 2.2.1 -c dev.cfg
+    git clone https://github.com/EDRN/PublicPortal.git
+    cd PublicPortal
+    python2.7 bootstrap.py -v 2.2.5 --setuptools-version 7.0 -c dev.cfg
     bin/buildout -c dev.cfg
 
-This gives you an EDRN portal with the release versions of each component and
-runs their tests, which had better damn well all be successful.  Then, it puts
-your buildout into "developer's mode", which is a mode for developers.  They
-like it that way.
+Note: this can take over 15 minutes the first time it's run.
+
+This gives you an EDRN portal software with the release versions of each
+component and runs their tests, which had better damn well all be successful.
+Then, it puts your buildout into "developer's mode", which is a mode for
+developers.  They like it that way.
 
 
 Populating Your Portal
 ======================
 
 Right now, you've got all the software set up and configured, but your
-application server is bare.  Run:
+application server is bare.  There's no EDRN portal content!
+
+To fix that, run::
 
     support/devrebuild.sh
 
@@ -199,5 +169,5 @@ http://cancer.jpl.nasa.gov/contact-info.
     California Institute of Technology
 
 .. Copyright:
-    Copyright 2009-2014 California Institute of Technology. ALL RIGHTS
+    Copyright 2009-2015 California Institute of Technology. ALL RIGHTS
     RESERVED. U.S. Government sponsorship acknowledged.
