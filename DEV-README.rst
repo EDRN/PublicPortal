@@ -6,8 +6,8 @@
 
 Welcome to the Early Detection Research Network (EDRN_) public portal and
 knowledge environment.  If you're *not* a developer of the portal, there's no
-need to read this document.  Instead, check out the README.txt and
-INSTALL.txt.  It'll tell you what you need and how to install the portal.
+need to read this document.  Instead, check out the README.rst and
+INSTALL.rst.  It'll tell you what you need and how to install the portal.
 
 If you're a developer, read on.
 
@@ -17,15 +17,14 @@ Quick Start
 
 Are you hard core?  Forget documentation!  Try the following::
 
-    git clone ...
-    cd ...
-    python2.7 bootstrap.py -v 2.2.1 -c dev.cfg  # bootstrap it
-    bin/buildout -c dev.cfg                     # build it in "developer mode"
-    support/devrebuild.sh                       # sit back and relax
-    bin/instance-debug fg                       # start the app server
-    ...                                         # visit http://localhost:8080/edrn
-    CTRL+C                                      # stop the app server
-
+    git clone https://github.com/EDRN/PublicPortal.git
+    cd PublicPortal
+    python2.7 bootstrap.py -v 2.2.5 --setuptools-version 7.0 -c dev.cfg
+    bin/buildout -c dev.cfg
+    support/devrebuild.sh
+    bin/instance-debug fg
+    (visit http://localhost:8080/edrn/login_form)
+    CTRL+C
 
 Not working?  Read on.
 
@@ -42,8 +41,9 @@ of the operational setup:
   which runs the portal and services requests from http://localhost:8080/edrn.
 
 Setting up the above is easy.  First off, your system will need to meet the
-requirements listed in the "Requirements" section of README.txt.  In a
-nutshell, that means you need gcc, make, and Python 2.7.
+requirements listed in the "Requirements" section of README.rst.  In a nutshell,
+that means you need gcc, make, and Python 2.7.  You'll also need about 3 GiB of
+free space.
 
 
 Python 2.7
@@ -62,7 +62,7 @@ of what platform you're on, is to use the Plone Collective Python Buildout:
 6. sudo bin/install-links
 
 You'll be left with /opt/local/bin/python2.7 ready to go and pre-loaded with
-needed dependencies.  Use this Python executable from now on.
+needed dependencies.  *Use this Python executable from now on*.
 
 
 Building Out
@@ -76,29 +76,27 @@ the EDRN public portal, using a Buildout_ procedure like the following::
     python2.7 bootstrap.py -v 2.2.5 --setuptools-version 7.0 -c dev.cfg
     bin/buildout -c dev.cfg
 
-Note: this can take over 15 minutes the first time it's run.
-
-This gives you an EDRN portal software with the release versions of each
-component and runs their tests, which had better damn well all be successful.
-Then, it puts your buildout into "developer's mode", which is a mode for
-developers.  They like it that way.
+Note: this can take over 15 minutes the first time it's run.  You may also see a
+lot of warnings and plenty of SyntaxErrors.  You can ignore them all.
 
 
 Populating Your Portal
 ======================
 
-Right now, you've got all the software set up and configured, but your
-application server is bare.  There's no EDRN portal content!
-
-To fix that, run::
+At this point you have the portal software all set up and ready to go, but no
+portal content.  To get the full operational content, run::
 
     support/devrebuild.sh
 
-That will:
+NOTE: This command requires access to tumor.jpl.nasa.gov.  If you're outside JPL
+you'll need to start your JPL VPN.
 
-1. Download a snapshot of the portal database from NCI
+The ``support/devrebuild.sh`` script does the following:
+
+1. Download a snapshot of the portal database from NCI (this can take a very
+   long time the first time)
 2. Extract the snapshot into your local database
-3. Upgrade the database 
+3. Upgrade the database    
 4. Start the Supervisor daemon running the ZEO database server
 
 Next, start the application server::
@@ -115,7 +113,7 @@ Developing
 
 By default, the buildout will use the last published releases of each of the
 EDRN portal's components.  Typically, you'll need not the last published
-release, but the latest trunk in our Subversion repository.
+release, but the latest master from our Git repository.
 
 To check out a component, run::
 
