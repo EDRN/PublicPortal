@@ -1,6 +1,18 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
 
+Release Notes - Early Detection of Cancer - Version Portal 4.5.4 - 2015-03-10 - NCI OPERATIONS
+
+** Bug
+    * [CA-1291] - Member Directory showing an error
+    * [CA-1292] - Bug in portal ingest
+    * [CA-1293] - Cannot edit protocol
+    * [CA-1299] - Trace stack error when trying to edit Boston Site - 193
+    * [CA-1300] - Trace stack error when trying to edit Arizona State - 230
+    * [CA-1302] - eke.study integration tests failing
+    * [CA-1303] - eke.biomarker integration tests failing
+
+
 Release Notes - Early Detection of Cancer - Version Portal 4.5.3 - 2015-01-28
 
 ** Improvement
