@@ -417,8 +417,8 @@ def _bootstrap():
         return
     logging.info('Bootstrapping %#x', os.stat(os.path.abspath('bootstrap.py'))[6])
     p = os.path.abspath(os.path.join('support', 'int', 'bin', 'python'))
-    out, rc = _exec([p, 'bootstrap.py', '-v', BUILDOUT_CHECKSUM_MD5_HASH, '-c', os.path.abspath('site.cfg')], p,
-            os.getcwd())
+    out, rc = _exec([p, 'bootstrap.py', '-v', BUILDOUT_CHECKSUM_MD5_HASH, '-c', os.path.abspath('site.cfg'),
+        '--allow-site-packages'], p, os.getcwd())
     if rc != 0: raise IOError('Bootstrap failed')
 
 
