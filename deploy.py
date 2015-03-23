@@ -20,13 +20,16 @@ import stat as ___
 import platform as plat
 
 # important
-BUILDOUT_CHECKSUM_MD5_HASH = '2.2.1'
+BUILDOUT_CHECKSUM_MD5_HASH = '2.2.5'
 
 # just as so
 _ezsetupURL = u'https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py'
 
+# not as
+SEETUP_TOOLS = '7.0'
+
 # previous values: edrnadmin, edrn-admin, manager-edrn
-_defZope = 'manage-edrn' # Change this each release, in case TerpSys doesn't and they re-use the uid+passwd
+_defZope = 'manageedrn' # Change this each release, in case TerpSys doesn't and they re-use the uid+passwd
 _defSuper = 'supervisor'
 _eviOutInc = 'deploy.log'
 _cHeader = '''#ifdef __cplusplus
@@ -41,7 +44,7 @@ _flags = [0x2e, 0x2f, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x75, 0x72, 0x65]
 _dn = open('/dev/null', 'rb')
 _post = 'CFLAGS=-fPIC'
 _bin = [0x2d, 0x34, 0x5c, 0x2e, 0x30]
-_base = 6310
+_base = 7310 # change this each release too
 _pence = (055, 063, 056, 060)
 
 _optParser = optparse.OptionParser(version=_version, description='''Deploys the EDRN portal in this directory.  This
@@ -219,7 +222,7 @@ def _ezsetup():
     logging.debug('RC: %d', rc)
     if rc != 0: raise OSError('Cannot fetch %s' % _ezsetupURL)
     ezloc = os.path.abspath('ez_setup.py')
-    out, rc = _exec([py, ezloc, '--insecure'], py, os.path.abspath('.'))
+    out, rc = _exec([py, ezloc, '--insecure', '--version=%s' % SEETUP_TOOLS], py, os.path.abspath('.'))
     logging.debug('RC: %d', rc)
     if rc != 0: raise OSError('Cannot install ez_setup')
     libdir = os.path.abspath(os.path.join('support', 'int', 'lib'))
@@ -418,7 +421,7 @@ def _bootstrap():
     logging.info('Bootstrapping %#x', os.stat(os.path.abspath('bootstrap.py'))[6])
     p = os.path.abspath(os.path.join('support', 'int', 'bin', 'python'))
     out, rc = _exec([p, 'bootstrap.py', '-v', BUILDOUT_CHECKSUM_MD5_HASH, '-c', os.path.abspath('site.cfg'),
-        '--allow-site-packages'], p, os.getcwd())
+        '--allow-site-packages', '--setuptools-version', SEETUP_TOOLS], p, os.getcwd())
     if rc != 0: raise IOError('Bootstrap failed')
 
 
@@ -489,14 +492,19 @@ def _installEDRN(zopeu, zopep, ldapPassword):
     logging.info('Setting Zope user & password for minimal EDRN portal')
     out, rc = _exec(['bin/instance-debug', 'adduser', zopeu, zopep],
         os.path.abspath(os.path.join('bin', 'instance-debug')), os.getcwd())
+    logging.info('Creating minimal Plone portal')
+    out, rc = _exec(['bin/buildout', '-c', 'site.cfg', 'install', 'minimal-plone-portal'],
+        os.path.abspath(os.path.join('bin', 'buildout')), os.getcwd())
+    logging.debug('Minimal-plone-portal with %d', rc)
+    out, rc = _exec(['bin/zeoserver', 'start'], zeo, os.getcwd())
+    if rc != 0: raise IOError("Couldn't start zeoserver again, status %d" % rc)
+    _updateLDAPPassword(ldapPassword)
     logging.info('Populating minimal EDRN portal at version %s', _version)
     out, rc = _exec(['bin/buildout', '-c', 'site.cfg', 'install', 'edrn-basic-site'],
         os.path.abspath(os.path.join('bin', 'buildout')), os.getcwd())
     logging.debug('Basic site exited with %d', rc)
-    out, rc = _exec(['bin/zeoserver', 'stop'], zeo, os.getcwd())
     out, rc = _exec(['bin/zeoserver', 'start'], zeo, os.getcwd())
     if rc != 0: raise IOError("Couldn't start zeoserver, status %d" % rc)
-    _updateLDAPPassword(ldapPassword)
     logging.info('Packing')
     out, rc = _exec(['bin/zeoserver', 'start'], zeo, os.getcwd())
     if rc != 0: raise IOError("Couldn't start zeoserver, status %d" % rc)
