@@ -31,14 +31,15 @@ For the Production (Operational) Tier
 * The current EDRN installation directory is available for reading.  If it's
   not, copy one over from some other host.
 * You're installing this software on the same host that currently runs
-  the older EDRN portal, version 4.2.
+  the older EDRN portal, version 4.5.1.
 * You're installing this software in a new directory, not overwriting the
   current EDRN installation directory.
 * The Apache HTTPD configuration may be updated as needed to reverse-proxy to
   this, the new EDRN software installation.
 
 Once the deployment process is complete, this software will become the new
-EDRN portal software.  The old directory with version 4.2 may then be removed.
+EDRN portal software.  The old directory with version 4.5.1 may then be
+removed.
 
 
 Dependencies
@@ -55,6 +56,7 @@ This software has dependencies on several external packages:
 * SASL_
 * OpenLDAP_
 * Varnish_ version 3
+* curl_ executable.
 
 NOTE: We now require Varnish 3.
 
@@ -71,15 +73,15 @@ Deploying the EDRN Portal
 To deploy this version of the EDRN portal, perform the following steps:
 
 1.  Cancel the current system services (log rotation, cron jobs) for the old
-    version 4.2 of the portal, if any.
+    version 4.5.1 of the portal, if any.
 2.  Run the deploy script for the new portal, version 4.5.
-3.  Stop the old portal 4.4 (if any) and update its init.d startup script for
-    the new version 4.5.
-4.  Start the new version 4.5 processes.
+3.  Stop the old portal 4.5.1 (if any) and update its init.d startup script for
+    the new version 4.5.4.
+4.  Start the new version 4.5.4 processes.
 5.  Adjust the Apache HTTP reverse proxy configuration and install the SSL
     certificates.
 6.  Make the site.cfg file readable only by user "edrn".
-7.  Install the log rotation and cron jobs for the new version 4.5 portal.
+7.  Install the log rotation and cron jobs for the new version 4.5.4 portal.
 
 The rest of this document details the above steps.
 
@@ -137,7 +139,7 @@ do so:
     Replace PUBLIC-HOSTNAME with edrn.nci.nih.gov (or whatever is required).
     For example::
     
-        ./deploy.py --existing-install=/home/edrn/edrn-portal-4.2.0 edrn.nci.nih.gov
+        ./deploy.py --existing-install=/home/edrn/edrn-portal-4.5.1 edrn.nci.nih.gov
 
 You will be prompted to the EDRN LDAP password.  Contact a member of the EDRN
 Informatics Center to find out what it is.  (To avoid being prompted, add the -l
@@ -158,7 +160,7 @@ options.
 
 If the script fails to run, try running it with the Python interpreter; i.e.::
 
-    /usr/bin/python ./deploy.py --existing-install=/home/edrn/edrn-portal-4.2.0 edrn.nci.nih.gov
+    /usr/bin/python ./deploy.py --existing-install=/home/edrn/edrn-portal-4.5.1 edrn.nci.nih.gov
 
 All of the steps that the script carries out can take an *enormous* amount of
 time.  If you're fond of food, now would be a great time to take a lunch
@@ -196,7 +198,7 @@ each process listens on a port number offset from the base), and/or individual
 port numbers.
 
 --base-port=BASE_PORT
-    Base port (procs get base +1,+2,..., default 6310)
+    Base port (procs get base +1,+2,..., default 7310)
 --cache-control=NUM
     Cache control port (default base+1)
 --cache-port=NUM
@@ -218,15 +220,17 @@ port numbers.
 Shutting Down the Old One and Starting the New One
 --------------------------------------------------
 
-After running the "deploy.py" script, you're ready to start the new EDRN portal.
+After running the "deploy.py" script, you're ready to start the new EDRN
+portal.
 
-First, stop any older EDRN 4.2 portal site by running the rc script as follows::
+First, stop any older EDRN 4.5.1 portal site by running the rc script as
+follows::
 
     sudo /etc/init.d/edrn-supervisor stop
     
 Adjust the path to the rc script as necessary.  Then, edit the script and
-replace paths to the 4.4 version with the 4.5 version.  Finally, start the new
-version::
+replace paths to the 4.5.1 version with the 4.5.4 version.  Finally, start the
+new version::
 
     sudo /etc/init.d/edrn-supervisor start
 
@@ -247,9 +251,9 @@ You can check that the site is active by fetching the following URLs
 (adjusting port numbers as needed, and substituting 127.0.0.1 for
 localhost, if necessary):
 
-* http://localhost:6317/edrn (via the first Zope app server)
-* http://localhost:6318/edrn (via the second Zope app server)
-* http://localhost:6312/edrn (via the Varnish cache)
+* http://localhost:7317/edrn (via the first Zope app server)
+* http://localhost:7318/edrn (via the second Zope app server)
+* http://localhost:7312/edrn (via the Varnish cache)
 
 You should get an identical web page from all three URLs.
 
@@ -274,8 +278,7 @@ You'll also need to place the EDRN SSL/TLS certificate and private key in the
 following locations::
 
 * $INSTALL_DIR/etc/server.crt (public certificate)
-* $INSTALL_DIR/etc/server.key (private key, unencrypted and readable by Apache
-  HTTPD)
+* $INSTALL_DIR/etc/server.key (private key, unencrypted and readable by Apache HTTPD)
 
 Reminder: to generate a quick self-signed certificate for the development and
 staging (testing) tiers, run::
@@ -392,6 +395,7 @@ http://cancer.jpl.nasa.gov/contact-info.
 .. _Buildout: http://www.buildout.org/
 .. _CNAME: http://en.wikipedia.org/wiki/CNAME_record
 .. _cron: http://en.wikipedia.org/wiki/Cron
+.. _curl: http://curl.haxx.se/
 .. _Debian: http://www.debian.org/
 .. _DNS: http://en.wikipedia.org/wiki/Domain_Name_System
 .. _FreeBSD: http://www.freebsd.org/
