@@ -19,7 +19,7 @@ Are you hard core?  Forget documentation!  Try the following::
 
     git clone https://github.com/EDRN/PublicPortal.git
     cd PublicPortal
-    python2.7 bootstrap.py -v 2.2.5 --setuptools-version 7.0 -c dev.cfg
+    python2.7 bootstrap.py -c dev.cfg
     bin/buildout -c dev.cfg
     support/devrebuild.sh
     bin/instance-debug fg
@@ -73,7 +73,7 @@ the EDRN public portal, using a Buildout_ procedure like the following::
 
     git clone https://github.com/EDRN/PublicPortal.git
     cd PublicPortal
-    python2.7 bootstrap.py -v 2.2.5 --setuptools-version 7.0 -c dev.cfg
+    python2.7 bootstrap.py -c dev.cfg
     bin/buildout -c dev.cfg
 
 Note: this can take over 15 minutes the first time it's run.  You may also see a
