@@ -3,10 +3,10 @@
 import rdflib, csv, cStringIO, codecs, sys
 
 _pubURLs = [
-    # u'http://edrn.jpl.nasa.gov/dmcc/rdf-data/publications/@@rdf',
-    # u'http://edrn.jpl.nasa.gov/bmdb/rdf/publications'
-    u'file:pubs-dmcc.rdf',
-    u'file:pubs-bmdb.rdf',
+    u'https://edrn.jpl.nasa.gov/dmcc/rdf-data/publications/@@rdf',
+    # u'http://edrn.jpl.nasa.gov/bmdb/rdf/publications',
+    # u'file:pubs-dmcc.rdf',
+    # u'file:pubs-bmdb.rdf',
 ]
 
 # Interesting predicates
@@ -73,12 +73,14 @@ def main():
             if p not in predicates:
                 predicates[p] = []
             predicates[p].append(o)
+        missing = 0
         for subject, predicates in statements.iteritems():
             if _typeURI not in predicates: continue
             kind = predicates[_typeURI][0]
             if kind != _publicationTypeURI: continue
             if _pubMedIDPredicateURI in predicates: continue
             if _titlePredicateURI not in predicates: continue
+            missing += 1
             title = _getObj(_titlePredicateURI, predicates)
             if not title: continue
             journal = _getObj(_journalPredicateURI, predicates)
@@ -89,7 +91,7 @@ def main():
             row = [unicode(subject), title, journal, volume, issue, year]
             row.extend(authors)
             writer.writerow(row)
-
+        print >>sys.stderr, url, 'Missing', missing, 'Total', len(statements)
 
 if __name__ == '__main__':
     main()
