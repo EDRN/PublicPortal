@@ -2,7 +2,7 @@
 #
 # Rebuild from scratch, for developers.
 
-opsdb=tumor.jpl.nasa.gov:/usr/local/edrn-portal/ops-nci/var
+opsdb=tumor.jpl.nasa.gov:/usr/local/edrn/portal/ops-nci/var
 
 if [ $# -ne 0 ]; then
     echo Usage: `basename $0` 1>&2
