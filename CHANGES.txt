@@ -1,6 +1,18 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
 
+Release Notes - Early Detection of Cancer - Version Portal 4.5.5 - 2016-02-02
+
+** Bug
+    * [CA-1312] - Remove "EDRN Account Name" from people on public portal
+    * [CA-1316] - Protocol data possibly missing in portal
+    * [CA-1317] - Ziding Feng missing some content
+    * [CA-1319] - Lung Collaborative Group link not working
+
+** New Feature
+    * [CA-1321] - Add Biomuta display to biomarkers
+
+
 Release Notes - Early Detection of Cancer - Version Portal 4.5.4 - 2015-03-10 - NCI OPERATIONS
 
 ** Bug
