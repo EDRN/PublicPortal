@@ -29,7 +29,7 @@ _ezsetupURL = u'https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py'
 SEETUP_TOOLS = '7.0'
 
 # previous values: edrnadmin, edrn-admin, manager-edrn
-_defZope = 'manageedrn' # Change this each release, in case TerpSys doesn't and they re-use the uid+passwd
+_defZope = 'edrnmgr' # Change this each release, in case TerpSys doesn't and they re-use the uid+passwd
 _defSuper = 'supervisor'
 _eviOutInc = 'deploy.log'
 _cHeader = '''#ifdef __cplusplus
