@@ -19,6 +19,9 @@ except ImportError:
 import stat as ___
 import platform as plat
 
+# Stupid goddamn CBIIT systems so freakin' old they can't give us recent LDAP/SSL
+_ldapURL = 'https://pypi.python.org/packages/source/p/python-ldap/python-ldap-2.4.25.tar.gz'
+
 # important
 BUILDOUT_CHECKSUM_MD5_HASH = '2.2.5'
 
@@ -229,10 +232,30 @@ def _ezsetup():
     for root, dirs, files in os.walk(libdir):
         for i in dirs:
             path = os.path.join(root, i)
-            os.chmod(path, stat.S_IRUSR | stat.S_IXUSR | stat.S_IRGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IXOTH)
+            os.chmod(path, stat.S_IRUSR | stat.S_IXUSR | stat.S_IRGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IXOTH | stat.S_IWUSR)
         for i in files:
             path = os.path.join(root, i)
-            os.chmod(path, stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH)
+            os.chmod(path, stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH | stat.S_IWUSR)
+
+
+def _ldap():
+    curl = os.path.abspath('/usr/bin/curl')
+    out, rc = _exec(['curl', '-kLO', _ldapURL], curl, os.path.abspath('.'))
+    logging.debug('RC: %d', rc)
+    if rc != 0: raise OSError('Cannot fetch %s' % _ldapURL)
+    tar = os.path.abspath('/bin/tar')
+    out, rc = _exec(['tar', '-xzf', 'python-ldap-2.4.25.tar.gz'], tar, os.path.abspath('.'))
+    logging.debug('RC: %d', rc)
+    if rc != 0: raise OSError('Cannot extract python-ldap-2.4.5')
+    patchfile = os.path.abspath(os.path.join('patches', 'python-ldap.patch'))
+    patcher = os.path.abspath('/usr/bin/patch')
+    out, rc = _exec(['patch', '-p0', '-i', patchfile], patcher, os.path.abspath('python-ldap-2.4.25'))
+    logging.debug('RC: %d', rc)
+    if rc != 0: raise OSError('Cannot patch python-ldap')
+    py = os.path.abspath(os.path.join('support', 'int', 'bin', 'python'))
+    out, rc = _exec(['python', 'setup.py', 'install'], py, os.path.abspath('python-ldap-2.4.25'))
+    logging.debug('RC: %d', rc)
+    if rc != 0: raise OSError('Cannot install python-ldap')
 
 
 def _deployInt():
@@ -245,6 +268,7 @@ def _deployInt():
     _withdrawInt()
     _composeInt()
     _ezsetup()
+    _ldap()
 
 def _easel():
     '''Create a suitable workspace'''
@@ -384,8 +408,26 @@ def _writeConfig(login, zopeu, zopep, superu, superp, ports, publicHostname):
     '''Generate site.cfg'''
     logging.info('Generating site.cfg')
     out = open(os.path.abspath('site.cfg'), 'w')
+    print >>out, '[versions]'
+    print >>out, 'python-ldap = 2.4.25'
+    print >>out, '[executables]'
+    print >>out, 'openssl = /usr/local/openssl1.0.1/bin/openssl'
     print >>out, '[buildout]'
     print >>out, 'extends = operations.cfg'
+    print >>out, 'parts ='
+    print >>out, '    python-ldap'
+    print >>out, '    ${buildout:base-parts}'
+    print >>out, '    instance1'
+    print >>out, '    instance2'
+    print >>out, '    varnish'
+    print >>out, '    logrotate.conf'
+    print >>out, '    apache-httpd.conf'
+    print >>out, '    apache-httpd-ssl.conf'
+    print >>out, '    cron.hourly'
+    print >>out, '    cron.daily'
+    print >>out, '[python-ldap]'
+    print >>out, 'recipe = syseggrecipe'
+    print >>out, 'eggs = python-ldap'
     print >>out, '[hosts]'
     print >>out, 'public-hostname = %s' % publicHostname
     print >>out, '[instance-settings]'
@@ -420,7 +462,7 @@ def _bootstrap():
         return
     logging.info('Bootstrapping %#x', os.stat(os.path.abspath('bootstrap.py'))[6])
     p = os.path.abspath(os.path.join('support', 'int', 'bin', 'python'))
-    out, rc = _exec([p, 'bootstrap.py', '-v', BUILDOUT_CHECKSUM_MD5_HASH, '-c', os.path.abspath('site.cfg'),
+    out, rc = _exec([p, 'bootstrap.py', '--buildout-version', BUILDOUT_CHECKSUM_MD5_HASH, '-c', os.path.abspath('site.cfg'),
         '--allow-site-packages', '--setuptools-version', SEETUP_TOOLS], p, os.getcwd())
     if rc != 0: raise IOError('Bootstrap failed')
 
