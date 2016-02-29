@@ -31,14 +31,14 @@ For the Production (Operational) Tier
 * The current EDRN installation directory is available for reading.  If it's
   not, copy one over from some other host.
 * You're installing this software on the same host that currently runs
-  the older EDRN portal, version 4.5.1.
+  the older EDRN portal, version 4.5.4.
 * You're installing this software in a new directory, not overwriting the
   current EDRN installation directory.
 * The Apache HTTPD configuration may be updated as needed to reverse-proxy to
   this, the new EDRN software installation.
 
 Once the deployment process is complete, this software will become the new
-EDRN portal software.  The old directory with version 4.5.1 may then be
+EDRN portal software.  The old directory with version 4.5.4 may then be
 removed.
 
 
@@ -50,11 +50,13 @@ This software has dependencies on several external packages:
 * Python 2.4 or later plus development environment (Python.h headers, etc.).
 * C/C++ compiler and "make" (to build additional software)
 * JPEG_ 6B development libraries
-* OpenSSL_ development libraries version 1.0 or later *important*!
+* OpenSSL_ command line and development libraries version 1.0.1 installed in
+  ``/usr/local/openssl1.0.1``
 * wvWare_ tools
 * `PDF-to-HTML`_ tools
 * SASL_
-* OpenLDAP_
+* OpenLDAP_ command line and development libraries version 2.4.41 installed in
+  ``/usr/local/openldap2.4``
 * Varnish_ version 3
 * curl_ executable.
 
@@ -73,9 +75,9 @@ Deploying the EDRN Portal
 To deploy this version of the EDRN portal, perform the following steps:
 
 1.  Cancel the current system services (log rotation, cron jobs) for the old
-    version 4.5.1 of the portal, if any.
+    version 4.5.4 of the portal, if any.
 2.  Run the deploy script for the new portal, version 4.5.
-3.  Stop the old portal 4.5.1 (if any) and update its init.d startup script for
+3.  Stop the old portal 4.5.4 (if any) and update its init.d startup script for
     the new version 4.5.4.
 4.  Start the new version 4.5.4 processes.
 5.  Adjust the Apache HTTP reverse proxy configuration and install the SSL
@@ -105,7 +107,7 @@ Deploying the new version of the EDRN portal is easier than ever before.  To
 do so:
 
 1.  Download the software from GitHub at
-    https://github.com/EDRN/PublicPortal/releases.  Current release is 4.5.1.
+    https://github.com/EDRN/PublicPortal/releases.  Current release is 4.5.6.
 
 2.  Extract the software archive::
 
@@ -118,10 +120,12 @@ do so:
 3.  Change the current working directory to the newly extracted directory,
     which from from here on out we'll call $INSTALL_DIR::
 
-        cd edrn-portal-4.5.1
+        cd edrn-portal-VERSION
 
-4.  Run the deployment script.  For *development and staging (testing) tiers*,
-    type::
+4.  Run the deployment script.
+
+    To run the deployment secript on *development and staging (testing)
+    tiers*, type::
 
         ./deploy.py PUBLIC-HOSTNAME
         
@@ -139,7 +143,7 @@ do so:
     Replace PUBLIC-HOSTNAME with edrn.nci.nih.gov (or whatever is required).
     For example::
     
-        ./deploy.py --existing-install=/home/edrn/edrn-portal-4.5.1 edrn.nci.nih.gov
+        ./deploy.py --existing-install=/home/edrn/edrn-portal-4.5.4 edrn.nci.nih.gov
 
 You will be prompted to the EDRN LDAP password.  Contact a member of the EDRN
 Informatics Center to find out what it is.  (To avoid being prompted, add the -l
@@ -160,12 +164,16 @@ options.
 
 If the script fails to run, try running it with the Python interpreter; i.e.::
 
-    /usr/bin/python ./deploy.py --existing-install=/home/edrn/edrn-portal-4.5.1 edrn.nci.nih.gov
+    /usr/bin/python ./deploy.py --existing-install=/home/edrn/edrn-portal-4.5.4 edrn.nci.nih.gov
 
 All of the steps that the script carries out can take an *enormous* amount of
 time.  If you're fond of food, now would be a great time to take a lunch
 break; be sure to get cocktails, appetizers, a bottle of wine, dessert, and
 coffee.  Yes, it's going to be that long.
+
+*NOTE: If you see ``Deployment failed: Buildout failed``, you may have just
+witnessed a temporary network outage as some component of Zope or Plone was
+being downloaded.  Just re-execute the ``deploy.py`` script again.
 
 
 Deployment Options
@@ -223,13 +231,13 @@ Shutting Down the Old One and Starting the New One
 After running the "deploy.py" script, you're ready to start the new EDRN
 portal.
 
-First, stop any older EDRN 4.5.1 portal site by running the rc script as
+First, stop any older EDRN 4.5.4 portal site by running the rc script as
 follows::
 
     sudo /etc/init.d/edrn-supervisor stop
     
 Adjust the path to the rc script as necessary.  Then, edit the script and
-replace paths to the 4.5.1 version with the 4.5.4 version.  Finally, start the
+replace paths to the 4.5.4 version with the 4.5.6 version.  Finally, start the
 new version::
 
     sudo /etc/init.d/edrn-supervisor start
@@ -319,8 +327,8 @@ To set up the cron jobs, first delete any old EDRN scripts from
 /etc/cron.hourly, /etc/cron.daily, /etc/cron.weekly, and /etc/cron.monthly.
 Then run::
 
-    install -o root -g root -m 755 $INSTALL_DIR/ops/cron.daily /etc/cron.daily/edrn
-    install -o root -g root -m 755 $INSTALL_DIR/ops/cron.hourly /etc/cron.hourly/edrn
+    install -o root -g root -m 755 ops/cron.daily /etc/cron.daily/edrn
+    install -o root -g root -m 755 ops/cron.hourly /etc/cron.hourly/edrn
 
 EDRN no longer uses any weekly or monthly cron jobs.
 
@@ -332,7 +340,7 @@ During the buildout, a configuration file compatible with logrotate_ was
 generated and placed in ``ops/logrotate.conf``.  First, delete any old EDRN
 logrotate files, then run::
 
-    install -o root -g root -m 644 $INSTALL_DIR/ops/logrotate.conf /etc/logrotate.d/edrn
+    install -o root -g root -m 644 ops/logrotate.conf /etc/logrotate.d/edrn
 
 
 Protecting the site.cfg file
@@ -353,7 +361,7 @@ Before unleashing IBM Rational AppScan or other web application scanning
 technology on the site, you should make a backup of the content and settings
 databases with a command similar to::
 
-    tar cjf backup.tar.bz2 $INSTALL_DIR/var/blobstorage $INSTALL_DIR/var/filestorage
+    tar cjf backup.tar.bz2 var/blobstorage var/filestorage
 
 This backup can be made while the site is running.
 
