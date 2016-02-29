@@ -3,8 +3,9 @@ EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
 Release Notes - Early Detection of Cancer - Version Portal 4.5.6 - 2015-02-19 - NCI OPERATIONS
 
-This release is identical to 4.5.5 but we've cut a new one to formally identify
-it as going to NCI operationally.
+** Bug
+    * [CA-1322] - Resources Tab displaying as Organ in BMDB
+    * [CA-1324] - Minimal portal cannot ingest minimal biomarkers
 
 
 Release Notes - Early Detection of Cancer - Version Portal 4.5.5 - 2016-02-02
