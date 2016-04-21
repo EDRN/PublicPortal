@@ -15,18 +15,18 @@ from zope.app.component.hooks import setSite
 import optparse, logging, sys, transaction
 
 # Defaults
-DEF_BODY_SYSTEMS = 'https://edrn-dev.jpl.nasa.gov/dmcc/rdf-data/body-systems/@@rdf'
-DEF_DISEASES     = 'https://edrn-dev.jpl.nasa.gov/dmcc/rdf-data/diseases/@@rdf'
+DEF_BODY_SYSTEMS = 'https://edrn-dev.jpl.nasa.gov/cancerdataexpo/rdf-data/body-systems/@@rdf'
+DEF_DISEASES     = 'https://edrn-dev.jpl.nasa.gov/cancerdataexpo/rdf-data/diseases/@@rdf'
 DEF_RESOURCES    = 'https://edrn.jpl.nasa.gov/bmdb/rdf/resources'
-DEF_PUBLICATIONS = 'https://edrn-dev.jpl.nasa.gov/dmcc/rdf-data/publications/@@rdf'
+DEF_PUBLICATIONS = 'https://edrn-dev.jpl.nasa.gov/cancerdataexpo/rdf-data/publications/@@rdf'
 DEF_ADD_PUBS     = 'http://edrn.jpl.nasa.gov/bmdb/rdf/publications'
-DEF_SITES        = 'https://edrn-dev.jpl.nasa.gov/dmcc/rdf-data/sites/@@rdf'
-DEF_PEOPLE       = 'https://edrn-dev.jpl.nasa.gov/dmcc/rdf-data/registered-person/@@rdf'
-DEF_COMMITTEES   = 'https://edrn-dev.jpl.nasa.gov/dmcc/rdf-data/committees/@@rdf'
+DEF_SITES        = 'https://edrn-dev.jpl.nasa.gov/cancerdataexpo/rdf-data/sites/@@rdf'
+DEF_PEOPLE       = 'https://edrn-dev.jpl.nasa.gov/cancerdataexpo/rdf-data/registered-person/@@rdf'
+DEF_COMMITTEES   = 'https://edrn-dev.jpl.nasa.gov/cancerdataexpo/rdf-data/committees/@@rdf'
 DEF_BIOMARKERS   = 'https://edrn.jpl.nasa.gov/bmdb/rdf/biomarkers?qastate=all'
 DEF_BMO          = 'https://edrn.jpl.nasa.gov/bmdb/rdf/biomarkerorgans?qastate=all'
-DEF_BIOMUTA      = 'https://edrn-dev.jpl.nasa.gov/dmcc/rdf-data/biomuta/@@rdf'
-DEF_PROTOCOLS    = 'https://edrn-dev.jpl.nasa.gov/dmcc/rdf-data/protocols/@@rdf'
+DEF_BIOMUTA      = 'https://edrn-dev.jpl.nasa.gov/cancerdataexpo/rdf-data/biomuta/@@rdf'
+DEF_PROTOCOLS    = 'https://edrn-dev.jpl.nasa.gov/cancerdataexpo/rdf-data/protocols/@@rdf'
 
 # Set up logging
 _logger = logging.getLogger('set-rdf-sources')
