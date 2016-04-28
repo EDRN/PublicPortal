@@ -13,10 +13,6 @@
     SSLCertificateFile ${buildout:directory}/etc/server.crt
     SSLCertificateKeyFile ${buildout:directory}/etc/server.key
 
-    # Log into $INSTALL_DIR/var/log.
-    CustomLog ${buildout:directory}/var/log/access-ssl.log combined env=!dontlog
-    ErrorLog ${buildout:directory}/var/log/error-ssl.log
-
     # Fix URLs for certain biomarkers.
     RewriteRule ^/biomarkers/kif1a /biomarkers/KIF1A [L,R=301]
     RewriteRule ^/biomarkers/hist1h2bg /biomarkers/HIST1H2BG [L,R=301]
@@ -868,21 +864,12 @@
     RewriteRule ^/biomarkers/serpina6 /biomarkers/SERPINA6 [L,R=301]
     RewriteRule ^/biomarkers/plec /biomarkers/PLEC [L,R=301]
 
-    # On logout, go back to plain http, but only if our cookie's been cleared.
-    RewriteCond expr "! %{HTTP_COOKIE} =~ /__ac=(?:[^;]+)(?:;|${:dollar})/"
-    RewriteRule ^(.*)(/logged_out)(.*) http://${:public-hostname}${:dollar}1${:dollar}2${:dollar}3 [L,R]
-
-    # On login, fix the url in the came_from parameter; it needs to be https.
-    RewriteCond expr "%{QUERY_STRING} =~ /^came_from=http:(.+)/"
-    RewriteRule ^(.*)(/login_?|require_login|/failsafe_login_form)(.*) ${:dollar}1${:dollar}2${:dollar}3?came_from=https:%1 [NE]
-
-
-    # Onto Zope directly (bypassing Varnish cache), and within there, Plone object "edrn";
+    # Onto Zope, and within there, Plone object "edrn";
     # except for blobstorage, snapshots, and logs.
     ProxyPass /blobstorage !
     ProxyPass /snapshots !
     ProxyPass /logs !
-    ProxyPass / http://${hosts:instance1}:${ports:instance1}/VirtualHostBase/https/${:public-hostname}:443/edrn/VirtualHostRoot/
+    RewriteRule ^/(.*) http://${hosts:instance1}:${ports:instance1}/VirtualHostBase/https/${:public-hostname}:443/edrn/VirtualHostRoot/${:dollar}1 [L,P]
 
     # Add secure & http-only flags to all cookies (required by NIH AppScan)
     Header edit Set-Cookie (.*) "$1; HTTPOnly; Secure"
