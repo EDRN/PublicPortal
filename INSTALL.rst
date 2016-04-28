@@ -57,10 +57,7 @@ This software has dependencies on several external packages:
 * SASL_
 * OpenLDAP_ command line and development libraries version 2.4.41 installed in
   ``/usr/local/openldap2.4``
-* Varnish_ version 3
 * curl_ executable.
-
-NOTE: We now require Varnish 3.
 
 Check and install these dependencies using your system provided tools (such as
 Pirut, Aptitude, etc.) or by building and installing from source.
@@ -249,9 +246,7 @@ processes should be listed as running:
 ============== =========================================================
 Process ID     Description
 ============== =========================================================
-``cache``      Varnish reverse proxy caching engine
 ``instance1``  First Zope application server
-``instance2``  Second Zope application server
 ``zeo``        Zope Enterprise Objects database server
 ============== =========================================================
 
@@ -260,8 +255,6 @@ You can check that the site is active by fetching the following URLs
 localhost, if necessary):
 
 * http://localhost:7317/edrn (via the first Zope app server)
-* http://localhost:7318/edrn (via the second Zope app server)
-* http://localhost:7312/edrn (via the Varnish cache)
 
 You should get an identical web page from all three URLs.
 
@@ -426,7 +419,6 @@ http://cancer.jpl.nasa.gov/contact-info.
 .. _pdf-to-html: http://poppler.freedesktop.org/releases.html
 .. _SASL: http://asg.web.cmu.edu/sasl/
 .. _OpenLDAP: http://asg.web.cmu.edu/sasl/
-.. _Varnish: https://www.varnish-cache.org/
 
 
 .. Author:

@@ -2,7 +2,7 @@
 #
 # EDRN cron.daily - Run daily for routine maintenance of EDRN
 #
-# Copyright 2012–2013 California Institute of Technology. ALL RIGHTS
+# Copyright 2012–2016 California Institute of Technology. ALL RIGHTS
 # RESERVED. U.S. Government Sponsorship acknowledged.
 #
 # Note: cron.daily is generated from cron.daily.in — are you editing the
@@ -10,9 +10,9 @@
 
 # These values are set by buildout when generating cron.daily:
 home="${buildout:directory}"
-zopeUser="${instance2:username}"
-zopePass="${instance2:password}"
-instance2URL="http://${instance2:http-address}"
+zopeUser="${instance1:username}"
+zopePass="${instance1:password}"
+instance1URL="http://${instance1:http-address}"
 
 # Abort on any error
 set -e
@@ -25,17 +25,15 @@ export PATH
 ${:dollar}{home}/bin/backup
 
 # Sundays: create a snap shot
-# Fridays: restart instance2
 # Saturdays: restart instance1
 day=`date '+%w'`
 case ${:dollar}day in
 0) ${:dollar}{home}/bin/snapshotbackup ;;
-5) ${:dollar}{home}/bin/supervisorctl restart instance2 ;;
 6) ${:dollar}{home}/bin/supervisorctl restart instance1 ;;
 esac
 
 # Daily: Full ingest of the latest EDRN goodness
-curl -Ls --user "${:dollar}{zopeUser}:${:dollar}{zopePass}" "${:dollar}{instance2URL}/edrn/@@ingestEverythingFully"
+curl -Ls --user "${:dollar}{zopeUser}:${:dollar}{zopePass}" "${:dollar}{instance1URL}/edrn/@@ingestEverythingFully"
 
 # Daily: pack the database
 ${:dollar}{home}/bin/zeopack

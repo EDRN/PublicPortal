@@ -1,7 +1,7 @@
 # logrotate.conf.template - generates logrotate.conf
 #
 # This file based on the Über Buildout Mark II.
-# Copyright 2009-2014 California Institute of Technology. ALL RIGHTS RESERVED.
+# Copyright 2009-2016 California Institute of Technology. ALL RIGHTS RESERVED.
 # U.S. Government sponsorship acknowledged
 
 rotate 4
@@ -17,21 +17,8 @@ ${buildout:directory}/var/log/instance1*.log {
     endscript
 }
 
-${buildout:directory}/var/log/instance2*.log {
-    sharedscripts
-    postrotate
-        /bin/kill -USR2 $(cat ${buildout:directory}/var/instance2.pid)
-    endscript
-}
-
 ${buildout:directory}/var/log/zeoserver.log {
     postrotate
         /bin/kill -USR2 $(cat ${buildout:directory}/var/zeoserver.pid)
-    endscript
-}
-
-${buildout:directory}/var/log/access*.log ${buildout:directory}/var/log/error*.log {
-    postrotate
-        /etc/init.d/apache graceful
     endscript
 }

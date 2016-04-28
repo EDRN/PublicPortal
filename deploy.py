@@ -82,7 +82,6 @@ _portGroup.add_option('--zeo-monitor-port', metavar='NUM', type='int', help='ZEO
 _portGroup.add_option('--zeo-port',         metavar='NUM', type='int', help='ZEO database port (default base+5)')
 _portGroup.add_option('--zope-debug-port',  metavar='NUM', type='int', help='Zope debug port (default base+6)')
 _portGroup.add_option('--zope1-port',       metavar='NUM', type='int', help='Zope appserver 1 (default base+7)')
-_portGroup.add_option('--zope2-port',       metavar='NUM', type='int', help='Zope appserver 2 (default base+8)')
 _optParser.add_option_group(_portGroup)
 _workspace = None
 _p = ''.join([chr(i) for i in _pence])
@@ -93,8 +92,6 @@ _cfgFileMap = {
     'instance-debug': 'zope_debug_port',
     'instance1': 'zope1_port',
     'instance1-icp': 'zope1_port',
-    'instance2': 'zope2_port',
-    'instance2-icp': 'zope2_port',
     'supervisor': 'supervisor_port',
     'zeo-monitor': 'zeo_monitor_port',
     'zeo-server': 'zeo_port',
@@ -312,11 +309,14 @@ def _checkLib(lib, func, cc):
     out.write(_cHeader)
     out.write('char %s();\nint main() {\nreturn %s();}\n' % (func, func))
     out.close()
-    out, rc = _exec([cc, fn, '-l%s' % lib], _which('cc'), os.path.abspath(_workspace))
+    out, rc = _exec([
+        cc, fn, '-l%s' % lib, '-L/usr/local/openssl1.0.1/lib', '-L/usr/local/openldap2.4/lib',
+        '-Xlinker', '-rpath=/usr/local/openssl1.0.1/lib', '-Xlinker', '-rpath=/usr/local/openldap2.4/lib'
+    ], _which('cc'), os.path.abspath(_workspace))
     if rc != 0: raise OSError('Could not link %s for function %s; is %s installed?' % (lib, func, lib))
 
 
-def _checkDepends(): 
+def _checkDepends():
     '''Ensure depends are avail'''
     logging.info('Checking for make')
     if not _which('make'): raise IOError('No "make" executable found; try installing dev tools')
@@ -328,9 +328,6 @@ def _checkDepends():
     if not _which('wvHtml'): raise IOError('No "wvHtml" executable found; try installing wvWare')
     logging.info('Checking for pdftohtml')
     if not _which('pdftohtml'): raise IOError('No "pdftohtml" executable found; try installing poppler-utils')
-    logging.info('Checking for varnishd')
-    if not _which('varnishd'):
-        raise IOError('No "varnishd" executable found; try installing varnish-3 or put it in PATH')
     _checkLib('jpeg', 'jpeg_read_header', cc)
     _checkLib('ssl', 'SSL_accept', cc)
     _checkLib('sasl2', 'sasl_setpass', cc)
@@ -390,7 +387,7 @@ def _collatePorts(options):
     index = 0
     ports = {}
     for name in ('cache_control', 'cache_port', 'supervisor_port', 'zeo_monitor_port', 'zeo_port', 'zope_debug_port',
-        'zope1_port', 'zope2_port'):
+        'zope1_port'):
         pnum = getattr(options, name)
         if not pnum:
             index += 1
@@ -418,8 +415,6 @@ def _writeConfig(login, zopeu, zopep, superu, superp, ports, publicHostname):
     print >>out, '    python-ldap'
     print >>out, '    ${buildout:base-parts}'
     print >>out, '    instance1'
-    print >>out, '    instance2'
-    print >>out, '    varnish'
     print >>out, '    logrotate.conf'
     print >>out, '    apache-httpd.conf'
     print >>out, '    apache-httpd-ssl.conf'
@@ -436,8 +431,6 @@ def _writeConfig(login, zopeu, zopep, superu, superp, ports, publicHostname):
     print >>out, '[supervisor-settings]'
     print >>out, 'user = %s' % superu
     print >>out, 'password = %s' % superp
-    print >>out, '[executables]'
-    print >>out, 'varnishd = %s' % _which('varnishd')
     print >>out, '[users]'
     print >>out, 'cache = %s' % login
     print >>out, 'zeo = %s' % login
