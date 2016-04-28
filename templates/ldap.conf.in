@@ -5,6 +5,6 @@
 # RESERVED. U.S. Government Sponsorship acknowledged.
 
 BASE dc=edrn,dc=jpl,dc=nasa,dc=gov
-URI ldaps://cancer.jpl.nasa.gov
+URI ldaps://edrn.jpl.nasa.gov
 TLS_CACERTDIR ${buildout:directory}/etc/cacerts
 
