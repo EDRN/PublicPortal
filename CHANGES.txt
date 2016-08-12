@@ -1,6 +1,13 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
 
+Release Notes - Early Detection of Cancer - Version Portal 4.5.7
+
+** Bug
+    * [CA-1341] - edrn.theme uses obsolete unittest2 package
+    * [CA-1349] - Summary ingest should be robust in the face of failures
+
+
 Release Notes - Early Detection of Cancer - Version Portal 4.5.6 - 2015-02-19 - NCI OPERATIONS
 
 ** Bug
