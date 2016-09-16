@@ -26,7 +26,7 @@ _ldapURL = 'https://pypi.python.org/packages/source/p/python-ldap/python-ldap-2.
 BUILDOUT_CHECKSUM_MD5_HASH = '2.2.5'
 
 # just as so
-_ezsetupURL = u'https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py'
+_ezsetupURL = u'https://bootstrap.pypa.io/ez_setup.py'
 
 # not as
 SEETUP_TOOLS = '7.0'
