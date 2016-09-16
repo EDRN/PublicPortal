@@ -1,6 +1,13 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
 
+Release Notes - Early Detection of Cancer - Version Portal 4.5.8 - 2016.09.16 - NCI OPERATIONS
+
+** Bug
+    * [CA-1400] - Minimal portal cannot ingest minimal publications
+    * [CA-1401] - ez_setup.py moved; cannot deploy portal
+
+
 Release Notes - Early Detection of Cancer - Version Portal 4.5.7
 
 ** Bug
