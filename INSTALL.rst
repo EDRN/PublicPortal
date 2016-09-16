@@ -6,7 +6,7 @@
 
 This document tells how to install the Early Detection Research Network (EDRN)
 public portal and knowledge environment, or more simply, the "EDRN portal",
-version 4.5.  Preparation and installation takes two hours.
+version 4.5.8.  Preparation and installation takes two hours.
 
 
 Preparation
@@ -20,8 +20,6 @@ For Development and Staging (Testing) Tiers
 
 * You're installing this software in a new directory, not overwriting the
   current EDRN installation directory, if any.
-* The Apache HTTPD configuration may be updated as needed to reverse-proxy to
-  this, the new EDRN software installation.
 
 
 For the Production (Operational) Tier
@@ -31,14 +29,12 @@ For the Production (Operational) Tier
 * The current EDRN installation directory is available for reading.  If it's
   not, copy one over from some other host.
 * You're installing this software on the same host that currently runs
-  the older EDRN portal, version 4.5.4.
+  the older EDRN portal, version 4.5.6.
 * You're installing this software in a new directory, not overwriting the
   current EDRN installation directory.
-* The Apache HTTPD configuration may be updated as needed to reverse-proxy to
-  this, the new EDRN software installation.
 
 Once the deployment process is complete, this software will become the new
-EDRN portal software.  The old directory with version 4.5.4 may then be
+EDRN portal software.  The old directory with version 4.5.6 may then be
 removed.
 
 
@@ -71,30 +67,14 @@ Deploying the EDRN Portal
 
 To deploy this version of the EDRN portal, perform the following steps:
 
-1.  Cancel the current system services (log rotation, cron jobs) for the old
-    version 4.5.4 of the portal, if any.
-2.  Run the deploy script for the new portal, version 4.5.
-3.  Stop the old portal 4.5.4 (if any) and update its init.d startup script for
-    the new version 4.5.4.
-4.  Start the new version 4.5.4 processes.
-5.  Adjust the Apache HTTP reverse proxy configuration and install the SSL
-    certificates.
+1.  Run the deploy script for the new portal, version 4.5.8.
+2.  Patch the software to close alleged security holes.
+3.  Stop the old portal 4.5.6 (if any).
+4.  Adjust the symlink to point to the new 4.5.8 directory.
+5.  Start the new version 4.5.8 processes.
 6.  Make the site.cfg file readable only by user "edrn".
-7.  Install the log rotation and cron jobs for the new version 4.5.4 portal.
 
 The rest of this document details the above steps.
-
-
-Canceling the Current System Services
--------------------------------------
-
-The old version of the EDRN portal currently running takes advantage of a few
-operating system services, including log file rotation and periodic cron jobs.
-These need to be canceled.  To do so, remove the following files/symlinks:
-
-* /etc/cron.hourly/edrn (might be named "edrn-perms")
-* /etc/cron.daily/edrn (might be named "backup" or "edrn-backup")
-* /etc/logrotate.d/edrn (might be named "edrn-portal")
 
 
 Running the Deploy Script
@@ -104,7 +84,7 @@ Deploying the new version of the EDRN portal is easier than ever before.  To
 do so:
 
 1.  Download the software from GitHub at
-    https://github.com/EDRN/PublicPortal/releases.  Current release is 4.5.6.
+    https://github.com/EDRN/PublicPortal/releases.  Current release is 4.5.8.
 
 2.  Extract the software archive::
 
@@ -140,7 +120,7 @@ do so:
     Replace PUBLIC-HOSTNAME with edrn.nci.nih.gov (or whatever is required).
     For example::
     
-        ./deploy.py --existing-install=/home/edrn/edrn-portal-4.5.4 edrn.nci.nih.gov
+        ./deploy.py --existing-install=/home/edrn/edrn-portal-4.5.6 edrn.nci.nih.gov
 
 You will be prompted to the EDRN LDAP password.  Contact a member of the EDRN
 Informatics Center to find out what it is.  (To avoid being prompted, add the -l
@@ -161,14 +141,14 @@ options.
 
 If the script fails to run, try running it with the Python interpreter; i.e.::
 
-    /usr/bin/python ./deploy.py --existing-install=/home/edrn/edrn-portal-4.5.4 edrn.nci.nih.gov
+    /usr/bin/python ./deploy.py --existing-install=/home/edrn/edrn-portal-4.5.6 edrn.nci.nih.gov
 
 All of the steps that the script carries out can take an *enormous* amount of
 time.  If you're fond of food, now would be a great time to take a lunch
 break; be sure to get cocktails, appetizers, a bottle of wine, dessert, and
 coffee.  Yes, it's going to be that long.
 
-*NOTE: If you see ``Deployment failed: Buildout failed``, you may have just
+*NOTE:* If you see ``Deployment failed: Buildout failed``, you may have just
 witnessed a temporary network outage as some component of Zope or Plone was
 being downloaded.  Just re-execute the ``deploy.py`` script again.
 
@@ -222,20 +202,28 @@ port numbers.
     Zope appserver 2 (default base+8)
 
 
+Patching for Security
+---------------------
+
+Patch the software to close holes allegedly exposed by IBM Rational
+AppScan::
+
+    patch -p0 < patches/post-scan-SECURITYTEAM-986.patch
+
+
 Shutting Down the Old One and Starting the New One
 --------------------------------------------------
 
 After running the "deploy.py" script, you're ready to start the new EDRN
 portal.
 
-First, stop any older EDRN 4.5.4 portal site by running the rc script as
+First, stop any older EDRN 4.5.6 portal site by running the rc script as
 follows::
 
     sudo /etc/init.d/edrn-supervisor stop
     
-Adjust the path to the rc script as necessary.  Then, edit the script and
-replace paths to the 4.5.4 version with the 4.5.6 version.  Finally, start the
-new version::
+Adjust the path to the rc script as necessary.  Then update the symlink
+to point to the new 4.5.8 directory.  Now start the 4.5.8 version::
 
     sudo /etc/init.d/edrn-supervisor start
 
@@ -264,30 +252,14 @@ Onto Apache...
 Front End Web Server
 --------------------
 
-The Apache HTTPD web server must now be configured.  The deploy.py script
-generated two Apache HTTPD <VirtualHost> configuration files:
+The Apache HTTPD web server should already be configured to reverse-proxy to
+the new portal software.  However, if needed, a couple of HTTPD configuration
+files have been generated:
 
 * $INSTALL_DIR/ops/apache-httpd.conf - for regular HTTP access
 * $INSTALL_DIR/ops/apache-httpd-ssl.conf - for HTTPS access
 
-Install these files by running::
-
-    install -o apache -g apache -m 644 ops/apache-httpd.conf /usr/local/apache/conf/vhosts/edrn.conf
-    install -o apache -g apache -m 644 ops/apache-httpd-ssl.conf /usr/local/apache/conf/vhosts-ssl/edrn.conf
-
-You'll also need to place the EDRN SSL/TLS certificate and private key in the
-following locations::
-
-* $INSTALL_DIR/etc/server.crt (public certificate)
-* $INSTALL_DIR/etc/server.key (private key, unencrypted and readable by Apache HTTPD)
-
-Reminder: to generate a quick self-signed certificate for the development and
-staging (testing) tiers, run::
-
-    openssl req -new -x509 -nodes -out etc/server.crt -keyout etc/server.key
-
-Once Apache is restarted, you should be able to visit the following URLs with a
-browser:
+You should be able to visit the following URLs with a browser:
 
 * http://PUBLIC-HOSTNAME/
 * https://PUBLIC-HOSTNAME/
@@ -314,26 +286,27 @@ Cron Jobs
 ~~~~~~~~~
 
 The EDRN site relies on the Unix cron scheduler for periodic tasks, such as
-database backups and content refreshing.
+database backups and content refreshing.  The following files should already
+exist and pointing to the symlink::
 
-To set up the cron jobs, first delete any old EDRN scripts from
-/etc/cron.hourly, /etc/cron.daily, /etc/cron.weekly, and /etc/cron.monthly.
-Then run::
+* /etc/cron.daily/edrn
+* /etc/cron.hourly/edrn
 
-    install -o root -g root -m 755 ops/cron.daily /etc/cron.daily/edrn
-    install -o root -g root -m 755 ops/cron.hourly /etc/cron.hourly/edrn
+If they're missing, you can find some generated files in
 
-EDRN no longer uses any weekly or monthly cron jobs.
+* $INSTALL_DIR/ops/cron.daily
+* $INSTALL_DIR/ops/cron.hourly
+
+that you can use as suggestions.
 
 
 Log Rotation
 ~~~~~~~~~~~~
 
-During the buildout, a configuration file compatible with logrotate_ was
-generated and placed in ``ops/logrotate.conf``.  First, delete any old EDRN
-logrotate files, then run::
+A configuration file for logrotate_ should already be installed.  But if not,
+the deploy script generated one you can use as a starting point::
 
-    install -o root -g root -m 644 ops/logrotate.conf /etc/logrotate.d/edrn
+* $INSTALL_DIR/ops/logrotate.conf
 
 
 Protecting the site.cfg file
