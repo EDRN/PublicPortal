@@ -28,6 +28,10 @@ DEF_BMO          = 'https://edrn.jpl.nasa.gov/bmdb/rdf/biomarkerorgans?qastate=a
 DEF_BIOMUTA      = 'https://edrn-dev.jpl.nasa.gov/cancerdataexpo/rdf-data/biomuta/@@rdf'
 DEF_PROTOCOLS    = 'https://edrn-dev.jpl.nasa.gov/cancerdataexpo/rdf-data/protocols/@@rdf'
 
+DEF_PUBLICATIONS_SUMMARY = 'http://edrn-dev.jpl.nasa.gov/cancerdataexpo/summarizer-data/publication/@@summary'
+DEF_BIOMARKERS_SUMMARY   = 'https://edrn-dev.jpl.nasa.gov/cancerdataexpo/summarizer-data/biomarker/@@summary'
+DEF_SITE_SUMMARY         = 'http://edrn-dev.jpl.nasa.gov/cancerdataexpo/summarizer-data/collaboration/@@summary'
+
 # Set up logging
 _logger = logging.getLogger('set-rdf-sources')
 _logger.setLevel(logging.INFO)
@@ -86,6 +90,18 @@ _optParser.add_option(
     '--protocols', default=DEF_PROTOCOLS, metavar='URL',
     help='Set protocols RDF soruce to URL, default "%default"'
 )
+_optParser.add_option(
+    '--biomarker_summary', default=DEF_BIOMARKERS_SUMMARY, metavar='URL',
+    help='Set biomarker summary JSON source to URL, default "%default"'
+)
+_optParser.add_option(
+    '--publication_summary', default=DEF_PUBLICATIONS_SUMMARY, metavar='URL',
+    help='Set biomarker summary JSON source to URL, default "%default"'
+)
+_optParser.add_option(
+    '--site_summary', default=DEF_SITE_SUMMARY, metavar='URL',
+    help='Set biomarker summary JSON source to URL, default "%default"'
+)
 _optParser.add_option('-v', '--verbose', action='store_true', help='Be overly verbose')
 
 
@@ -105,7 +121,7 @@ def getPortal(app, portalID):
 
 def setRDFSources(
     app, portalID, organs, diseases, resources, publications, addPubs, sites, people, committees,
-    bm, bmo, biomuta, protocols
+    bm, bmo, biomuta, protocols, bmsum, pubsum, sitesum
 ):
     _logger.info('Setting RDF sources on portal "%s"', portalID)
     app = makerequest.makerequest(app)
@@ -132,7 +148,7 @@ def setRDFSources(
     if 'publications' in portal.keys():
         _logger.info('Setting publications to %s', publications)
         pubs = portal['publications']
-        pubs.rdfDataSource, pubs.additionalDataSources = publications, [addPubs]
+        pubs.rdfDataSource, pubs.additionalDataSources, pubs.pubSumDataSource = publications, [addPubs], pubsum
     else:
         _logger.debug('No publications folder found')
     if 'sites' in portal.keys():
@@ -144,13 +160,13 @@ def setRDFSources(
     if 'committees' in portal.keys():
         _logger.info('Setting committees to %s', committees)
         c = portal['committees']
-        c.rdfDataSource = committees
+        c.rdfDataSource, c.siteSumDataSource = committees, sitesum
     else:
         _logger.debug('No committees folder found')
     if 'biomarkers' in portal.keys():
         _logger.info('Setting sources for biomarkers to %s, %s, and %s', bm, bmo, biomuta)
         biomarkers = portal['biomarkers']
-        biomarkers.rdfDataSource, biomarkers.bmoDataSource, biomarkers.bmuDataSource = bm, bmo, biomuta
+        biomarkers.rdfDataSource, biomarkers.bmoDataSource, biomarkers.bmuDataSource, biomarkers.bmSumDataSource = bm, bmo, biomuta, bmsum
     else:
         _logger.debug('No biomarkers folder found')
     if 'protocols' in portal.keys():
@@ -183,7 +199,10 @@ def main(argv):
         options.biomarkers,
         options.biomarker_organs,
         options.biomuta,
-        options.protocols
+        options.protocols,
+        options.biomarker_summary,
+        options.publication_summary,
+        options.site_summary
     )
     return True
 
