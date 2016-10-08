@@ -27,6 +27,7 @@ DEF_BIOMARKERS   = 'https://edrn.jpl.nasa.gov/bmdb/rdf/biomarkers?qastate=all'
 DEF_BMO          = 'https://edrn.jpl.nasa.gov/bmdb/rdf/biomarkerorgans?qastate=all'
 DEF_BIOMUTA      = 'https://edrn-dev.jpl.nasa.gov/cancerdataexpo/rdf-data/biomuta/@@rdf'
 DEF_PROTOCOLS    = 'https://edrn-dev.jpl.nasa.gov/cancerdataexpo/rdf-data/protocols/@@rdf'
+DEF_IDAPI        = 'https://edrn-dev.jpl.nasa.gov/cancerdataexpo/idsearch'
 
 DEF_PUBLICATIONS_SUMMARY = 'http://edrn-dev.jpl.nasa.gov/cancerdataexpo/summarizer-data/publication/@@summary'
 DEF_BIOMARKERS_SUMMARY   = 'https://edrn-dev.jpl.nasa.gov/cancerdataexpo/summarizer-data/biomarker/@@summary'
@@ -57,6 +58,10 @@ _optParser.add_option(
 _optParser.add_option(
     '--publications', default=DEF_PROTOCOLS, metavar='URL',
     help='Set publications RDF source to URL, default "%default"'
+)
+_optParser.add_option(
+    '--idapi', default=DEF_IDAPI, metavar='URL',
+    help='Set biomarker id API source to URL, default "%default"'
 )
 _optParser.add_option(
     '--additional-publications', default=DEF_ADD_PUBS, metavar='URL',
@@ -121,7 +126,7 @@ def getPortal(app, portalID):
 
 def setRDFSources(
     app, portalID, organs, diseases, resources, publications, addPubs, sites, people, committees,
-    bm, bmo, biomuta, protocols, bmsum, pubsum, sitesum
+    bm, bmo, biomuta, protocols, bmsum, pubsum, sitesum, idapi
 ):
     _logger.info('Setting RDF sources on portal "%s"', portalID)
     app = makerequest.makerequest(app)
@@ -166,7 +171,7 @@ def setRDFSources(
     if 'biomarkers' in portal.keys():
         _logger.info('Setting sources for biomarkers to %s, %s, and %s', bm, bmo, biomuta)
         biomarkers = portal['biomarkers']
-        biomarkers.rdfDataSource, biomarkers.bmoDataSource, biomarkers.bmuDataSource, biomarkers.bmSumDataSource = bm, bmo, biomuta, bmsum
+        biomarkers.rdfDataSource, biomarkers.bmoDataSource, biomarkers.bmuDataSource, biomarkers.bmSumDataSource, biomarkers.idDataSource = bm, bmo, biomuta, bmsum, idapi
     else:
         _logger.debug('No biomarkers folder found')
     if 'protocols' in portal.keys():
@@ -202,7 +207,8 @@ def main(argv):
         options.protocols,
         options.biomarker_summary,
         options.publication_summary,
-        options.site_summary
+        options.site_summary,
+        options.idapi
     )
     return True
 
