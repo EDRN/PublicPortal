@@ -1,6 +1,15 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
 
+Release Notes - Early Detection of Cancer - Version Portal 4.5.9 - 2016-11-06
+
+** Bug
+    * [CA-1430] - Portal cannot ingest protocol #0
+
+** Improvement
+    * [CA-1423] - Collaborative groups should show documents in reverse chronological order
+
+
 Release Notes - Early Detection of Cancer - Version Portal 4.5.8 - 2016.09.16 - NCI OPERATIONS
 
 ** Bug
