@@ -10,6 +10,14 @@ Release Notes - Early Detection of Cancer - Version Portal 4.5.9 - 2016-11-06
     * [CA-1423] - Collaborative groups should show documents in reverse chronological order
 
 
+Release Notes - Early Detection of Cancer - Version Portal 4.6.0 - 2016.09.23 - NCI OPERATIONS
+
+** Bug
+    * [CA-1410] - Summary url not being set using set-rdf-sources.py
+    * [CA-1350] - Help text on PublicationsFolder fields is confusing
+    * [CA-1348] - Summary source URLs should be marked as required
+
+
 Release Notes - Early Detection of Cancer - Version Portal 4.5.8 - 2016.09.16 - NCI OPERATIONS
 
 ** Bug
