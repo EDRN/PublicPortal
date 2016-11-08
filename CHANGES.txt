@@ -1,6 +1,12 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
 
+Release Notes - Early Detection of Cancer - Version Portal 4.5.10 - 2016-11-08 - NCI OPERATIONS
+
+** Improvement
+    * [CA-1431] - Remove calendar events from the documents tab on collaborative groups
+
+
 Release Notes - Early Detection of Cancer - Version Portal 4.5.9 - 2016-11-06
 
 ** Bug
