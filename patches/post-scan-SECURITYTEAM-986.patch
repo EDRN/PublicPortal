@@ -1,14 +1,15 @@
---- eggs/plone.app.querystring-1.0.7-py2.7.egg/plone/app/querystring/querybuilder.py.orig	2016-06-15 13:40:49.306174129 -0400
-+++ eggs/plone.app.querystring-1.0.7-py2.7.egg/plone/app/querystring/querybuilder.py	2016-06-15 13:53:42.626814805 -0400
-@@ -1,5 +1,7 @@
+--- eggs/plone.app.querystring-1.0.7-py2.7.egg/plone/app/querystring/querybuilder.py.orig	2016-11-09 10:27:09.982602414 -0500
++++ eggs/plone.app.querystring-1.0.7-py2.7.egg/plone/app/querystring/querybuilder.py	2016-11-09 10:39:56.129966648 -0500
+@@ -1,5 +1,8 @@
  import json
  
 +from Products.ZCatalog.Catalog import CatalogError
 +
++
  from zope.component import getMultiAdapter, getUtility
  from zope.i18n import translate
  
-@@ -46,10 +48,15 @@
+@@ -46,10 +49,15 @@
      def html_results(self, query):
          """html results, used for in the edit screen of a collection,
             used in the live update results"""
@@ -26,8 +27,8 @@
  
          return getMultiAdapter((results, self.request),
              name='display_query_results')(**options)
---- eggs/Products.CMFPlone-4.2.4-py2.7.egg/Products/CMFPlone/skins/plone_scripts/folder_copy.cpy.orig	2016-06-15 15:03:12.956116381 -0400
-+++ eggs/Products.CMFPlone-4.2.4-py2.7.egg/Products/CMFPlone/skins/plone_scripts/folder_copy.cpy	2016-06-16 12:39:55.169887019 -0400
+--- eggs/Products.CMFPlone-4.2.4-py2.7.egg/Products/CMFPlone/skins/plone_scripts/folder_copy.cpy.orig	2016-11-09 10:27:53.867032245 -0500
++++ eggs/Products.CMFPlone-4.2.4-py2.7.egg/Products/CMFPlone/skins/plone_scripts/folder_copy.cpy	2016-11-09 10:40:44.311289219 -0500
 @@ -14,6 +14,13 @@
  from Products.CMFPlone import PloneMessageFactory as _
  
@@ -41,8 +42,9 @@
 +    
  if 'paths' in REQUEST:
      ids = [p.split('/')[-1] or p.split('/')[-2] for p in REQUEST['paths']]
---- eggs/eke.publications-1.1.16-py2.7.egg/eke/publications/browser/rdf.py.orig    2016-11-08 14:33:45.000000000 -0600
-+++ eggs/eke.publications-1.1.16-py2.7.egg/eke/publications/browser/rdf.py  2016-11-08 14:33:56.000000000 -0600
+ 
+--- eggs/eke.publications-1.1.16-py2.7.egg/eke/publications/browser/rdf.py.orig	2016-11-09 10:28:32.831684077 -0500
++++ eggs/eke.publications-1.1.16-py2.7.egg/eke/publications/browser/rdf.py	2016-11-09 10:42:27.134707291 -0500
 @@ -19,7 +19,7 @@
  _logger = logging.getLogger(__name__)
  
