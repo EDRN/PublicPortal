@@ -43,14 +43,3 @@
  if 'paths' in REQUEST:
      ids = [p.split('/')[-1] or p.split('/')[-2] for p in REQUEST['paths']]
  
---- eggs/eke.publications-1.1.16-py2.7.egg/eke/publications/browser/rdf.py.orig	2016-11-09 10:28:32.831684077 -0500
-+++ eggs/eke.publications-1.1.16-py2.7.egg/eke/publications/browser/rdf.py	2016-11-09 10:42:27.134707291 -0500
-@@ -19,7 +19,7 @@
- _logger = logging.getLogger(__name__)
- 
- # Constants
--FETCH_GROUP_SIZE = 450 # Fetch this many publications in Entrez.fetch, pausing to construct objects between each
-+FETCH_GROUP_SIZE = 100 # Fetch this many publications in Entrez.fetch, pausing to construct objects between each
- 
- # Other constnats: Well-known URI refs
- _publicationTypeURI = URIRef('http://edrn.nci.nih.gov/rdf/types.rdf#Publication')

@@ -1,6 +1,19 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
 
+Release Notes - Early Detection of Cancer - Version Portal 4.5.11 - 2016-12-06 - NCI OPERATIONS
+
+** Bug
+    * [CA-1436] - Collaborative Group Workspaces - Separate Projects and Protocols
+    * [CA-1437] - Portal upgrade clears "project" flag
+    * [CA-1440] - Biomarker ingest should accept "GI and Other Associated" as well as "G.I. and Other Associated"
+    * [CA-1441] - Collaborative Groups should order their biomarkers
+    * [CA-1447] - Faceted debug criteria causing test failures
+
+** Improvement
+    * [CA-1421] - Updates to Science Data Tab
+
+
 Release Notes - Early Detection of Cancer - Version Portal 4.5.10 - 2016-11-08 - NCI OPERATIONS
 
 ** Improvement
