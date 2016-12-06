@@ -29,12 +29,12 @@ For the Production (Operational) Tier
 * The current EDRN installation directory is available for reading.  If it's
   not, copy one over from some other host.
 * You're installing this software on the same host that currently runs
-  the older EDRN portal, version 4.5.6.
+  the older EDRN portal, version 4.5.10.
 * You're installing this software in a new directory, not overwriting the
   current EDRN installation directory.
 
 Once the deployment process is complete, this software will become the new
-EDRN portal software.  The old directory with version 4.5.6 may then be
+EDRN portal software.  The old directory with version 4.5.10 may then be
 removed.
 
 
@@ -69,7 +69,7 @@ To deploy this version of the EDRN portal, perform the following steps:
 
 1.  Run the deploy script for the new portal, version 4.5.11.
 2.  Patch the software to close alleged security holes.
-3.  Stop the old portal 4.5.6 (if any).
+3.  Stop the old portal 4.5.10 (if any).
 4.  Adjust the symlink to point to the new 4.5.11 directory.
 5.  Start the new version 4.5.11 processes.
 6.  Make the site.cfg file readable only by user "edrn".
@@ -120,7 +120,7 @@ do so:
     Replace PUBLIC-HOSTNAME with edrn.nci.nih.gov (or whatever is required).
     For example::
     
-        ./deploy.py --existing-install=/home/edrn/edrn-portal-4.5.6 edrn.nci.nih.gov
+        ./deploy.py --existing-install=/home/edrn/edrn-portal-4.5.10 edrn.nci.nih.gov
 
 You will be prompted to the EDRN LDAP password.  Contact a member of the EDRN
 Informatics Center to find out what it is.  (To avoid being prompted, add the -l
@@ -141,7 +141,7 @@ options.
 
 If the script fails to run, try running it with the Python interpreter; i.e.::
 
-    /usr/bin/python ./deploy.py --existing-install=/home/edrn/edrn-portal-4.5.6 edrn.nci.nih.gov
+    /usr/bin/python ./deploy.py --existing-install=/home/edrn/edrn-portal-4.5.10 edrn.nci.nih.gov
 
 All of the steps that the script carries out can take an *enormous* amount of
 time.  If you're fond of food, now would be a great time to take a lunch
@@ -217,7 +217,7 @@ Shutting Down the Old One and Starting the New One
 After running the "deploy.py" script, you're ready to start the new EDRN
 portal.
 
-First, stop any older EDRN 4.5.6 portal site by running the rc script as
+First, stop any older EDRN 4.5.10 portal site by running the rc script as
 follows::
 
     sudo /etc/init.d/edrn-supervisor stop
