@@ -46,8 +46,8 @@ This software has dependencies on several external packages:
 * Python 2.4 or later plus development environment (Python.h headers, etc.).
 * C/C++ compiler and "make" (to build additional software)
 * JPEG_ 6B development libraries
-* OpenSSL_ command line and development libraries version 1.0.1 installed in
-  ``/usr/local/openssl1.0.1``
+* OpenSSL_ command line and development libraries installed in
+  ``/usr/local/openssl`` (or symlinked)
 * wvWare_ tools
 * `PDF-to-HTML`_ tools
 * SASL_

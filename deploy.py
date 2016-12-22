@@ -310,8 +310,8 @@ def _checkLib(lib, func, cc):
     out.write('char %s();\nint main() {\nreturn %s();}\n' % (func, func))
     out.close()
     out, rc = _exec([
-        cc, fn, '-l%s' % lib, '-L/usr/local/openssl1.0.1/lib', '-L/usr/local/openldap2.4/lib',
-        '-Xlinker', '-rpath=/usr/local/openssl1.0.1/lib', '-Xlinker', '-rpath=/usr/local/openldap2.4/lib'
+        cc, fn, '-l%s' % lib, '-L/usr/local/openssl/lib', '-L/usr/local/openldap2.4/lib',
+        '-Xlinker', '-rpath=/usr/local/openssl/lib', '-Xlinker', '-rpath=/usr/local/openldap2.4/lib'
     ], _which('cc'), os.path.abspath(_workspace))
     if rc != 0: raise OSError('Could not link %s for function %s; is %s installed?' % (lib, func, lib))
 
@@ -408,7 +408,7 @@ def _writeConfig(login, zopeu, zopep, superu, superp, ports, publicHostname):
     print >>out, '[versions]'
     print >>out, 'python-ldap = 2.4.25'
     print >>out, '[executables]'
-    print >>out, 'openssl = /usr/local/openssl1.0.1/bin/openssl'
+    print >>out, 'openssl = /usr/local/openssl/bin/openssl'
     print >>out, '[buildout]'
     print >>out, 'extends = operations.cfg'
     print >>out, 'parts ='
