@@ -1,6 +1,12 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
 
+Release Notes - Early Detection of Cancer - Version Portal 4.5.12 - 2016-12-22 - NCI OPERATIONS
+
+** Bug
+    * [CA-1454] - Biomarker ingest should use the organs specified in the RDF to associate a biomarker with a collaborative group, not the security access group
+
+
 Release Notes - Early Detection of Cancer - Version Portal 4.5.11 - 2016-12-06 - NCI OPERATIONS
 
 ** Bug
