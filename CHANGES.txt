@@ -1,6 +1,16 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
 
+Release Notes - Early Detection of Cancer - Version Portal 4.6.0 - 2017-02-15
+
+** Bug
+    * [CA-1348] - Summary source URLs should be marked as required
+    * [CA-1350] - Help text on PublicationsFolder fields is confusing
+
+** Improvement
+    * [CA-1486] - Implement basic bespoke pages
+
+
 Release Notes - Early Detection of Cancer - Version Portal 4.5.12 - 2016-12-22 - NCI OPERATIONS
 
 ** Bug
