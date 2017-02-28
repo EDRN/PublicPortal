@@ -32,6 +32,7 @@ DEF_IDAPI        = 'https://edrn-dev.jpl.nasa.gov/cancerdataexpo/idsearch'
 DEF_PUBLICATIONS_SUMMARY = 'http://edrn-dev.jpl.nasa.gov/cancerdataexpo/summarizer-data/publication/@@summary'
 DEF_BIOMARKERS_SUMMARY   = 'https://edrn-dev.jpl.nasa.gov/cancerdataexpo/summarizer-data/biomarker/@@summary'
 DEF_SITE_SUMMARY         = 'http://edrn-dev.jpl.nasa.gov/cancerdataexpo/summarizer-data/collaboration/@@summary'
+DEF_ECAS_SUMMARY         = 'http://edrn-dev.jpl.nasa.gov/cancerdataexpo/summarizer-data/dataset/@@summary'
 
 # Set up logging
 _logger = logging.getLogger('set-rdf-sources')
@@ -107,6 +108,10 @@ _optParser.add_option(
     '--site_summary', default=DEF_SITE_SUMMARY, metavar='URL',
     help='Set biomarker summary JSON source to URL, default "%default"'
 )
+_optParser.add_option(
+    '--ecas_summary', default=DEF_ECAS_SUMMARY, metavar='URL',
+    help='Set science data summary JSON source to URL, default "%default"'
+)
 _optParser.add_option('-v', '--verbose', action='store_true', help='Be overly verbose')
 
 
@@ -126,7 +131,7 @@ def getPortal(app, portalID):
 
 def setRDFSources(
     app, portalID, organs, diseases, resources, publications, addPubs, sites, people, committees,
-    bm, bmo, biomuta, protocols, bmsum, pubsum, sitesum, idapi
+    bm, bmo, biomuta, protocols, bmsum, pubsum, sitesum, ecasum, idapi
 ):
     _logger.info('Setting RDF sources on portal "%s"', portalID)
     app = makerequest.makerequest(app)
@@ -162,6 +167,12 @@ def setRDFSources(
         s.rdfDataSource, s.peopleDataSource = sites, people
     else:
         _logger.debug('No sites folder found')
+    if 'science-data' in portal.keys():
+        _logger.info('Setting science data summary to %s', sitesum)
+        s = portal['science-data']
+        s.dsSumDataSource = sitesum
+    else:
+        _logger.debug('No science data folder found')
     if 'committees' in portal.keys():
         _logger.info('Setting committees to %s', committees)
         c = portal['committees']
@@ -208,6 +219,7 @@ def main(argv):
         options.biomarker_summary,
         options.publication_summary,
         options.site_summary,
+        options.ecas_summary,
         options.idapi
     )
     return True
