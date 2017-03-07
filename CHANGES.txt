@@ -1,6 +1,33 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
 
+Release Notes - Early Detection of Cancer - Version Portal 4.6.1 - 2017-03-07
+
+** Bug
+    * [CA-1119] - PloneFormGen security vulnerability
+    * [CA-1151] - Develop process to allow nonEDRN members access/logins to Public Portal
+    * [CA-1218] - Portal operations database grows too big, packing doesn't free space
+    * [CA-1306] - Minimal portal needs to not spam Karl Krueger
+    * [CA-1309] - Portal cannot digest site-specific information in protocols
+    * [CA-1326] - Unicode error when rendering a publication
+    * [CA-1406] - Portal cannot ingest publications
+    * [CA-1438] - Improve lockout message
+    * [CA-1449] - Biomarker ingest should assign collaborative groups by organs and not by access groups
+    * [CA-1450] - eke.study ingest should honor http://edrn.nci.nih.gov/rdf/schema.rdf#projectFlag
+    * [CA-1492] - Involved investigator sites not appearing on protocols
+    * [CA-1496] - If the portal cannot ingest ECAS summary data, it tries to log the fact with a nonexistent logger
+    * [CA-1497] - Duplicates appearing in involved investigator sites
+
+** New Feature
+    * [CA-1270] - Make documents more visible on Collab and Subcommittee Pages
+
+** Improvement
+    * [CA-1389] - Improve login page and remove Secure Site portlet
+    * [CA-1435] - Improve LoginLockout so that Plone tells the user how long they have to wait once locked out
+    * [CA-1493] - Bespoke pages should show protocols, then biomarkers and datasets
+    * [CA-1498] - Pre-make vanity pages
+
+
 Release Notes - Early Detection of Cancer - Version Portal 4.6.0 - 2017-02-15
 
 ** Bug
