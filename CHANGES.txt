@@ -1,5 +1,10 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
+Release Notes - Early Detection of Cancer - Version Portal 4.6.2 - 2017-04-26
+
+** Improvement
+    * [CA-1514] - Updates to EDRN Portal
+
 
 Release Notes - Early Detection of Cancer - Version Portal 4.6.1 - 2017-03-07
 
