@@ -1,5 +1,16 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
+
+Release Notes - Early Detection of Cancer - Version Portal 4.6.3 - 2017-05-17
+
+** Bug
+    * [CA-1518] - EDRN Portal shows everyone since the dawn of time
+
+** New Feature
+    * [CA-1527] - Show only active people on the member directory
+    * [CA-1528] - Add publications to Person pages
+
+
 Release Notes - Early Detection of Cancer - Version Portal 4.6.2 - 2017-04-26
 
 ** Improvement
