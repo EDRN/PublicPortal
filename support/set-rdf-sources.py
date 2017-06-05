@@ -168,9 +168,9 @@ def setRDFSources(
     else:
         _logger.debug('No sites folder found')
     if 'science-data' in portal.keys():
-        _logger.info('Setting science data summary to %s', sitesum)
+        _logger.info('Setting science data summary to %s', ecasum)
         s = portal['science-data']
-        s.dsSumDataSource = sitesum
+        s.dsSumDataSource = ecasum
     else:
         _logger.debug('No science data folder found')
     if 'committees' in portal.keys():
