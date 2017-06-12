@@ -1,6 +1,20 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
 
+Release Notes - Early Detection of Cancer - Version Portal 4.6.4
+
+** Bug
+    * [CA-1434] - Biomarker ingest on Jenkins EDRN Portal takes 2 hours 20 minutes
+    * [CA-1534] - set-rdf-sources is setting Publications' folder RDF to protocols source
+    * [CA-1537] - On person pages, the protocols should be both lead PI and involved investigators
+    * [CA-1538] - Investigator page: Need to use the Finish Date as the indicator as to what is open and what is closed
+    * [CA-1539] - Need to include involved investigators in Investigator and Protocol pages
+    * [CA-1544] - EDRN Portal cannot ingest science data
+
+** Improvement
+    * [CA-1543] - Send email after RDF ingest
+
+
 Release Notes - Early Detection of Cancer - Version Portal 4.6.3 - 2017-05-17
 
 ** Bug
