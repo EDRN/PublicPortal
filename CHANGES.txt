@@ -1,5 +1,12 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
+Release Notes - Early Detection of Cancer - Version Portal 4.6.5
+
+** Bug
+    * [CA-1549] - Add site Program Description to the "Sites" tab
+    * [CA-1551] - Display Program Description below proposals in SitesFolder page
+    * [CA-1552] - 200 character truncation of protocols causes ingest issue
+
 
 Release Notes - Early Detection of Cancer - Version Portal 4.6.4
 
