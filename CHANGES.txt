@@ -1,6 +1,6 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
-Release Notes - Early Detection of Cancer - Version Portal 4.6.6
+Release Notes - Early Detection of Cancer - Version Portal 4.6.6 - 2017-07-21 - NCI OPERATIONS
 
 ** Improvement
     * [CA-1554] - Move proposal title and abstract beneath table of sites for BDLs
