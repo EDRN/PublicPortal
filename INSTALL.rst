@@ -6,7 +6,7 @@
 
 This document tells how to install the Early Detection Research Network (EDRN)
 public portal and knowledge environment, or more simply, the "EDRN portal",
-version 4.5.11.  Preparation and installation takes two hours.
+version 4.6.6.  Preparation and installation takes two hours.
 
 
 Preparation
@@ -67,11 +67,11 @@ Deploying the EDRN Portal
 
 To deploy this version of the EDRN portal, perform the following steps:
 
-1.  Run the deploy script for the new portal, version 4.5.11.
+1.  Run the deploy script for the new portal, version 4.6.6.
 2.  Patch the software to close alleged security holes.
 3.  Stop the old portal 4.5.10 (if any).
-4.  Adjust the symlink to point to the new 4.5.11 directory.
-5.  Start the new version 4.5.11 processes.
+4.  Adjust the symlink to point to the new 4.6.6 directory.
+5.  Start the new version 4.6.6 processes.
 6.  Make the site.cfg file readable only by user "edrn".
 
 The rest of this document details the above steps.
@@ -84,7 +84,7 @@ Deploying the new version of the EDRN portal is easier than ever before.  To
 do so:
 
 1.  Download the software from GitHub at
-    https://github.com/EDRN/PublicPortal/releases.  Current release is 4.5.11.
+    https://github.com/EDRN/PublicPortal/releases.  Current release is 4.6.6.
 
 2.  Extract the software archive::
 
@@ -223,7 +223,7 @@ follows::
     sudo /etc/init.d/edrn-supervisor stop
     
 Adjust the path to the rc script as necessary.  Then update the symlink
-to point to the new 4.5.11 directory.  Now start the 4.5.11 version::
+to point to the new 4.6.6 directory.  Now start the 4.6.6 version::
 
     sudo /etc/init.d/edrn-supervisor start
 
