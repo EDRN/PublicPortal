@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright 2011-2013 California Institute of Technology. ALL RIGHTS
+# Copyright 2011-2017 California Institute of Technology. ALL RIGHTS
 # RESERVED. U.S. Government Sponsorship acknowledged.
 
 _version = 'UNKNOWN'
