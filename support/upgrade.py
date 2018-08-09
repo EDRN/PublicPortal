@@ -17,7 +17,7 @@ _siteID    = 'edrn'             # Object ID of the PloneSite object in the Zope 
 from AccessControl.SecurityManagement import newSecurityManager, noSecurityManager
 from Products.CMFCore.utils import getToolByName
 from Testing import makerequest
-from zope.app.component.hooks import setSite
+from zope.component.hooks import setSite
 import transaction, sys, logging
 from Products.CMFCore.tests.base.security import PermissiveSecurityPolicy, OmnipotentUser
 from AccessControl.SecurityManager import setSecurityPolicy

@@ -11,7 +11,7 @@ from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.SecurityManager import setSecurityPolicy
 from Products.CMFCore.tests.base.security import PermissiveSecurityPolicy, OmnipotentUser
 from Testing import makerequest
-from zope.app.component.hooks import setSite
+from zope.component.hooks import setSite
 import optparse, logging, sys, transaction
 
 # Defaults

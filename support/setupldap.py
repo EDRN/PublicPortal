@@ -9,7 +9,7 @@ portalID = 'edrn'
 
 from AccessControl.SecurityManagement import newSecurityManager, noSecurityManager
 from Testing import makerequest
-from zope.app.component.hooks import setSite
+from zope.component.hooks import setSite
 from Products.CMFCore.utils import getToolByName
 import optparse, logging, sys, getpass, transaction, urlparse
 from plone.app.ldap.engine.interfaces import ILDAPConfiguration
