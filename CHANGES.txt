@@ -1,5 +1,11 @@
 EDRN JIRA site: http://oodt.jpl.nasa.gov/jira/browse/CA
 
+
+Release Notes - Early Detection of Cancer - Version Portal 4.6.8 - 2018-09-05 - NCI OPERATIONS
+
+** There are no issues resolved by this release. What a waste of time.
+                                
+
 Release Notes - Early Detection of Cancer - Version Portal 4.6.6 - 2017-07-21 - NCI OPERATIONS
 
 ** Improvement
