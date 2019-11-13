@@ -6,7 +6,10 @@ from AccessControl.SecurityManagement import newSecurityManager, noSecurityManag
 from AccessControl.SecurityManager import setSecurityPolicy
 from Products.CMFCore.tests.base.security import PermissiveSecurityPolicy, OmnipotentUser
 from Testing import makerequest
-from zope.app.component.hooks import setSite
+try:
+    from zope.app.component.hooks import setSite
+except ImportError:
+    from zope.component.hooks import setSite
 import logging, argparse, sys, os.path, os, shutil, json
 
 
@@ -179,7 +182,10 @@ def getPortal(app):
 
 def exportContent(portal, folders, exportDir):
     for containerName, groupFolderName in folders:
-        groupFolder = portal.unrestrictedTraverse((containerName, groupFolderName))
+        if containerName:
+            groupFolder = portal.unrestrictedTraverse((containerName, groupFolderName))
+        else:
+            groupFolder = portal.unrestrictedTraverse((groupFolderName,))
         exporter = getExporter(groupFolder)
         exporter.export(exportDir)
 
